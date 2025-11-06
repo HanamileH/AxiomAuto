@@ -34,45 +34,17 @@
 
 <!-- Панель карточек -->
 <div class="catalog">
-   <div class="card">
-      <img src="{{ url_for('static', filename='img/bmw_3_series.png')}}" alt="BMW 3 Series">
-      <h3>BMW 3 Series</h3>
-      <p>2.0 л • 2020 год • Автомат</p>
-      <p class="price">2 000 000 Р</p>
-      <a href="/car/0001">
-         <button class="btn-red">Подробнее</button>
-      </a>
-   </div>
-
-   <div class="card">
-      <img src="{{ url_for('static', filename='img/audi_a4.png')}}" alt="Audi A4">
-      <h3>Audi A4</h3>
-      <p>2.0 л • 2022 год • Механика</p>
-      <p class="price">1 800 000 Р</p>
-      <a href="/car/0002">
-         <button class="btn-red">Подробнее</button>
-      </a>
-   </div>
-   
-   <div class="card">
-      <img src="{{ url_for('static', filename='img/mercedes_benz.png')}}" alt="Mercedes-Benz">
-      <h3>Mercedes-Benz</h3>
-      <p>2.0 л • 2024 год • Автомат</p>
-      <p class="price">2 200 000 Р</p>
-      <a href="/car/0003">
-         <button class="btn-red">Подробнее</button>
-      </a>
-   </div>
-   
-   <div class="card">
-      <img src="{{ url_for('static', filename='img/nissan_quashqai.png')}}" alt="Nissan Qashqai">
-      <h3>Nissan Qashqai</h3>
-      <p>2.0 л • 2021 год • Полуавтомат</p>
-      <p class="price">1 500 000 Р</p>
-      <a href="/car/0004">
-         <button class="btn-red">Подробнее</button>
-      </a>
-   </div>
+   {% for car in cars %}
+      <div class="card">
+         <img src="{{ url_for('static', filename='img/' + car.image_path)}}" alt="{{ car.title }}">
+         <h3>{{ car.title }}</h3>
+         <p>{{ car.engine_volume ~ ' • ' ~ car.year ~ ' год • ' ~ car.transmission}}</p>
+         <p class="price">{{ car.price }}</p>
+         <a href="{{ url_for('car', car_id=car.id) }}">
+            <button class="btn-red">Подробнее</button>
+         </a>
+      </div>
+   {% endfor %}
 </div>
 
 <div class="show-all">
