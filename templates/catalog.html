@@ -37,7 +37,7 @@
    {% for car in cars %}
       <div class="card">
          <img src="{{ url_for('static', filename='img/' + car.image_path)}}" alt="{{ car.title }}">
-         <h3>{{ car.title }}</h3>
+         <h3>{{ car.brand ~ ' ' ~ car.model }}</h3>
          <p>{{ car.engine_volume ~ ' • ' ~ car.year ~ ' год • ' ~ car.transmission}}</p>
          <p class="price">{{ car.price }}</p>
          <a href="{{ url_for('car', car_id=car.id) }}">

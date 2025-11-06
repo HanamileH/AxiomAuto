@@ -16,8 +16,8 @@
     </div>
 
     <div class="car-info">
-        <h1>{{ car.title }}</h1>
-        <p class="subtitle">{{ car.subtitle }}</p>
+        <h1>{{ car.brand ~ ' ' ~ car.model }}</h1>
+        <p class="subtitle">{{ car.engine_volume ~ ' • ' ~ car.year ~ ' год • ' ~ car.transmission}}</p>
         <p class="price">{{ car.price }}</p>
 
         <div class="status available">В продаже</div>

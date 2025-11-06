@@ -3,8 +3,6 @@ car_data = {
    "0001": {
       "id": "0001",
       "image_path": "bmw_3_series.png",
-      "title": "BMW 3 Series",
-      "subtitle": "2.0 л • 2018 год • Автомат",
       "price": "2 000 000 ₽",
       "VIN": "1HGCM82633A123456",
       "brand": "BMW",
@@ -22,8 +20,6 @@ car_data = {
    "0002": {
       "id": "0002",
       "image_path": "audi_a4.png",
-      "title": "Audi A4",
-      "subtitle": "2.0 л • 2022 год • Механика",
       "price": "1 800 000 ₽",
       "VIN": "1HGCM82633A123456",
       "brand": "Audi",
@@ -42,8 +38,6 @@ car_data = {
    "0003": {
       "id": "0003",
       "image_path": "mercedes_benz.png",
-      "title": "Mercedes-Benz",
-      "subtitle": "2.0 л • 2020 год • Автомат",
       "price": "2 200 000 ₽",
       "VIN": "1HGCM82633A123456",
       "brand": "Mercedes-Benz",
@@ -61,8 +55,6 @@ car_data = {
    "0004": {
       "id": "0004",
       "image_path": "nissan_quashqai.png",
-      "title": "Nissan Quashqai",
-      "subtitle": "2.0 л • 2021 год • Полуавтомат",
       "price": "1 500 000 ₽",
       "VIN": "1HGCM82633A123456",
       "brand": "Nissan",
