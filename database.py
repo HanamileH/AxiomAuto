@@ -1,74 +1,18 @@
-# Данные автомобилей (заглушка)
-car_data = {
-   "0001": {
-      "id": "0001",
-      "image_path": "bmw_3_series.png",
-      "price": "2 000 000 ₽",
-      "VIN": "1HGCM82633A123456",
-      "brand": "BMW",
-      "model": "3 Series",
-      "year": 2018,
-      "color": "Чёрный",
-      "engine_type": "Бензиновый",
-      "engine_volume": "2.0 л",
-      "engine_power": "184 л.с.",
-      "transmission": "Автоматическая",
-      "configuration": "Sport Line",
-      "description": "BMW 3 Series — спортивный седан с мощным двигателем и динамичным управлением. В нём сочетаются спортивный стиль и высокий уровень комфорта, что делает его идеальным выбором для тех, кто ценит активный образ жизни."
-   },
+import csv
 
-   "0002": {
-      "id": "0002",
-      "image_path": "audi_a4.png",
-      "price": "1 800 000 ₽",
-      "VIN": "1HGCM82633A123456",
-      "brand": "Audi",
-      "model": "A4",
-      "year": 2022,
-      "color": "Красный",
-      "engine_type": "Бензиновый",
-      "engine_volume": "2.0 л",
-      "engine_power": "190 л.с.",
-      "transmission": "Механическая",
-      "configuration": "Premium Edition",
-      "description": "Audi A4 — современный седан с высокими показателями безопасности, комфорта и динамики. В нём сочетаются спортивный стиль и премиальные материалы отделки салона, что делает его идеальным выбором для тех, кто ценит качество и роскошь."
-   },
+car_data = {}
 
+def load_data():
+   """Загружаем данные о машинах из файла cars_data.csv
+   (Заглушка, в будущем должна будет загружать данные из БД)
+   """
+   global car_data
    
-   "0003": {
-      "id": "0003",
-      "image_path": "mercedes_benz.png",
-      "price": "2 200 000 ₽",
-      "VIN": "1HGCM82633A123456",
-      "brand": "Mercedes-Benz",
-      "model": "E-class",
-      "year": 2020,
-      "color": "Белый",
-      "engine_type": "Бензиновый",
-      "engine_volume": "2.0 л",
-      "engine_power": "184 л.с.",
-      "transmission": "Автоматическая",
-      "configuration": "AMG Line",
-      "description": "Mercedes-Benz E-Class — представительский седан с высоким уровнем комфорта, оснащённый современными системами безопасности, адаптивной подвеской и премиальными материалами отделки салона. Отличное сочетание мощности, динамики и элегантности."
-   },
-
-   "0004": {
-      "id": "0004",
-      "image_path": "nissan_quashqai.png",
-      "price": "1 500 000 ₽",
-      "VIN": "1HGCM82633A123456",
-      "brand": "Nissan",
-      "model": "Quashqai",
-      "year": 2021,
-      "color": "Серый",
-      "engine_type": "Бензиновый",
-      "engine_volume": "2.0 л",
-      "engine_power": "184 л.с.",
-      "transmission": "Полуавтоматическая",
-      "configuration": "Sport Edition",
-      "description": "Nissan Quashqai — кроссовер с высокими показателями безопасности, комфорта и динамики. В нём сочетаются спортивный стиль и премиальные материалы отделки салона, что делает его идеальным выбором для тех, кто ценит качество и роскошь."
-   }
-}
+   with open('cars_data.csv', newline='', encoding='utf-8') as csvfile:
+      reader = csv.DictReader(csvfile, delimiter=';')
+      for row in reader:
+         car_data[row['id']] = row
+      
 
 def get_car(car_id):
    """Получение данных автомобиля по идентификатору

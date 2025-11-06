@@ -51,4 +51,5 @@ def page_not_found(e):
 
 # Запускаем приложение
 if __name__ == '__main__':
+   database.load_data()
    app.run(debug=True)
