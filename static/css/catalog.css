@@ -9,21 +9,38 @@
 }
 
 /* Панель фильтров */
-.filters {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 10px;
-	margin-bottom: 30px;
+.filters-card {
+    background: #fafafa;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    margin-bottom: 40px;
+    padding: 25px;
+
+
+}
+.filters-panel {
+	margin-top: 25px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
-.filters select {
-	padding: 10px 14px;
-	border: 1px solid #DDDDDD;
-	border-radius: 8px;
-	font-size: 15px;
-	background: #FFFFFF;
-	cursor: pointer;
+.filters-panel input,
+.filters-panel select {
+    padding: 10px 15px;
+    border: 1px solid #DDDDDD;
+    border-radius: 8px;
+    font-size: 14px;
+    min-width: 150px;
 }
+
+.filters-panel label {
+    display: flex;
+    align-items: center;
+    color: #333;
+    font-size: 14px;
+}
+
 
 /* Каталог товаров */
 .catalog {

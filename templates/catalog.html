@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 <!-- Заголовок окна -->
-{% block title %}Каталог AxiomAuto{% endblock %}
+{% block title %}Каталог автомобилей{% endblock %}
 
 <!-- Подключаем доп стиль -->
 {% block styles %}
@@ -12,27 +12,24 @@
 {% block content %}
 <h1 class="title">Каталог автомобилей</h1>
 
-<div class="search-bar">
-   <input type="text" placeholder="Поиск...">
-</div>
-
 <!-- Фильтры поиска -->
-<div class="filters">
-   <select>
-      <option>Марка</option>
-   </select>
-
-   <select>
-      <option>Модель</option>
-   </select>
-
-   <select>
-      <option>Цена от</option>
-   </select>
-
-   <select>
-      <option>Год</option>
-   </select>
+<div class="filters-card">
+   <h2>Фильтры</h2>
+   <div class="filters-panel">
+      <input type="text" placeholder="Производитель" id="filter-brand">
+      <input type="text" placeholder="Модель" id="filter-model">
+      <input type="number" placeholder="Год от" id="filter-year-from">
+      <input type="number" placeholder="Год до" id="filter-year-to">
+      <input type="number" placeholder="Цена от" id="filter-price-from">
+      <input type="number" placeholder="Цена до" id="filter-price-to">
+      <label for="filter-transmission">Коробка передач:</label>
+      <select id="filter-transmission" name="transmission">
+         <option value="all">Любая</option>
+         <option value="manual">Механика</option>
+         <option value="automatic">Автомат</option>
+         <option value="semi-automatic">Полуавтомат</option>
+      </select>
+   </div>
 </div>
 
 <!-- Панель карточек -->
