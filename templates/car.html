@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+<!-- Заголовок окна -->
+{% block title %}Mercedes-Benz E-Class{% endblock %}
+
+<!-- Подключаем доп стиль -->
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/car.css') }}">
+{% endblock %}
+
+<!-- Контент окна -->
+{% block content %}
+<div class="car-container">
+    <div class="car-image">
+        <img src="{{ url_for('static', filename='img/' ~ car.image_path)}}" alt= "{{ car.image_path }}">
+    </div>
+
+    <div class="car-info">
+        <h1>{{ car.title }}</h1>
+        <p class="subtitle">{{ car.subtitle }}</p>
+        <p class="price">{{ car.price }}</p>
+
+        <div class="status available">В продаже</div>
+
+        <h2>Характеристики</h2>
+        <ul class="specs">
+            <li><strong>VIN:</strong> {{ car.VIN }}</li>
+            <li><strong>Марка:</strong> {{ car.brand }}</li>
+            <li><strong>Модель:</strong> {{ car.model }}</li>
+            <li><strong>Год выпуска:</strong> {{ car.year }}</li>
+            <li><strong>Цвет:</strong> {{ car.color }}</li>
+            <li><strong>Тип двигателя:</strong> {{ car.engine_type }}</li>
+            <li><strong>Объём двигателя:</strong> {{ car.engine_volume }}</li>
+            <li><strong>Мощность:</strong> {{ car.engine_power }}</li>
+            <li><strong>Коробка передач:</strong> {{ car.transmission }}</li>
+            <li><strong>Комплектация:</strong> {{ car.configuration }}</li>
+        </ul>
+
+        <h2>Описание</h2>
+        <p class="description">{{ car.description }}</p>
+
+        <div class="actions">
+            <button class="btn-red">Забронировать</button>
+            <a href="/">
+                <button class="btn-outline">Вернуться в каталог</button>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

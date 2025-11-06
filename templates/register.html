@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+<!-- Заголовок окна -->
+{% block title %}Регистрация{% endblock %}
+
+<!-- Подключаем доп стиль -->
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+{% endblock %}
+
+<!-- Контент окна -->
+{% block content %}
+<div class="register-container">
+   <h1>Регистрация</h1>
+   <p class="subtitle">Создайте учётную запись для доступа к системе</p>
+
+   <form class="register-form" method="post" action="#">
+      <div class="form-group">
+         <label for="firstname">Имя</label>
+         <input type="text" id="firstname" name="firstname" placeholder="Имя" required>
+      </div>
+
+      <div class="form-group">
+         <label for="lastname">Фамилия</label>
+         <input type="text" id="lastname" name="lastname" placeholder="Фамилия" required>
+      </div>
+
+      <div class="form-group">
+         <label for="patronymic">Отчество</label>
+         <input type="text" id="patronymic" name="patronymic" placeholder="Отчество (при наличии)">
+      </div>
+
+      <div class="form-group">
+         <label for="email">Электронная почта</label>
+         <input type="email" id="email" name="email" placeholder="example@mail.ru" required>
+      </div>
+
+      <div class="form-group">
+         <label for="phone">Телефон</label>
+         <input type="tel" id="phone" name="phone" placeholder="+7 (___) ___-__-__" required>
+      </div>
+
+      <div class="form-group">
+         <label for="password">Пароль</label>
+         <input type="password" id="password" name="password" placeholder="Введите пароль" required>
+      </div>
+
+      <div class="form-group">
+         <label for="confirm-password">Повторите пароль</label>
+         <input type="password" id="confirm-password" name="confirm-password" placeholder="Повторите пароль" required>
+      </div>
+
+      <button type="submit" class="btn-register">Создать аккаунт</button>
+   </form>
+
+   <p class="login-link">
+      Уже есть аккаунт? <a href="/login">Войти</a>
+   </p>
+</div>
+
+{% endblock %}

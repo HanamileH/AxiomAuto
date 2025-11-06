@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ru">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>{% block title %}Default title{% endblock %}</title>
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css')}}">
+      {% block styles %}{% endblock %}
+   </head>
+
+   <body>
+      <header class="header">
+         <div class="logo">AxiomAuto</div>
+
+         <nav class="nav">
+            <a href="/">Каталог</a>
+            <a href="/about">О нас</a>
+            <a href="/staff">Для персонала</a>
+         </nav>
+         
+         <div class="auth-buttons">
+            <a href="/register">
+               <button class="btn-outline">Регистрация</button>
+            </a>
+            <a href="/login">
+               <button class="btn-black">Вход</button>
+            </a>
+         </div>
+      </header>
+
+      <main class="main">
+         {% block content %}{% endblock %}
+      </main>
+
+      <footer class="footer">
+         <p>© 2025 Каталог автомобилей AxiomAuto. Все права защищены.</p>
+      </footer>
+   </body>
+</html>

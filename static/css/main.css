@@ -1,0 +1,73 @@
+/* Панель поиска */
+.search-bar input {
+	width: 100%;
+	padding: 14px;
+	font-size: 16px;
+	border: 1px solid #DDDDDD;
+	border-radius: 8px;
+	margin-bottom: 20px;
+}
+
+/* Панель фильтров */
+.filters {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin-bottom: 30px;
+}
+
+.filters select {
+	padding: 10px 14px;
+	border: 1px solid #DDDDDD;
+	border-radius: 8px;
+	font-size: 15px;
+	background: #FFFFFF;
+	cursor: pointer;
+}
+
+/* Каталог товаров */
+.catalog {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 25px;
+}
+
+.card {
+	border: 1px solid #DDDDDD;
+	border-radius: 12px;
+	padding: 16px;
+	text-align: center;
+	background: #FFFFFF;
+	transition: 0.2s ease;
+}
+
+.card:hover {
+	box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+.card img {
+	width: 100%;
+	height: auto;
+	margin-bottom: 12px;
+}
+
+.card h3 {
+	font-size: 18px;
+	margin-bottom: 5px;
+}
+
+.card p {
+	font-size: 15px;
+	margin-bottom: 5px;
+}
+
+.card .price {
+	font-weight: bold;
+	font-size: 17px;
+	margin-bottom: 10px;
+}
+
+.show-all {
+	text-align: center;
+	margin-top: 35px;
+}

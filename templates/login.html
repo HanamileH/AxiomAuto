@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+<!-- Заголовок окна -->
+{% block title %}Войти в аккаунт{% endblock %}
+
+<!-- Подключаем доп стиль -->
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+
+<!-- Контент окна -->
+{% block content %}
+<div class="login-container">
+   <h1>Войти в аккаунт</h1>
+   <p class="subtitle">Войдите в свою учётную запись для доступа к системе</p>
+
+   <form class="login-form" method="post" action="#">
+      <div class="form-group">
+         <label for="email">Электронная почта</label>
+         <input type="email" id="email" name="email" placeholder="example@mail.ru" required>
+      </div>
+
+      <div class="form-group">
+         <label for="password">Пароль</label>
+         <input type="password" id="password" name="password" placeholder="Введите пароль" required>
+      </div>
+
+      <button type="submit" class="btn-login">Войти</button>
+   </form>
+
+   <p class="register-link">
+      Ещё нет аккаунта? <a href="/register">Зарегистрироваться</a>
+   </p>
+</div>
+
+{% endblock %}

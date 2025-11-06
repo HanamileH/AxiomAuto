@@ -1,0 +1,109 @@
+.title {
+    font-size: 36px;
+    font-weight: 800;
+    margin-bottom: 30px;
+}
+
+/* Add form */
+.add-form {
+    background: #fafafa;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 40px;
+}
+
+.add-form h2 {
+    margin-bottom: 15px;
+    font-size: 22px;
+}
+
+.add-form form {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 15px;
+}
+
+.add-form input, .add-form select {
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    width: 100%;
+}
+
+.btn-red {
+    background: #e63946;
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: 0.2s;
+}
+
+.btn-red:hover {
+    background: #d62828;
+}
+
+/* Table */
+.table-section h2 {
+    margin-bottom: 15px;
+    font-size: 22px;
+}
+
+.car-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.car-table th, .car-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+}
+
+.car-table thead {
+    background: #f8f8f8;
+    font-weight: bold;
+}
+
+.car-table tr:hover {
+    background: #fafafa;
+}
+
+.status {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.status.available {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status.sold {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.btn-status {
+    background: #0066cc;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.btn-status:hover {
+    background: #004b99;
+}

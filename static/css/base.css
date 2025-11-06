@@ -1,0 +1,119 @@
+/* Основные элементы */
+* {
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+   font-family: Verdana, sans-serif;
+}
+
+body {
+   display: flex;
+   flex-direction: column;
+   min-height: 100vh;
+   background: #FFFFFF;
+   color: #111111;
+}
+
+html, body {
+   height: 100%;
+}
+
+/* Шапка */
+.header {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   padding: 20px 60px;
+   border-bottom: 1px solid #DDDDDD;
+	box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+.logo {
+   font-size: 26px;
+   font-weight: 700;
+}
+
+.nav a {
+   margin: 0 40px;
+   color: #111111;
+   text-decoration: none;
+   font-size: 16px;
+}
+
+.nav a:hover {
+   text-decoration: underline;
+}
+
+.auth-buttons {
+   display: flex;
+   gap: 10px;
+}
+
+/* Кнопки */
+.btn-red {
+   background: #E63946;
+   color: #FFFFFF;
+   border: none;
+   padding: 10px 18px;
+   border-radius: 8px;
+   cursor: pointer;
+   font-size: 15px;
+   transition: 0.2s;
+}
+
+.btn-red:hover {
+   background: #D62828;
+}
+
+.btn-outline {
+   background: none;
+   border: 1px solid #CCCCCC;
+   color: #111111;
+   padding: 10px 18px;
+   border-radius: 8px;
+   cursor: pointer;
+   font-size: 15px;
+   transition: 0.2s;
+}
+
+.btn-outline:hover {
+   border-color: #111111;
+}
+
+.btn-black {
+   background: #111111;
+   color: #FFFFFF;
+   border: none;
+   padding: 10px 18px;
+   border-radius: 6px;
+   cursor: pointer;
+   font-size: 15px;
+   transition: 0.2s;
+}
+
+.btn-black:hover {
+   background: #333333;
+}
+
+/* Подвал */
+.footer {
+   flex-shrink: 0;
+   text-align: center;
+   padding: 20px;
+   border-top: 1px solid #DDDDDD;
+   color: #666666;
+   font-size: 14px;
+   background: #FFFFFF;
+}
+
+/* Основной контент */
+.main {
+   flex: 1 0 auto;
+   padding: 40px 60px;
+}
+
+.title {
+   font-size: 40px;
+   font-weight: 800;
+   margin-bottom: 25px;
+}
