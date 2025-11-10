@@ -23,9 +23,20 @@ def car(model_id):
 
 
 # Страница менеджера
-@app.route('/staff')
-def staff():
-   return render_template("staff.html")
+@app.route('/staff/<entity_name>')
+def staff(entity_name):
+   entities = database.ENTITIES_TYPES
+   current_entity = None
+   
+   for entity in entities:
+      if entity["tab_name"] == entity_name:
+         current_entity = entity
+         break
+   
+   if current_entity:
+      return render_template("staff.html", entities=entities, current_entity=current_entity)
+   else:
+      return render_template('404.html'), 404
 
 
 # Информация о компании

@@ -55,6 +55,64 @@ TRANSMISSION_TYPES = {
    "robotic": "Роботизированная"
 }
 
+ENTITIES_TYPES = [
+   {
+      "table_name": "brand",
+      "tab_name": "brands",
+      "ru_name": "Марки",
+      "ru_add": "Добавить марку",
+      "ru_list": "Список марок",
+   },
+   {
+      "table_name": "model",
+      "tab_name": "models",
+      "ru_name": "Модели",
+      "ru_add": "Добавить модель",
+      "ru_list": "Список моделей"
+   },
+   {
+      "table_name": "model_configuration",
+      "tab_name": "configurations",
+      "ru_name": "Комплектации",
+      "ru_add": "Добавить комплектацию",
+      "ru_list": "Список комплектаций"
+   },
+   {
+      "table_name": "color",
+      "tab_name": "colors",
+      "ru_name": "Цвета",
+      "ru_add": "Добавить цвет",
+      "ru_list": "Список цветов"
+   },
+   {
+      "table_name": "car",
+      "tab_name": "cars",
+      "ru_name": "Автомобили",
+      "ru_add": "Добавить автомобиль",
+      "ru_list": "Список автомобилей"
+   },
+   {
+      "table_name": "users",
+      "tab_name": "users",
+      "ru_name": "Пользователи",
+      "ru_add": "Добавить пользователя",
+      "ru_list": "Список пользователей"
+   },
+   {
+      "table_name": "car_sale",
+      "tab_name": "sales",
+      "ru_name": "Заказы",
+      "ru_add": "Добавить заказ",
+      "ru_list": "Список заказов"
+   },
+   {
+      "table_name": None,
+      "tab_name": "statistics",
+      "ru_name": "Статистика",
+      "ru_add": None,
+      "ru_list": "Статистика"
+   }
+]
 
 def get_catalog():
    """Получить каталог моделей

@@ -24,6 +24,10 @@
     gap: 10px;
 }
 
+.entity-group button {
+    width: 100%;
+}
+
 /* Add form */
 .add-form {
     background: #fafafa;
