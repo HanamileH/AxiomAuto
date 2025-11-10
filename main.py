@@ -6,17 +6,18 @@ app = Flask(__name__)
 # Главная страница (каталог)
 @app.route('/')
 def main():
-   all_cars = database.get_all_cars()
-   return render_template('catalog.html', cars=all_cars)
+   all_models = database.get_catalog()
+   
+   return render_template('catalog.html', models=all_models)
 
 
 # Страница описания автомобиля
-@app.route('/car/<car_id>')
-def car(car_id):
-   car_data = database.get_car(car_id)
+@app.route('/car/<model_id>')
+def car(model_id):
+   model = database.get_model_data(model_id)
    
-   if car_data:
-      return render_template('car.html', car=car_data)
+   if model:
+      return render_template('car.html', model=model)
    else:
       return render_template('404.html'), 404
 
@@ -51,5 +52,5 @@ def page_not_found(e):
 
 # Запускаем приложение
 if __name__ == '__main__':
-   database.load_data()
+   database.init_db()
    app.run(debug=True)

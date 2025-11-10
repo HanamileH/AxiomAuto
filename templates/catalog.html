@@ -34,13 +34,13 @@
 
 <!-- Панель карточек -->
 <div class="catalog">
-   {% for car in cars %}
+   {% for model in models %}
       <div class="card">
-         <img src="{{ url_for('static', filename='img/' + car.image_path)}}" alt="{{ car.title }}">
-         <h3>{{ car.brand ~ ' ' ~ car.model }}</h3>
-         <p>{{ car.engine_volume ~ ' • ' ~ car.year ~ ' год • ' ~ car.transmission}}</p>
-         <p class="price">{{ car.price }}</p>
-         <a href="{{ url_for('car', car_id=car.id) }}">
+         <img src="{{ url_for('static', filename='img/audi_a4.png')}}" alt="{{ model.title }}">
+         <h3>{{ model.brand ~ ' ' ~ model.name }}</h3>
+         <p>{{ model.engine_type ~ ' • ' ~ model.year ~ ' год • ' ~ model.transmission}}</p>
+         <p class="price">{{'от ' ~ model.min_price ~ ' руб.'}}</p>
+         <a href="{{ url_for('car', model_id=model.id) }}">
             <button class="btn-red">Подробнее</button>
          </a>
       </div>
