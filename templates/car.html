@@ -12,7 +12,7 @@
 {% block content %}
 <div class="car-container">
     <div class="car-image">
-        <img src="{{ url_for('static', filename='img/audi_a4.png')}}" alt= "{{ model.brand }}">
+        <img src="{{ url_for('static', filename='img/' ~ model.image_path)}}" alt= "{{ model.brand }}">
     </div>
 
     <div class="car-info">

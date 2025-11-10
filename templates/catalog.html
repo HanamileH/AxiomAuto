@@ -36,7 +36,7 @@
 <div class="catalog">
    {% for model in models %}
       <div class="card">
-         <img src="{{ url_for('static', filename='img/audi_a4.png')}}" alt="{{ model.title }}">
+         <img src="{{ url_for('static', filename='img/' ~ model.image_path)}}" alt="{{ model.title }}">
          <h3>{{ model.brand ~ ' ' ~ model.name }}</h3>
          <p>{{ model.engine_type ~ ' • ' ~ model.year ~ ' год • ' ~ model.transmission}}</p>
          <p class="price">{{'от ' ~ model.min_price ~ ' руб.'}}</p>

@@ -125,6 +125,7 @@ def get_catalog():
    SELECT
       b.name AS brand,
       m.name AS name,
+      m.image_path AS image_path,
       m.id AS id,
       m.year AS year,
       MIN(mc.price) AS min_price,
@@ -167,6 +168,7 @@ def get_model_data(model_id):
       b.name AS brand,
       m.name AS name,
       m.year AS year,
+      m.image_path AS image_path,
       m.engine_type AS engine_type,
       m.engine_volume AS engine_volume,
       m.engine_power AS engine_power,
