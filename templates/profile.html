@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+<!-- Заголовок окна -->
+{% block title %}Личный кабинет{% endblock %}
+
+<!-- Подключаем доп стиль -->
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+{% endblock %}
+
+<!-- Контент окна -->
+{% block content %}
+
+<div class="dashboard">
+    <!-- Левая колонка: профиль -->
+    <section class="profile">
+        <h1>Личный кабинет</h1>
+
+        <div class="user-info">
+            <div class="info-block">
+                <label>Фамилия:</label>
+                <p>Иванов</p>
+            </div>
+            <div class="info-block">
+                <label>Имя:</label>
+                <p>Алексей</p>
+            </div>
+            <div class="info-block">
+                <label>Отчество:</label>
+                <p>Петрович</p>
+            </div>
+            <div class="info-block">
+                <label>Телефон:</label>
+                <p>+7 (999) 123-45-67</p>
+            </div>
+            <div class="info-block">
+                <label>Почта:</label>
+                <p>ivanov@example.com</p>
+            </div>
+        </div>
+
+        <div class="profile-buttons">
+            <button class="btn-black">Сменить пароль</button>
+            <button class="btn-outline">Выйти из аккаунта</button>
+        </div>
+    </section>
+
+    <!-- Правая колонка: автомобили -->
+    <section class="cars-section">
+        <div class="cars-block">
+            <h2>Забронированные автомобили</h2>
+            <div class="car-list">
+                <div class="car-card">
+                    <h3>Toyota Camry</h3>
+                    <p>Комплектация: Premium</p>
+                    <p>Цвет: Чёрный</p>
+                    <p>Статус: <span class="status reserved">Забронирован</span></p>
+                    <button class="btn-details">Подробнее</button>
+                </div>
+                <div class="car-card">
+                    <h3>Hyundai Tucson</h3>
+                    <p>Комплектация: Comfort</p>
+                    <p>Цвет: Белый</p>
+                    <p>Статус: <span class="status reserved">Забронирован</span></p>
+                    <button class="btn-details">Подробнее</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="cars-block">
+            <h2>Купленные автомобили</h2>
+            <div class="car-list">
+                <div class="car-card">
+                    <h3>BMW 5 Series</h3>
+                    <p>Комплектация: Luxury</p>
+                    <p>Цвет: Серебристый</p>
+                    <p>Серийный номер: XYZ7891234</p>
+                    <p>Дата покупки: 14.07.2025</p>
+                    <p>Статус: <span class="status sold">Куплен</span></p>
+                    <button class="btn-details">Подробнее</button>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

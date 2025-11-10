@@ -1,0 +1,132 @@
+/* Layout */
+.main {
+    padding: 60px 40px;
+    display: flex;
+    justify-content: center;
+}
+
+.dashboard {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 40px;
+    max-width: 1300px;
+    width: 100%;
+}
+
+/* Profile column */
+.profile {
+    background: #fff;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    height: fit-content;
+}
+
+.profile h1 {
+    font-size: 26px;
+    margin-bottom: 25px;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.info-block label {
+    display: block;
+    font-weight: 600;
+    font-size: 14px;
+    color: #444;
+}
+
+.info-block p {
+    font-size: 16px;
+    color: #111;
+}
+
+.profile-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Cars column */
+.cars-section {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.cars-block {
+    background: #fff;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.cars-block h2 {
+    font-size: 22px;
+    margin-bottom: 20px;
+}
+
+.car-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+.car-card {
+    background: #fafafa;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 20px;
+    transition: 0.2s;
+}
+
+.car-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.car-card h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.car-card p {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.status {
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.status.reserved {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status.sold {
+    background: #d7f7d7;
+    color: #087f23;
+}
+
+.btn-details {
+    margin-top: 10px;
+    background: #111;
+    color: #fff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.btn-details:hover {
+    background: #333;
+}

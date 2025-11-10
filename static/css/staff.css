@@ -4,6 +4,26 @@
     margin-bottom: 30px;
 }
 
+/* Entity select */
+.entity-select {
+    background: #fafafa;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 40px;
+}
+
+.entity-select h2 {
+    margin-bottom: 15px;
+    font-size: 22px;
+}
+
+.entity-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+}
+
 /* Add form */
 .add-form {
     background: #fafafa;

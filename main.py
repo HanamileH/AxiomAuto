@@ -46,9 +46,17 @@ def login():
    return render_template('login.html')
 
 
+# Стрница профиля пользователя
+@app.route('/profile')
+def profile():
+   return render_template('profile.html')
+
+
+# Страница ошибки 404
 @app.errorhandler(404)
 def page_not_found(e):
    return render_template('404.html'), 404
+
 
 # Запускаем приложение
 if __name__ == '__main__':

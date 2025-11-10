@@ -12,6 +12,21 @@
 {% block content %}
 <h1 class="title">Панель персонала</h1>
 
+<!-- Панель выбора сущности -->
+<section class="entity-select">
+    <h2>Выберите таблицу</h2>
+    <div class="entity-group">
+        <button class="btn-outline">Марки</button>
+        <button class="btn-outline">Модели</button>
+        <button class="btn-outline">Комплектации</button>
+        <button class="btn-black">Автомобили</button>
+        <button class="btn-outline">Пользователи</button>
+        <button class="btn-outline">Бронирование</button>
+        <button class="btn-outline">Заказы</button>
+        <button class="btn-outline">Статистика</button>
+    </div>
+</section>
+
 <!-- Панель добавления -->
 <section class="add-form">
     <h2>Добавить автомобиль</h2>
@@ -30,9 +45,9 @@
             <option value="Tesla">Tesla</option>
         </select>
         <input type="text" placeholder="Модель" required>
+        <input type="text" placeholder="Комплектация" required>
         <input type="text" placeholder="Год" required>
         <input type="text" placeholder="Цвет" required>
-        <input type="text" placeholder="Комплектация" required>
         <input type="text" placeholder="Цена" required>
         <button type="submit" class="btn-red">Добавить</button>
     </form>
