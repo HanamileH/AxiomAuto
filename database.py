@@ -17,7 +17,7 @@ def init_db():
       database=os.getenv("DB_DATABASE"),
       user=os.getenv("DB_USERNAME"),
       password=os.getenv("DB_PASSWORD"),
-      client_encoding="UTF-8"
+      client_encoding="utf8"
    )
    
    cursor = conn.cursor()
