@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template
+from flask_login import login_required, current_user
 from app import db
 
 bp = Blueprint('main', __name__)
@@ -24,7 +25,11 @@ def car(model_id):
 
 # Страница менеджера
 @bp.route('/staff/<entity_name>')
+@login_required
 def staff(entity_name):
+   if not current_user.role in ['admin', 'manager']:
+      return render_template('403.html'), 403
+
    entities = db.ENTITIES_TYPES
    current_entity = None
    
