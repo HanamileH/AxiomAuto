@@ -33,8 +33,21 @@ html, body {
    font-weight: 700;
 }
 
+.header-left {
+   display: flex;
+   justify-content: center;
+   gap: 80px;
+   align-items: center;
+}
+
+.nav {
+   height: min-content;
+   display: flex;
+   justify-content: center;
+   gap: 60px;
+}
+
 .nav a {
-   margin: 0 40px;
    color: #111111;
    text-decoration: none;
    font-size: 16px;

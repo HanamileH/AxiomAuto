@@ -10,13 +10,17 @@
 
    <body>
       <header class="header">
-         <div class="logo">AxiomAuto</div>
+         <div class="header-left">
+            <div class="logo">AxiomAuto</div>
+            <nav class="nav">
+               <a href="/">Каталог</a>
+               <a href="/about">О нас</a>
 
-         <nav class="nav">
-            <a href="/">Каталог</a>
-            <a href="/about">О нас</a>
-            <a href="/staff/cars">Для персонала</a>
-         </nav>
+               {% if current_user.is_authenticated and current_user.role in ['manager', 'admin'] %}
+               <a href="/staff/cars">Для персонала</a>
+               {% endif %}
+            </nav>
+         </div>
          
          <div class="auth-buttons">
             {% if current_user.is_authenticated %}
