@@ -45,24 +45,6 @@ def about():
    return render_template('about.html')
 
 
-# Страница регистрации пользователя
-@bp.route('/register')
-def register():
-   return render_template('register.html')
-
-
-# Страница авторизации пользователя
-@bp.route('/login')
-def login():
-   return render_template('login.html')
-
-
-# Стрница профиля пользователя
-@bp.route('/profile')
-def profile():
-   return render_template('profile.html')
-
-
 # Страница ошибки 404
 @bp.errorhandler(404)
 def page_not_found(e):
