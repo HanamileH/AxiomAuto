@@ -1,8 +1,6 @@
 import psycopg2
-from psycopg2 import pool
 from psycopg2.extras import RealDictCursor
 from contextlib import contextmanager
-from flask import current_app
 
 class DatabaseConnection:
     def __init__(self):
