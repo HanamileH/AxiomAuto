@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, session
 from flask_login import login_user, logout_user, login_required
 from app.db.user import register_user as db_register_user
 from app.db.user import login_user as db_login_user
@@ -36,7 +36,9 @@ def login():
       user = db_login_user(email, password)
 
       if user:
-         login_user(user)
+         login_user(user, remember=True)
+         session.permanent = True
+         
          return redirect(url_for('auth.profile'))
       else:
          return render_template('login.html', error='Неверный логин или пароль!')

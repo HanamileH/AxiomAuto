@@ -10,6 +10,8 @@ def create_app(config_class=Config):
     from app.db.user import User
     
     login_manager = LoginManager(app)
+    login_manager.login_view = 'auth.login'
+    login_manager.session_protection = 'strong'
     
     @login_manager.user_loader
     def load_user(user_id):
