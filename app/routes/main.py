@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, abort
 from flask_login import login_required, current_user
 from app import db
 
@@ -20,7 +20,7 @@ def car(model_id):
    if model:
       return render_template('car.html', model=model)
    else:
-      return render_template('404.html'), 404
+      return abort(404)
 
 
 # Страница менеджера
@@ -28,7 +28,7 @@ def car(model_id):
 @login_required
 def staff(entity_name):
    if not current_user.role in ['admin', 'manager']:
-      return render_template('403.html'), 403
+      return abort(403)
 
    entities = db.ENTITIES_TYPES
    current_entity = None
@@ -41,13 +41,19 @@ def staff(entity_name):
    if current_entity:
       return render_template(f"staff/{entity['tab_name']}.html", entities=entities, current_entity=current_entity)
    else:
-      return render_template('404.html'), 404
+      return abort(404)
 
 
 # Информация о компании
 @bp.route('/about')
 def about():
    return render_template('about.html')
+
+
+# Страница ошибки 403
+@bp.errorhandler(403)
+def forbidden(e):
+   return render_template('403.html'), 403
 
 
 # Страница ошибки 404
