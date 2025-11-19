@@ -6,9 +6,11 @@ def create_app(config_class=Config):
     app.config.from_object(config_class)
 
     # Инициализация модулей
-    from app import database
-    
-    database.init_db()
+    #from app import database
+    #database.init_db()
+
+    from app.db.connection import db
+    db.init_app(app)
 
     # Регистрация Blueprint'ов
     from app.routes import main_bp, auth_bp

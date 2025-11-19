@@ -1,20 +1,20 @@
 from flask import Blueprint, render_template
-from app import database
+from app import db
 
 bp = Blueprint('main', __name__)
 
 # Главная страница (каталог)
 @bp.route('/')
 def main():
-   all_models = database.get_catalog()
-   
+   all_models = db.get_catalog()
+
    return render_template('catalog.html', models=all_models)
 
 
 # Страница описания автомобиля
 @bp.route('/car/<model_id>')
 def car(model_id):
-   model = database.get_model_data(model_id)
+   model = db.get_model_data(model_id)
    
    if model:
       return render_template('car.html', model=model)
@@ -25,7 +25,7 @@ def car(model_id):
 # Страница менеджера
 @bp.route('/staff/<entity_name>')
 def staff(entity_name):
-   entities = database.ENTITIES_TYPES
+   entities = db.ENTITIES_TYPES
    current_entity = None
    
    for entity in entities:
