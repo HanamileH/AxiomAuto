@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+<!-- Заголовок окна -->
+{% block title %}{{ error_title }}{% endblock %}
+
+<!-- Подключаем доп стиль -->
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/error.css') }}">
+{% endblock %}
+
+<!-- Контент окна -->
+{% block content %}
+<div class="error-container">
+   <h1 class="error-code">{{ error_code }}</h1>
+   <p class="error-message">{{ error_message }}</p>
+   <p class="error-description">{{ error_description }}</p>
+
+   <div class="buttons">
+      <a href="/" class="btn-main">На главную</a>
+   </div>
+</div>
+{% endblock %}
