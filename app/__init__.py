@@ -11,6 +11,7 @@ def create_app(config_class=Config):
 
     from app.db.connection import db
     db.init_app(app)
+    db.init_db()
 
     # Регистрация Blueprint'ов
     from app.routes import main_bp, auth_bp
