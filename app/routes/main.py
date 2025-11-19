@@ -1,10 +1,10 @@
-from flask import Flask, render_template, redirect
-import database
+from flask import Blueprint, render_template
+from app import database
 
-app = Flask(__name__)
+bp = Blueprint('main', __name__)
 
 # Главная страница (каталог)
-@app.route('/')
+@bp.route('/')
 def main():
    all_models = database.get_catalog()
    
@@ -12,7 +12,7 @@ def main():
 
 
 # Страница описания автомобиля
-@app.route('/car/<model_id>')
+@bp.route('/car/<model_id>')
 def car(model_id):
    model = database.get_model_data(model_id)
    
@@ -23,7 +23,7 @@ def car(model_id):
 
 
 # Страница менеджера
-@app.route('/staff/<entity_name>')
+@bp.route('/staff/<entity_name>')
 def staff(entity_name):
    entities = database.ENTITIES_TYPES
    current_entity = None
@@ -34,42 +34,36 @@ def staff(entity_name):
          break
    
    if current_entity:
-      return render_template(f"admin_panel/{entity['tab_name']}.html", entities=entities, current_entity=current_entity)
+      return render_template(f"staff/{entity['tab_name']}.html", entities=entities, current_entity=current_entity)
    else:
       return render_template('404.html'), 404
 
 
 # Информация о компании
-@app.route('/about')
+@bp.route('/about')
 def about():
    return render_template('about.html')
 
 
 # Страница регистрации пользователя
-@app.route('/register')
+@bp.route('/register')
 def register():
    return render_template('register.html')
 
 
 # Страница авторизации пользователя
-@app.route('/login')
+@bp.route('/login')
 def login():
    return render_template('login.html')
 
 
 # Стрница профиля пользователя
-@app.route('/profile')
+@bp.route('/profile')
 def profile():
    return render_template('profile.html')
 
 
 # Страница ошибки 404
-@app.errorhandler(404)
+@bp.errorhandler(404)
 def page_not_found(e):
    return render_template('404.html'), 404
-
-
-# Запускаем приложение
-if __name__ == '__main__':
-   database.init_db()
-   app.run(debug=True)

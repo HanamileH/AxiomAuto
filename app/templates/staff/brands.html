@@ -1,44 +1,39 @@
-{% extends "admin_panel/base.html" %}
+{% extends "staff/base.html" %}
 
-<!-- Панель добавления цветов -->
-{% block addtext %}Добавить цвет{% endblock %}
+<!-- Панель добавления производителя -->
+{% block addtext %}Добавить производителя{% endblock %}
 
 {% block addpanel %}
     <form id="carForm">
-        <input type="text" placeholder="Название цвета" required>
-        <input type="color" placeholder="Значение цвета" value="#FFFFFF" required>
+        <input type="text" placeholder="название" required>
         <button type="submit" class="btn-red">Добавить</button>
     </form>
 {% endblock %}
 
-<!-- Таблица всех цветов -->
-{% block tablename %}Список цветов{% endblock %}
+<!-- Таблица всех производителей -->
+{% block tablename %}Список производителей{% endblock %}
 
 {% block table %}
     <table class="car-table">
         <thead>
             <tr>
                 <th>Название</th>
-                <th>Код цвета</th>
                 <th>Действие</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td>Белый</td>
-                <td>#FFFFFF</td>
+                <td>BMW</td>
                 <td><button class="btn-outline">Изменить</button></td>
             </tr>
 
             <tr>
-                <td>Черный</td>
-                <td>#000000</td>
+                <td>Audi</td>
                 <td><button class="btn-outline">Изменить</button></td>
             </tr>
 
             <tr>
-                <td>Красный</td>
-                <td>#FF0000</td>
+                <td>Mercedes-Benz</td>
                 <td><button class="btn-outline">Изменить</button></td>
             </tr>
         </tbody>

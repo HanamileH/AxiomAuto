@@ -1,7 +1,7 @@
-{% extends "admin_panel/base.html" %}
+{% extends "staff/base.html" %}
 
-<!-- Панель добавления конфигураций -->
-{% block addtext %}Добавить конфигурацию{% endblock %}
+<!-- Панель добавления модели -->
+{% block addtext %}Добавить модель{% endblock %}
 
 {% block addpanel %}
     <form id="carForm">
@@ -27,8 +27,8 @@
     </form>
 {% endblock %}
 
-<!-- Таблица всех конфигураций -->
-{% block tablename %}Список конфигураций{% endblock %}
+<!-- Таблица всех моделей -->
+{% block tablename %}Список моделей{% endblock %}
 
 {% block table %}
     <table class="car-table">

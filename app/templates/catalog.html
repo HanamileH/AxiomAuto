@@ -40,7 +40,7 @@
          <h3>{{ model.brand ~ ' ' ~ model.name }}</h3>
          <p>{{ model.engine_type ~ ' • ' ~ model.year ~ ' год • ' ~ model.transmission}}</p>
          <p class="price">{{'от ' ~ model.min_price ~ ' руб.'}}</p>
-         <a href="{{ url_for('car', model_id=model.id) }}">
+         <a href="{{ url_for('main.car', model_id=model.id) }}">
             <button class="btn-red">Подробнее</button>
          </a>
       </div>

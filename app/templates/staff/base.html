@@ -17,7 +17,7 @@
     <h2>Выберите таблицу</h2>
     <div class="entity-group">
         {% for entity in entities %}
-        <a href="{{ url_for('staff', entity_name=entity['tab_name']) }}">
+        <a href="{{ url_for('main.staff', entity_name=entity['tab_name']) }}">
             {% if entity == current_entity %}
                 <button class="btn-black">{{ entity['ru_name'] }}</button>
             {% else %}

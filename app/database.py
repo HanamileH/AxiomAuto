@@ -22,7 +22,7 @@ def init_db():
    
    cursor = conn.cursor()
    
-   with open('./sql/init_schema.sql', 'r') as file:
+   with open('./app/sql/init_schema.sql', 'r') as file:
       cursor.execute(file.read())
       
    conn.commit()
@@ -32,7 +32,7 @@ def init_db():
    count = cursor.fetchone()[0]
 
    if count == 0:
-      with open('./sql/fill_tables.sql', 'r') as file:
+      with open('./app/sql/fill_tables.sql', 'r') as file:
          cursor.execute(file.read())
 
       conn.commit()
