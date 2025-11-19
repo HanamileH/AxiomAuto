@@ -136,10 +136,11 @@ def get_model_data(model_id):
         """, (model_id,))
 
         row = cursor.fetchone()
-        result = dict(row)
         
-        if result is None:
+        if row is None:
             return None
+        
+        result = dict(row)
 
         result["engine_type"] = ENGINE_TYPES[result["engine_type"]]
         result["transmission"] = TRANSMISSION_TYPES[result["transmission"]]
