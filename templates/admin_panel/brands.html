@@ -1,0 +1,41 @@
+{% extends "admin_panel/base.html" %}
+
+<!-- Панель добавления производителя -->
+{% block addtext %}Добавить производителя{% endblock %}
+
+{% block addpanel %}
+    <form id="carForm">
+        <input type="text" placeholder="название" required>
+        <button type="submit" class="btn-red">Добавить</button>
+    </form>
+{% endblock %}
+
+<!-- Таблица всех производителей -->
+{% block tablename %}Список производителей{% endblock %}
+
+{% block table %}
+    <table class="car-table">
+        <thead>
+            <tr>
+                <th>Название</th>
+                <th>Действие</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>BMW</td>
+                <td><button class="btn-outline">Изменить</button></td>
+            </tr>
+
+            <tr>
+                <td>Audi</td>
+                <td><button class="btn-outline">Изменить</button></td>
+            </tr>
+
+            <tr>
+                <td>Mercedes-Benz</td>
+                <td><button class="btn-outline">Изменить</button></td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

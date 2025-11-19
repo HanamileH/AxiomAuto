@@ -1,0 +1,86 @@
+{% extends "admin_panel/base.html" %}
+
+<!-- Панель добавления модели -->
+{% block addtext %}Добавить модель{% endblock %}
+
+{% block addpanel %}
+    <form id="carForm">
+        <input type="text" placeholder="VIN / Серийный номер" required>
+        <select required>
+            <option value="" disabled selected>Марка</option>
+            <option value="BMW">BMW</option>
+            <option value="Audi">Audi</option>
+            <option value="Mercedes-Benz">Mercedes-Benz</option>
+            <option value="Volkswagen">Volkswagen</option>
+            <option value="Porsche">Porsche</option>
+            <option value="Lexus">Lexus</option>
+            <option value="Jaguar">Jaguar</option>
+            <option value="Land Rover">Land Rover</option>
+            <option value="Tesla">Tesla</option>
+        </select>
+        <input type="text" placeholder="Модель" required>
+        <input type="text" placeholder="Комплектация" required>
+        <input type="text" placeholder="Год" required>
+        <input type="text" placeholder="Цвет" required>
+        <input type="text" placeholder="Цена" required>
+        <button type="submit" class="btn-red">Добавить</button>
+    </form>
+{% endblock %}
+
+<!-- Таблица всех моделей -->
+{% block tablename %}Список моделей{% endblock %}
+
+{% block table %}
+    <table class="car-table">
+        <thead>
+            <tr>
+                <th>VIN</th>
+                <th>Марка</th>
+                <th>Модель</th>
+                <th>Год</th>
+                <th>Цвет</th>
+                <th>Комплектация</th>
+                <th>Цена</th>
+                <th>Статус</th>
+                <th>Действие</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>WBA8D9C55HA123456</td>
+                <td>BMW</td>
+                <td>3 Series</td>
+                <td>2018</td>
+                <td>Чёрный</td>
+                <td>Luxury</td>
+                <td>2 000 000 ₽</td>
+                <td><span class="status available">В продаже</span></td>
+                <td><button class="btn-outline">Изменить</button></td>
+            </tr>
+
+            <tr>
+                <td>WAUZZZF45JN012345</td>
+                <td>Audi</td>
+                <td>A4</td>
+                <td>2019</td>
+                <td>Красный</td>
+                <td>Sport</td>
+                <td>1 800 000 ₽</td>
+                <td><span class="status sold">Куплен</span></td>
+                <td><button class="btn-outline">Изменить</button></td>
+            </tr>
+
+            <tr>
+                <td>WDDZF4JBXJA987654</td>
+                <td>Mercedes-Benz</td>
+                <td>E-Class</td>
+                <td>2020</td>
+                <td>Белый</td>
+                <td>AMG Line</td>
+                <td>2 200 000 ₽</td>
+                <td><span class="status available">В продаже</span></td>
+                <td><button class="btn-outline">Изменить</button></td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

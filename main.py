@@ -34,7 +34,7 @@ def staff(entity_name):
          break
    
    if current_entity:
-      return render_template("staff.html", entities=entities, current_entity=current_entity)
+      return render_template(f"admin_panel/{entity['tab_name']}.html", entities=entities, current_entity=current_entity)
    else:
       return render_template('404.html'), 404
 

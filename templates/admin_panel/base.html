@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+<!-- Заголовок окна -->
+{% block title %}Панель менеджера{% endblock %}
+
+<!-- Подключаем доп стиль -->
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/staff.css') }}">
+{% endblock %}
+
+<!-- Контент окна -->
+{% block content %}
+<h1 class="title">Панель персонала</h1>
+
+<!-- Панель выбора сущности -->
+<section class="entity-select">
+    <h2>Выберите таблицу</h2>
+    <div class="entity-group">
+        {% for entity in entities %}
+        <a href="{{ url_for('staff', entity_name=entity['tab_name']) }}">
+            {% if entity == current_entity %}
+                <button class="btn-black">{{ entity['ru_name'] }}</button>
+            {% else %}
+                <button class="btn-outline">{{ entity['ru_name'] }}</button>
+            {% endif %}
+        </a>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Панель добавления -->
+<section class="add-form">
+    <h2>{% block addtext %}Добавить сущность{% endblock %}</h2>
+    {% block addpanel %}
+    {% endblock %}
+</section>
+
+<!-- Панель всех автомобилей -->
+<section class="table-section">
+    <h2>{% block tablename %}Имя сущности{% endblock %}</h2>
+    {% block table %}
+    {% endblock %}
+</section>
+
+{% endblock %}
