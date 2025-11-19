@@ -19,23 +19,23 @@
         <div class="user-info">
             <div class="info-block">
                 <label>Фамилия:</label>
-                <p>Иванов</p>
+                <p>{{ current_user.surname }}</p>
             </div>
             <div class="info-block">
                 <label>Имя:</label>
-                <p>Алексей</p>
+                <p>{{ current_user.name }}</p>
             </div>
             <div class="info-block">
                 <label>Отчество:</label>
-                <p>Петрович</p>
+                <p>{{ current_user.patronymic }}</p>
             </div>
             <div class="info-block">
                 <label>Телефон:</label>
-                <p>+7 (999) 123-45-67</p>
+                <p>{{ current_user.phone }}</p>
             </div>
             <div class="info-block">
                 <label>Почта:</label>
-                <p>ivanov@example.com</p>
+                <p>{{ current_user.email }}</p>
             </div>
         </div>
 
