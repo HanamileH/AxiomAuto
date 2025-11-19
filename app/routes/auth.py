@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import login_user, logout_user, login_required
-from app.db.user import User, register_user as db_register_user, login_user as db_login_user
+from app.db.user import register_user as db_register_user
+from app.db.user import login_user as db_login_user
 
 bp = Blueprint('auth', __name__)
 
