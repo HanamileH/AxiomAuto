@@ -1,56 +1,55 @@
 {% extends "base.html" %}
 
-<!-- Заголовок окна -->
 {% block title %}Регистрация{% endblock %}
 
-<!-- Подключаем доп стиль -->
 {% block styles %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
 {% endblock %}
 
-<!-- Контент окна -->
 {% block content %}
 <div class="register-container">
    <h1>Регистрация</h1>
    <p class="subtitle">Создайте учётную запись для доступа к системе</p>
 
-   <form class="register-form" method="post" action="#">
+   <div id="error-box" class="error-box" style="display:none;"></div>
+
+   <form id="register-form" class="register-form" onsubmit="return false;">
       <div class="form-group">
          <label for="name">Имя</label>
-         <input type="text" id="name" name="name" placeholder="Имя" required>
+         <input type="text" id="name" name="name" required>
       </div>
 
       <div class="form-group">
          <label for="surname">Фамилия</label>
-         <input type="text" id="surname" name="surname" placeholder="Фамилия" required>
+         <input type="text" id="surname" name="surname" required>
       </div>
 
       <div class="form-group">
          <label for="patronymic">Отчество</label>
-         <input type="text" id="patronymic" name="patronymic" placeholder="Отчество (при наличии)">
+         <input type="text" id="patronymic" name="patronymic">
       </div>
 
       <div class="form-group">
          <label for="email">Электронная почта</label>
-         <input type="email" id="email" name="email" placeholder="example@mail.ru" required>
+         <input type="email" id="email" name="email" required>
       </div>
 
       <div class="form-group">
          <label for="phone">Телефон</label>
-         <input type="tel" id="phone" name="phone" placeholder="+7 (___) ___-__-__" required>
+         <input type="tel" id="phone" name="phone" required>
       </div>
 
       <div class="form-group">
          <label for="password">Пароль</label>
-         <input type="password" id="password" name="password" placeholder="Введите пароль" required>
+         <input type="password" id="password" name="password" required>
       </div>
 
       <div class="form-group">
          <label for="confirm-password">Повторите пароль</label>
-         <input type="password" id="confirm-password" name="confirm-password" placeholder="Повторите пароль" required>
+         <input type="password" id="confirm-password" name="confirm-password" required>
       </div>
 
-      <button type="submit" class="btn-register">Создать аккаунт</button>
+      <button type="submit" class="btn-register" id="btn-register">Создать аккаунт</button>
    </form>
 
    <p class="login-link">
@@ -58,4 +57,5 @@
    </p>
 </div>
 
+<script src="{{ url_for('static', filename='js/register.js') }}"></script>
 {% endblock %}
