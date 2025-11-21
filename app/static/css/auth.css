@@ -1,0 +1,94 @@
+/* Контейнер авторизации */
+.auth-container {
+    background: #FAFAFA;
+    margin: 1rem 0;
+    padding: 2.5rem 3rem;
+    border-radius: 1rem;
+    border: 1px solid #DDDDDD;
+	box-shadow: 0rem 0.1rem 0.5rem rgba(0,0,0,0.25);
+    max-width: 30rem;
+    width: 100%;
+}
+
+.auth-container h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.subtitle {
+    text-align: center;
+    font-size: 100%;
+    color: #555555;
+    margin-bottom: 2rem;
+}
+
+.error-box {
+    text-align: center;
+    font-size: 100%;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+/* Поля формы авторизации */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 100%;
+    margin-bottom: 0.5rem;
+    color: #333333;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.5rem 0.8rem;
+    font-size: 100%;
+    border: 1px solid #CCCCCC;
+    border-radius: 0.5rem;
+    outline: none;
+    transition: 0.2s;
+}
+
+.form-group input:focus {
+    border-color: #111111;
+}
+
+.btn-auth {
+    background: #111111;
+    color: #FFFFFF;
+    border: none;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: 0.2s;
+}
+
+.btn-auth:hover {
+    background: #333333;
+}
+
+/* Ссылка на вход */
+.auth-link {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 100%;
+    color: #444444;
+}
+
+.auth-link a {
+    color: #111111;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.auth-link a:hover {
+    text-decoration: underline;
+}

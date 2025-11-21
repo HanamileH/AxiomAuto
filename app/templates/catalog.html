@@ -22,9 +22,8 @@
       <input type="number" placeholder="Год до" id="filter-year-to">
       <input type="number" placeholder="Цена от" id="filter-price-from">
       <input type="number" placeholder="Цена до" id="filter-price-to">
-      <label for="filter-transmission">Коробка передач:</label>
       <select id="filter-transmission" name="transmission">
-         <option value="all">Любая</option>
+         <option value="all">Коробка передач</option>
          <option value="manual">Механика</option>
          <option value="automatic">Автомат</option>
          <option value="semi-automatic">Полуавтомат</option>
@@ -37,18 +36,18 @@
    {% for model in models %}
       <div class="card">
          <img src="{{ url_for('static', filename='img/' ~ model.image_path)}}" alt="{{ model.title }}">
-         <h3>{{ model.brand ~ ' ' ~ model.name }}</h3>
-         <p>{{ model.engine_type ~ ' • ' ~ model.year ~ ' год • ' ~ model.transmission}}</p>
-         <p class="price">{{'от ' ~ model.min_price ~ ' руб.'}}</p>
+
+         <div>
+            <h3>{{ model.brand ~ ' ' ~ model.name }}</h3>
+            <p>{{ model.engine_type ~ ' • ' ~ model.year ~ ' год • ' ~ model.transmission}}</p>
+            <p class="price">{{'от ' ~ model.min_price ~ ' руб.'}}</p>
+         </div>
+         
          <a href="{{ url_for('main.car', model_id=model.id) }}">
             <button class="btn-red">Подробнее</button>
          </a>
       </div>
    {% endfor %}
-</div>
-
-<div class="show-all">
-   <button class="btn-red">Показать все</button>
 </div>
 
 {% endblock %}

@@ -1,132 +1,111 @@
-/* Layout */
-.main {
-    padding: 60px 40px;
-    display: flex;
-    justify-content: center;
-}
-
 .dashboard {
     display: grid;
-    grid-template-columns: 320px 1fr;
-    gap: 40px;
-    max-width: 1300px;
+    grid-template-columns: 1fr 2fr;
+    gap: 3rem;
     width: 100%;
 }
 
-/* Profile column */
+/* Столбец профиля */
 .profile {
-    background: #fff;
-    padding: 30px;
-    border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    background: #FFFFFF;
+    padding: 2rem;
+    border: 1px solid #DDDDDD;
+    border-radius: 1rem;
+    box-shadow: 0rem 0.1rem 0.5rem rgba(0,0,0,0.15);
     height: fit-content;
 }
 
 .profile h1 {
-    font-size: 26px;
-    margin-bottom: 25px;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
 }
 
 .user-info {
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    margin-bottom: 25px;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
 }
 
 .info-block label {
     display: block;
     font-weight: 600;
-    font-size: 14px;
-    color: #444;
+    font-size: 100%;
+    color: #444444;
 }
 
 .info-block p {
-    font-size: 16px;
-    color: #111;
+    font-size: 100%;
+    color: #111111;
 }
 
 .profile-buttons {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 0.8rem;
 }
 
-/* Cars column */
+/* Столбец автомобилей */
 .cars-section {
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 2rem;
 }
 
 .cars-block {
-    background: #fff;
-    padding: 30px;
-    border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    padding: 2rem;
 }
 
 .cars-block h2 {
-    font-size: 22px;
-    margin-bottom: 20px;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
 }
 
 .car-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: 1.5rem;
 }
 
 .car-card {
-    background: #fafafa;
-    border: 1px solid #eee;
-    border-radius: 12px;
-    padding: 20px;
+    background: #FAFAFA;
+    padding: 1.5rem;
+    border: 1px solid #DDDDDD;
+    border-radius: 1rem;
+    box-shadow: 0rem 0.1rem 0.5rem rgba(0,0,0,0.05);
     transition: 0.2s;
 }
 
 .car-card:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    box-shadow: 0rem 0.1rem 0.5rem rgba(0,0,0,0.15);
 }
 
 .car-card h3 {
-    font-size: 18px;
-    margin-bottom: 10px;
+    font-size: 1.2rem;
+    margin-bottom: 0.8rem;
 }
 
 .car-card p {
-    font-size: 14px;
-    margin-bottom: 5px;
+    font-size: 90%;
+    margin-bottom: 0.5rem;
 }
 
 .status {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 1rem;
     font-weight: 600;
-    padding: 3px 8px;
-    border-radius: 6px;
-    font-size: 13px;
+    margin-bottom: 0.5rem;
 }
 
+
 .status.reserved {
-    background: #fff3cd;
+    background: #FFF3CD;
     color: #856404;
 }
 
 .status.sold {
-    background: #d7f7d7;
-    color: #087f23;
-}
-
-.btn-details {
-    margin-top: 10px;
-    background: #111;
-    color: #fff;
-    border: none;
-    padding: 8px 14px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 13px;
-}
-
-.btn-details:hover {
-    background: #333;
+    background: #D7F7D7;
+    color: #087F23;
 }

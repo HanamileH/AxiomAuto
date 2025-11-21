@@ -15,7 +15,6 @@
             <nav class="nav">
                <a href="/">Каталог</a>
                <a href="/about">О нас</a>
-
                {% if current_user.is_authenticated and current_user.role in ['manager', 'admin'] %}
                <a href="/staff/cars">Для персонала</a>
                {% endif %}

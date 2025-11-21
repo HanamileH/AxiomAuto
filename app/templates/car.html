@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 <!-- Заголовок окна -->
-{% block title %}Mercedes-Benz E-Class{% endblock %}
+{% block title %}{{ model.brand ~ ' ' ~ model.name }}{% endblock %}
 
 <!-- Подключаем доп стиль -->
 {% block styles %}

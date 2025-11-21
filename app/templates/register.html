@@ -3,56 +3,59 @@
 {% block title %}Регистрация{% endblock %}
 
 {% block styles %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
 {% endblock %}
 
 {% block content %}
-<div class="register-container">
+<div class="auth-container">
    <h1>Регистрация</h1>
    <p class="subtitle">Создайте учётную запись для доступа к системе</p>
 
+   <!-- Текст ошибки -->
    <div id="error-box" class="error-box" style="display:none;"></div>
 
-   <form id="register-form" class="register-form" onsubmit="return false;">
+   <!-- Форма регистрации-->
+   <form id="auth-form" class="auth-form" onsubmit="return false;">
       <div class="form-group">
          <label for="name">Имя</label>
-         <input type="text" id="name" name="name" required>
+         <input type="text" id="name" name="name" placeholder="Имя" required>
       </div>
 
       <div class="form-group">
          <label for="surname">Фамилия</label>
-         <input type="text" id="surname" name="surname" required>
+         <input type="text" id="surname" name="surname" placeholder="Фамилия" required>
       </div>
 
       <div class="form-group">
          <label for="patronymic">Отчество</label>
-         <input type="text" id="patronymic" name="patronymic">
+         <input type="text" id="patronymic" name="patronymic" placeholder="Отчество (при наличии)">
       </div>
 
       <div class="form-group">
          <label for="email">Электронная почта</label>
-         <input type="email" id="email" name="email" required>
+         <input type="email" id="email" name="email" placeholder="Электронная почта" required>
       </div>
 
       <div class="form-group">
          <label for="phone">Телефон</label>
-         <input type="tel" id="phone" name="phone" required>
+         <input type="tel" id="phone" name="phone" placeholder="+7(___)__-__-___" required>
       </div>
 
       <div class="form-group">
          <label for="password">Пароль</label>
-         <input type="password" id="password" name="password" required>
+         <input type="password" id="password" name="password" placeholder="Пароль" required>
       </div>
 
       <div class="form-group">
          <label for="confirm-password">Повторите пароль</label>
-         <input type="password" id="confirm-password" name="confirm-password" required>
+         <input type="password" id="confirm-password" name="confirm-password" placeholder="Повторите пароль" required>
       </div>
 
-      <button type="submit" class="btn-register" id="btn-register">Создать аккаунт</button>
+      <button type="submit" class="btn-auth" id="btn-auth">Создать аккаунт</button>
    </form>
 
-   <p class="login-link">
+   <!-- ссылка на вход -->
+   <p class="auth-link">
       Уже есть аккаунт? <a href="/login">Войти</a>
    </p>
 </div>

@@ -3,17 +3,17 @@
 {% block title %}Войти в аккаунт{% endblock %}
 
 {% block styles %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
 {% endblock %}
 
 {% block content %}
-<div class="login-container">
+<div class="auth-container">
    <h1>Войти в аккаунт</h1>
    <p class="subtitle">Войдите в свою учётную запись для доступа к системе</p>
 
    <div id="error-box" class="error-box" style="display:none;"></div>
 
-   <form id="login-form" class="login-form" onsubmit="return false;">
+   <form id="auth-form" class="auth-form" onsubmit="return false;">
       <div class="form-group">
          <label for="email">Электронная почта</label>
          <input type="email" id="email" name="email" required>
@@ -24,10 +24,10 @@
          <input type="password" id="password" name="password" required>
       </div>
 
-      <button type="submit" class="btn-login" id="btn-login">Войти</button>
+      <button type="submit" class="btn-auth" id="btn-auth">Войти</button>
    </form>
 
-   <p class="register-link">
+   <p class="auth-link">
       Ещё нет аккаунта? <a href="/register">Зарегистрироваться</a>
    </p>
 </div>

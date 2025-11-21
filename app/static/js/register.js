@@ -1,4 +1,4 @@
-document.getElementById("btn-register").addEventListener("click", async () => {
+document.getElementById("btn-auth").addEventListener("click", async () => {
     const errorBox = document.getElementById("error-box");
     errorBox.style.display = "none";
     errorBox.innerText = "";
