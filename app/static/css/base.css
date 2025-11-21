@@ -124,7 +124,7 @@ body {
 .main {
    flex: 1 0 auto;
    padding: 2.5rem 3.75rem;
-   max-width: min(100%, 200vh);
+   width: min(100%, 200vh);
 }
 
 .title {
