@@ -14,7 +14,7 @@ class DatabaseConnection:
             app (Flask): Flask-приложение
         """
 
-        self.connection_pool = psycopg2.pool.ThreadedConnectionPool(
+        self.connection_pool = pool.ThreadedConnectionPool(
             minconn=1,
             maxconn=20,
             user=app.config['DB_USERNAME'],
@@ -61,21 +61,22 @@ class DatabaseConnection:
             commit (bool, optional): флаг для коммита транзакции. По умолчанию False.
             as_dict (bool, optional): флаг для получения данных курсора в виде словаря. По умолчанию False.
         """
-        connection = self.connection_pool.getconn()
-        try:
-            if as_dict:
-                cursor = connection.cursor(cursor_factory=RealDictCursor)
-            else:
-                cursor = connection.cursor()
+        # Используем существующий метод get_connection для управления пулом
+        with self.get_connection() as connection:
+            try:
+                if as_dict:
+                    cursor = connection.cursor(cursor_factory=RealDictCursor)
+                else:
+                    cursor = connection.cursor()
 
-            yield cursor
-            if commit:
-                connection.commit()
-        except Exception:
-            connection.rollback()
-            raise
-        finally:
-            cursor.close()
+                yield cursor
+                if commit:
+                    connection.commit()
+            except Exception:
+                connection.rollback()
+                raise
+            finally:
+                cursor.close()
 
 
 # Глобальный экземпляр базы данных
