@@ -180,35 +180,6 @@ def register_user(name, surname, patronymic, phone, email, password, role='user'
       return False, 'unknown error'
 
 
-# Список всех ошибок при регистрации:
-# 'empty name'
-# 'invalid name length'
-# 'invalid name format'
-# 'empty surname'
-# 'invalid surname length'
-# 'invalid surname format'
-# 'empty patronymic' (не используется, допускается пустое отчество)
-# 'invalid patronymic length'
-# 'invalid patronymic format'
-# 'empty phone'
-# 'invalid phone length'
-# 'invalid phone format'
-# 'empty email'
-# 'invalid email length'
-# 'invalid email format'
-# 'empty password'
-# 'invalid password length'
-# 'unknown role'
-# 'this email already exists'
-# 'this phone already exists'
-# 'unknown error'
-#
-# Список всех ошибок при авторизации:
-# 'empty email'
-# 'empty password'
-# 'email or password is incorrect'
-# 'unknown error'
-
 def login_user(email, password):
    """Авторизация пользователя.
 
