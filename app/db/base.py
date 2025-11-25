@@ -147,3 +147,4 @@ def get_model_data(model_id):
         result["min_price"] = f"{int(result["min_price"]):,}".replace(",", " ")
 
         return result
+   
