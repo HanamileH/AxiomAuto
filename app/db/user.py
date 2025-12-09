@@ -1,5 +1,7 @@
 import re
-from flask_login import UserMixin
+from functools import wraps
+from flask import abort
+from flask_login import UserMixin, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
 from .connection import db
 
@@ -39,6 +41,30 @@ class User(UserMixin):
          if row:
             return User(*row)
          return None
+
+
+def admin_required(f):
+   """Декоратор для проверки прав доступа.
+   Доступно только для пользователей с ролью 'admin'
+   """
+   @wraps(f)
+   def decorated_function(*args, **kwargs):
+      if not current_user.is_authenticated or current_user.role != 'admin':
+         return abort(403)
+      return f(*args, **kwargs)
+   return decorated_function
+
+
+def manager_required(f):
+   """Декоратор для проверки прав доступа.
+   Доступно только для пользователей с ролью 'manager' или 'admin'
+   """
+   @wraps(f)
+   def decorated_function(*args, **kwargs):
+      if not current_user.is_authenticated or current_user.role not in ['manager', 'admin']:
+         return abort(403)
+      return f(*args, **kwargs)
+   return decorated_function
 
 
 def register_user(name, surname, patronymic, phone, email, password, role='user'):
