@@ -30,13 +30,6 @@ ENTITIES_TYPES = [
       "ru_list": "Список моделей"
    },
    {
-      "table_name": "model_configuration",
-      "tab_name": "configurations",
-      "ru_name": "Комплектации",
-      "ru_add": "Добавить комплектацию",
-      "ru_list": "Список комплектаций"
-   },
-   {
       "table_name": "color",
       "tab_name": "colors",
       "ru_name": "Цвета",
