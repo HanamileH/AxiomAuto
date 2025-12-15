@@ -18,14 +18,15 @@
     <div class="car-info">
         <h1>{{ model.brand ~ ' ' ~ model.name }}</h1>
         <p class="subtitle">{{ model.engine_volume ~ ' • ' ~ model.year ~ ' год • ' ~ model.transmission}}</p>
-        <p class="price">{{ 'от ' ~ model.min_price ~ ' руб.'}}</p>
+        <p class="price">{{ model.price ~ ' руб.'}}</p>
 
         <div class="status available">В продаже</div>
 
         <h2>Характеристики</h2>
         <ul class="specs">
             <li><strong>Марка:</strong> {{ model.brand }}</li>
-            <li><strong>Модель:</strong> {{ model.name }}</li>
+            <li><strong>Модель:</strong> {{ model.model }}</li>
+            <li><strong>Кузов:</strong> {{ model.body_type }}</li>
             <li><strong>Год выпуска:</strong> {{ model.year }}</li>
             <li><strong>Тип двигателя:</strong> {{ model.engine_type }}</li>
             <li><strong>Объём двигателя:</strong> {{ model.engine_volume ~ ' л.'}}</li>

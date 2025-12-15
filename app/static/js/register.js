@@ -7,12 +7,11 @@ document.getElementById("btn-auth").addEventListener("click", async () => {
     const surname = document.getElementById("surname").value.trim();
     const patronymic = document.getElementById("patronymic").value.trim();
     const email = document.getElementById("email").value.trim();
-    const phone = document.getElementById("phone").value.trim();
     const password = document.getElementById("password").value.trim();
     const confirmPassword = document.getElementById("confirm-password").value.trim();
 
     // Проверяем обязательные поля
-    if (!name || !surname || !email || !phone || !password || !confirmPassword) {
+    if (!name || !surname || !email || !password || !confirmPassword) {
         showError("Заполните все обязательные поля.");
         return;
     }
@@ -33,7 +32,6 @@ document.getElementById("btn-auth").addEventListener("click", async () => {
                 surname,
                 patronymic,
                 email,
-                phone,
                 password
             })
         });
@@ -73,10 +71,6 @@ function convertError(code) {
         "invalid patronymic length": "Недопустимая длина отчества.",
         "invalid patronymic format": "Неверный формат отчества.",
 
-        "empty phone": "Введите номер телефона.",
-        "invalid phone length": "Недопустимая длина номера телефона.",
-        "invalid phone format": "Неверный формат телефона.",
-
         "empty email": "Введите электронную почту.",
         "invalid email length": "Недопустимая длина электронной почты.",
         "invalid email format": "Формат электронной почты неверен.",
@@ -85,7 +79,6 @@ function convertError(code) {
         "invalid password length": "Недопустимая длина пароля.",
 
         "this email already exists": "Этот email уже зарегистрирован.",
-        "this phone already exists": "Этот номер телефона уже используется.",
 
         "unknown error": "Неизвестная ошибка. Повторите попытку."
     };

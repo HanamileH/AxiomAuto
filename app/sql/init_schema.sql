@@ -1,3 +1,4 @@
+-- database: :memory:
 -- Postgresql 18
 DO $$
 BEGIN
@@ -39,13 +40,13 @@ CREATE TABLE IF NOT EXISTS client (
 
 -- Пользователи системы (декорптация от клиентов)
 CREATE TABLE IF NOT EXISTS user (
-    client_id INTEGER NOT NULL PRIMARY KEY,
+    id INTEGER NOT NULL PRIMARY KEY,
     role user_role NOT NULL DEFAULT 'user',
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     email VARCHAR(255) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
 
-    FOREIGN KEY (client_id) REFERENCES client(id) ON DELETE CASCADE
+    FOREIGN KEY (id) REFERENCES client(id) ON DELETE CASCADE
 );
 
 

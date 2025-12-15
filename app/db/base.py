@@ -83,19 +83,17 @@ def get_catalog():
     with db.get_cursor(as_dict=True) as cursor:
             cursor.execute("""
             SELECT
-                b.name AS brand,
-                m.name AS name,
-                m.image_path AS image_path,
-                m.id AS id,
-                m.year AS year,
-                MIN(mc.price) AS min_price,
-                m.engine_type AS engine_type,
-                m.transmission AS transmission
-            FROM
-                model m
-            JOIN brand b ON m.brand_id = b.id
-            JOIN model_configuration mc ON m.id = mc.model_id
-            GROUP BY m.id, b.name, m.name;        
+               m.id AS id,
+               b.name AS brand,
+               m.name AS model,
+               m.image_path AS image_path,
+               m.price AS price,
+               m.year AS year,
+               m.engine_type AS engine_type,
+               m.transmission AS transmission
+            FROM model m
+            JOIN brand b
+            ON m.brand_id = b.id;
             """)
             
             rows = cursor.fetchall()
@@ -103,7 +101,7 @@ def get_catalog():
             for row in rows:
                 row["engine_type"] = ENGINE_TYPES[row["engine_type"]]
                 row["transmission"] = TRANSMISSION_TYPES[row["transmission"]]
-                row["min_price"] = f"{int(row["min_price"]):,}".replace(",", " ")
+                row["price"] = f"{int(row["price"]):,}".replace(",", " ")
 
             return rows
     
@@ -118,21 +116,25 @@ def get_model_data(model_id):
    
     with db.get_cursor(as_dict=True) as cursor:
         cursor.execute("""
-        SELECT
+         SELECT
             b.name AS brand,
-            m.name AS name,
-            m.year AS year,
+            m.name AS model,
+            m.description AS description,
             m.image_path AS image_path,
+            m.price AS price,
+            m.year AS year,
+            bt.name AS body_type,
             m.engine_type AS engine_type,
             m.engine_volume AS engine_volume,
             m.engine_power AS engine_power,
-            m.transmission AS transmission,
-            mc.price AS min_price,
-            mc.description AS description
-        FROM model m
-        JOIN brand b ON m.brand_id = b.id
-        JOIN model_configuration mc ON m.id = mc.model_id
-        WHERE m.id = %s ORDER BY mc.price LIMIT 1;
+            
+            m.transmission AS transmission
+         FROM model m
+         JOIN brand b
+         ON m.brand_id = b.id
+         JOIN body_type bt
+         ON m.body_type = bt.id
+         WHERE m.id = %s;
         """, (model_id,))
 
         row = cursor.fetchone()
@@ -144,7 +146,7 @@ def get_model_data(model_id):
 
         result["engine_type"] = ENGINE_TYPES[result["engine_type"]]
         result["transmission"] = TRANSMISSION_TYPES[result["transmission"]]
-        result["min_price"] = f"{int(result["min_price"]):,}".replace(",", " ")
+        result["price"] = f"{int(result["price"]):,}".replace(",", " ")
 
         return result
    

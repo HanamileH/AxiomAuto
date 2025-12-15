@@ -7,12 +7,11 @@ from .connection import db
 
 
 class User(UserMixin):
-   def __init__(self, id, name, surname, patronymic, phone, email, password_hash, role='user'):
+   def __init__(self, id, name, surname, patronymic, email, password_hash, role='user'):
       self.id = id
       self.name = name
       self.surname = surname
       self.patronymic = patronymic
-      self.phone = phone
       self.email = email
       self.password_hash = password_hash
       self.role = role
@@ -23,17 +22,17 @@ class User(UserMixin):
       with db.get_cursor() as cursor:
          cursor.execute("""
          SELECT
-            id,
-            name,
-            surname,
-            patronymic,
-            phone,
-            email,
-            password_hash,
-            role
-         FROM
-            users
-         WHERE id = %s            
+            c.id AS id,
+            c.name AS name,
+            c.surname AS surname,
+            c.patronymic AS patronymic,
+            u.email AS email,
+            u.password_hash AS password_hash,
+            u.role AS role
+         FROM users u
+         JOIN client c
+         ON u.id = c.id
+         WHERE u.id = %s            
          """, (user_id, ))
 
          row = cursor.fetchone()
@@ -67,14 +66,13 @@ def manager_required(f):
    return decorated_function
 
 
-def register_user(name, surname, patronymic, phone, email, password, role='user'):
+def register_user(name, surname, patronymic, email, password, role='user'):
    """Регистрация нового пользователя.
 
    Args:
       name (str): Имя.
       surname (str): Фамилия.
       patronymic (str): Отчество.
-      phone (str): Номер телефона.
       email (str): Email.
       password (str): Пароль.
       role (str): Роль пользователя (По умолчанию 'user').
@@ -87,7 +85,6 @@ def register_user(name, surname, patronymic, phone, email, password, role='user'
    
    # Регулярные выражения для валидации
    full_name_pattern = r'^[a-zA-Zа-яёА-ЯЁ\s]+$' # Только русские и англииcke буквы, пробелы
-   phone_pattern = r'^\+7\d{10}$' # Номер телефона в формате +7xxxxxxxxxx
    email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$' # Email
    
    # Валидация ввода
@@ -124,23 +121,7 @@ def register_user(name, surname, patronymic, phone, email, password, role='user'
       
       if not re.match(full_name_pattern, patronymic):
          return False, 'invalid patronymic format'
-   
-   # Номер телефона
-   if not phone:
-      return False, 'empty phone'
-   
-   phone = phone.strip()
-   phone = phone.replace(" ", "").replace("-","").replace("(", "").replace(")", "")
-   
-   if phone.startswith("8"):
-      phone = "+7" + phone[1:]
-   
-   if len(phone) != 12:
-      return False, 'invalid phone length'
-   
-   if not re.match(phone_pattern, phone):
-      return False, 'invalid phone format'
-   
+
    # Email
    if not email:
       return False, 'empty email'
@@ -177,16 +158,6 @@ def register_user(name, surname, patronymic, phone, email, password, role='user'
 
       if row:
          return False, 'this email already exists'
-      
-      # Проверяем, есть ли уже пользователь с таким номером телефона\
-      cursor.execute("""
-         SELECT id FROM users WHERE phone = %s
-      """, (phone,))
-
-      row = cursor.fetchone()
-
-      if row:
-         return False, 'this phone already exists'
    
    
    # Создаём пользователя
@@ -195,15 +166,23 @@ def register_user(name, surname, patronymic, phone, email, password, role='user'
    try:
       with db.get_cursor(commit=True) as cursor:
          cursor.execute("""
-         INSERT INTO users (name, surname, patronymic, phone, email, password_hash, role)
-         VALUES (%s, %s, %s, %s, %s, %s, %s)
-         """, (name, surname, patronymic, phone, email, password_hash, role))
+         INSERT INTO client (name, surname, patronymic)
+         VALUES (%s, %s, %s)
+         RETURNING id
+         """, (name, surname, patronymic))
+
+         client_id = cursor.fetchone()[0]
+
+         cursor.execute("""
+         INSERT INTO users (id, role, email, password_hash)
+         VALUES (%s, %s, %s, %s)
+         """, (client_id, role, email, password_hash))
 
          user_id = cursor.lastrowid
 
          return user_id, ''
-   except Exception:
-      return False, 'unknown error'
+   except Exception as e:
+      return False, f'unknown error: {str(e)}'
 
 
 def login_user(email, password):
@@ -232,16 +211,17 @@ def login_user(email, password):
    with db.get_cursor(as_dict=True) as cursor:
       cursor.execute("""
       SELECT
-         id,
-         name,
-         surname,
-         patronymic,
-         phone,
-         email,
-         password_hash,
-         role
-      FROM users
-      WHERE email = %s
+         u.id AS id,
+         c.name AS name,
+         c.surname AS surname,
+         c.patronymic AS patronymic,
+         u.email AS email,
+         u.password_hash AS password_hash,
+         u.role AS role
+      FROM users u
+      JOIN client c
+      ON u.id = c.id
+      WHERE u.email = %s
       """, (email,))
 
       row = cursor.fetchone()
@@ -252,4 +232,4 @@ def login_user(email, password):
       if not check_password_hash(row['password_hash'], password):
          return None, 'email or password is incorrect'
 
-      return User(row['id'], row['name'], row['surname'], row['patronymic'], row['phone'], row['email'], row['password_hash'], row['role']), ''
+      return User(row['id'], row['name'], row['surname'], row['patronymic'], row['email'], row['password_hash'], row['role']), ''

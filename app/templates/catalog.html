@@ -38,9 +38,9 @@
          <img src="{{ url_for('static', filename='img/' ~ model.image_path)}}" alt="{{ model.title }}">
 
          <div>
-            <h3>{{ model.brand ~ ' ' ~ model.name }}</h3>
+            <h3>{{ model.brand ~ ' ' ~ model.model }}</h3>
             <p>{{ model.engine_type ~ ' • ' ~ model.year ~ ' год • ' ~ model.transmission}}</p>
-            <p class="price">{{'от ' ~ model.min_price ~ ' руб.'}}</p>
+            <p class="price">{{model.price ~ ' руб.'}}</p>
          </div>
          
          <a href="{{ url_for('main.car', model_id=model.id) }}">

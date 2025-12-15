@@ -16,7 +16,6 @@ def register():
          name = data['name']
          surname = data['surname']
          patronymic = data['patronymic']
-         phone = data['phone']
          email = data['email']
          password = data['password']
       except:
@@ -24,7 +23,7 @@ def register():
          return jsonify(data), 400
 
       # Регистрируем пользователя
-      user_id, error_text = db_register_user(name, surname, patronymic, phone, email, password, 'user')
+      user_id, error_text = db_register_user(name, surname, patronymic, email, password, 'user')
 
       # Если регистрация успешна, возвращаем код 200
       if user_id:

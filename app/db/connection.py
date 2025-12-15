@@ -1,4 +1,3 @@
-import psycopg2
 from psycopg2 import pool
 from psycopg2.extras import RealDictCursor
 from contextlib import contextmanager
@@ -29,18 +28,7 @@ class DatabaseConnection:
         """Инициализация базы данных
         """
 
-        with self.get_cursor(commit=True) as cursor:
-            # Инициализируем схему бд
-            with open("./app/sql/init_schema.sql", 'r') as file:
-                cursor.execute(file.read())
-
-            # Если таблицы пустые, заполняем тестовыми данными
-            cursor.execute("SELECT COUNT(*) FROM model")
-            count = cursor.fetchone()[0]
-
-            if count == 0:
-                with open("./app/sql/fill_tables.sql", 'r') as file:
-                    cursor.execute(file.read())
+        pass
 
 
     @contextmanager
