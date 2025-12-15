@@ -5,9 +5,10 @@
 
 {% block addpanel %}
     <form id="carForm">
-        <input type="text" placeholder="название" required>
+        <input type="text" placeholder="название" id="brandName" required>
         <button type="submit" class="btn-red">Добавить</button>
     </form>
+    <div id="errorMessage" class="error-message" style="display: none;"></div>
 {% endblock %}
 
 <!-- Таблица всех производителей -->
@@ -21,21 +22,11 @@
                 <th>Действие</th>
             </tr>
         </thead>
-        <tbody>
-            <tr>
-                <td>BMW</td>
-                <td><button class="btn-outline">Изменить</button></td>
-            </tr>
-
-            <tr>
-                <td>Audi</td>
-                <td><button class="btn-outline">Изменить</button></td>
-            </tr>
-
-            <tr>
-                <td>Mercedes-Benz</td>
-                <td><button class="btn-outline">Изменить</button></td>
-            </tr>
+        <tbody id="brandsTableBody">
         </tbody>
     </table>
+{% endblock %}
+
+{% block script %}
+<script src="{{ url_for('static', filename='js/staff/brands.js') }}"></script>
 {% endblock %}
