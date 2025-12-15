@@ -23,6 +23,13 @@ ENTITIES_TYPES = [
       "ru_list": "Список марок",
    },
    {
+      "table_name": "body_type",
+      "tab_name": "body_types",
+      "ru_name": "Типы кузова",
+      "ru_add": "Добавить тип кузова",
+      "ru_list": "Список типов кузова"
+   },
+   {
       "table_name": "model",
       "tab_name": "models",
       "ru_name": "Модели",

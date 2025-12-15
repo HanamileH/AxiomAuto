@@ -23,9 +23,10 @@ def create_app(config_class=Config):
     db.init_db()
 
     # Регистрация Blueprint'ов
-    from app.routes import main_bp, auth_bp, brand_bp
+    from app.routes import main_bp, auth_bp, brand_bp, body_type_bp
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(brand_bp)
+    app.register_blueprint(body_type_bp)
 
     return app

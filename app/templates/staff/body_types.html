@@ -1,18 +1,18 @@
 {% extends "staff/base.html" %}
 
-<!-- Панель добавления производителя -->
-{% block addtext %}Добавить производителя{% endblock %}
+<!-- Панель добавления типов кузова -->
+{% block addtext %}Добавить тип кузова{% endblock %}
 
 {% block addpanel %}
-    <form id="carForm">
-        <input type="text" placeholder="название" id="brandName" required>
+    <form id="bodyTypeForm">
+        <input type="text" placeholder="название" id="bodyTypeName" required>
         <button type="submit" class="btn-red">Добавить</button>
     </form>
     <div id="errorMessage" class="error-message" style="display: none;"></div>
 {% endblock %}
 
-<!-- Таблица всех производителей -->
-{% block tablename %}Список производителей{% endblock %}
+<!-- Таблица всех кузовов -->
+{% block tablename %}Типы кузовов{% endblock %}
 
 {% block table %}
     <table class="entity-table">
@@ -22,11 +22,11 @@
                 <th>Действие</th>
             </tr>
         </thead>
-        <tbody id="brandsTableBody">
+        <tbody id="bodyTypesTableBody">
         </tbody>
     </table>
 {% endblock %}
 
 {% block script %}
-<script src="{{ url_for('static', filename='js/staff/brands.js') }}"></script>
+<script src="{{ url_for('static', filename='js/staff/body_type.js') }}"></script>
 {% endblock %}

@@ -83,7 +83,7 @@
     font-size: 22px;
 }
 
-.car-table {
+.entity-table {
     width: 100%;
     border-collapse: collapse;
     border: 1px solid #ddd;
@@ -91,18 +91,18 @@
     overflow: hidden;
 }
 
-.car-table th, .car-table td {
+.entity-table th, .entity-table td {
     padding: 12px 15px;
     border-bottom: 1px solid #eee;
     text-align: left;
 }
 
-.car-table thead {
+.entity-table thead {
     background: #f8f8f8;
     font-weight: bold;
 }
 
-.car-table tr:hover {
+.entity-table tr:hover {
     background: #fafafa;
 }
 
