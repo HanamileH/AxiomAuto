@@ -6,7 +6,7 @@ bp = Blueprint('staff/body_type', __name__)
 
 # GET-запрос
 @bp.route('/api/body_types', methods=['GET'])
-#@manager_required
+@manager_required
 def get_brands():
     """Получить все кузовы"""
     try:
@@ -31,7 +31,7 @@ def get_brands():
 
 # POST-запрос
 @bp.route('/api/body_types', methods=['POST'])
-#@manager_required
+@manager_required
 def create_brand():
     """Создать новый тип кузова"""
     try:
@@ -73,7 +73,7 @@ def create_brand():
 
 # PUT-запрос
 @bp.route('/api/body_types/<int:brand_id>', methods=['PUT'])
-#@manager_required
+@manager_required
 def update_brand(brand_id):
    """Обновить тип кузова"""
    try:
@@ -114,7 +114,7 @@ def update_brand(brand_id):
 
 # DELETE-запрос
 @bp.route('/api/body_types/<int:brand_id>', methods=['DELETE'])
-#@manager_required
+@manager_required
 def delete_brand(brand_id):
     """Удалить тип кузова"""
     try:
