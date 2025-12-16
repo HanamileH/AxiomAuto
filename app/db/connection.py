@@ -23,6 +23,10 @@ class DatabaseConnection:
             database=app.config['DB_DATABASE']
         )
 
+        # Переключаемся на нужную схему
+        with self.get_cursor(commit=True) as cursor:
+            cursor.execute(f"SET search_path TO {app.config['DB_SCHEMA']}")
+
 
     def init_db(self):
         """Инициализация базы данных
