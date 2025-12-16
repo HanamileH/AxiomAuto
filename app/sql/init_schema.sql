@@ -1,4 +1,3 @@
--- database: :memory:
 -- Postgresql 18
 DO $$
 BEGIN
@@ -38,7 +37,7 @@ CREATE TABLE IF NOT EXISTS client (
     patronymic VARCHAR(255)
 );
 
--- Пользователи системы (декорптация от клиентов)
+-- Пользователи системы (наследование от клиентов)
 CREATE TABLE IF NOT EXISTS users (
     id INTEGER NOT NULL PRIMARY KEY,
     role user_role NOT NULL DEFAULT 'user',
