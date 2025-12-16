@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS client (
 );
 
 -- Пользователи системы (декорптация от клиентов)
-CREATE TABLE IF NOT EXISTS user (
+CREATE TABLE IF NOT EXISTS users (
     id INTEGER NOT NULL PRIMARY KEY,
     role user_role NOT NULL DEFAULT 'user',
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -104,21 +104,6 @@ CREATE TABLE IF NOT EXISTS car (
     FOREIGN KEY (color_id) REFERENCES color(id)
 );
 
-
--- Транзакция оплаты
-CREATE TABLE IF NOT EXISTS payment (
-    id SERIAL PRIMARY KEY,
-    type payment_type NOT NULL, -- Тип оплаты (наличные, онлайн, терминал)
-    status payment_status NOT NULL, -- Статус оплаты (успешно, неуспешно, ожидание)
-    amount INTEGER NOT NULL CHECK (amount > 0), -- Сумма в рублях на момент оплаты
-    datetime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    transaction_id VARCHAR(64) UNIQUE, -- ID транзакции (NULL если оплата наличными)
-    bank_account CHAR(4) -- Последние 4 цифры банковского счёта (NULL если оплата наличными)
-    sale_id INTEGER NOT NULL, -- Акт купли-продажи
-
-    FOREIGN KEY (sale_id) REFERENCES sale(id)
-);
-
 -- Акт купли-продажи
 CREATE TABLE IF NOT EXISTS sale (
     id SERIAL PRIMARY KEY,
@@ -130,7 +115,21 @@ CREATE TABLE IF NOT EXISTS sale (
 
     FOREIGN KEY (car_id) REFERENCES car(id),
     FOREIGN KEY (client_id) REFERENCES client(id),
-    FOREIGN KEY (personal_id) REFERENCES user(id)
+    FOREIGN KEY (personal_id) REFERENCES users(id)
+);
+
+-- Транзакция оплаты
+CREATE TABLE IF NOT EXISTS payment (
+    id SERIAL PRIMARY KEY,
+    type payment_type NOT NULL, -- Тип оплаты (наличные, онлайн, терминал)
+    status payment_status NOT NULL, -- Статус оплаты (успешно, неуспешно, ожидание)
+    amount INTEGER NOT NULL CHECK (amount > 0), -- Сумма в рублях на момент оплаты
+    datetime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    transaction_id VARCHAR(64) UNIQUE, -- ID транзакции (NULL если оплата наличными)
+    bank_account CHAR(4), -- Последние 4 цифры банковского счёта (NULL если оплата наличными)
+    sale_id INTEGER NOT NULL, -- Акт купли-продажи
+
+    FOREIGN KEY (sale_id) REFERENCES sale(id)
 );
 
 -- Акт выдачи автомобиля
@@ -141,5 +140,5 @@ CREATE TABLE IF NOT EXISTS delivery (
     date DATE NOT NULL DEFAULT CURRENT_DATE, -- Дата выдачи автомобиля
     FOREIGN KEY (sale_id) REFERENCES sale(id),
 
-    FOREIGN KEY (personal_id) REFERENCES user(id)
+    FOREIGN KEY (personal_id) REFERENCES users(id)
 );
