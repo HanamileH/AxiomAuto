@@ -29,6 +29,7 @@ END
 $$;
 
 -- Клиенты
+-- (Используется для заказов пользователей, не авторизованных в системе)
 CREATE TABLE IF NOT EXISTS client (
     id SERIAL PRIMARY KEY,
     -- ФИО клиента
@@ -121,10 +122,10 @@ CREATE TABLE IF NOT EXISTS sale (
 CREATE TABLE IF NOT EXISTS payment (
     id SERIAL PRIMARY KEY,
     type payment_type NOT NULL, -- Тип оплаты (наличные, онлайн, терминал)
-    status payment_status NOT NULL, -- Статус оплаты (успешно, неуспешно, ожидание)
+    status payment_status NOT NULL, -- Статус оплаты (успешно, ошибка, ожидание)
     amount INTEGER NOT NULL CHECK (amount > 0), -- Сумма в рублях на момент оплаты
     datetime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    transaction_id VARCHAR(64) UNIQUE, -- ID транзакции (NULL если оплата наличными)
+    transaction_id VARCHAR(64) UNIQUE, -- ID банковской транзакции (NULL если оплата наличными)
     bank_account CHAR(4), -- Последние 4 цифры банковского счёта (NULL если оплата наличными)
     sale_id INTEGER NOT NULL, -- Акт купли-продажи
 
