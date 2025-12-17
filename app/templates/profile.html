@@ -27,11 +27,7 @@
             </div>
             <div class="info-block">
                 <label>Отчество:</label>
-                <p>{{ current_user.patronymic }}</p>
-            </div>
-            <div class="info-block">
-                <label>Телефон:</label>
-                <p>{{ current_user.phone }}</p>
+                <p>{{ current_user.patronymic or "." }}</p>
             </div>
             <div class="info-block">
                 <label>Почта:</label>
@@ -47,26 +43,6 @@
 
     <!-- Правая колонка: автомобили -->
     <section class="cars-section">
-        <div class="cars-block">
-            <h2>Забронированные автомобили</h2>
-            <div class="car-list">
-                <div class="car-card">
-                    <h3>Toyota Camry</h3>
-                    <p>Комплектация: Premium</p>
-                    <p>Цвет: Чёрный</p>
-                    <p>Статус: <span class="status reserved">Забронирован</span></p>
-                    <button class="btn-black">Подробнее</button>
-                </div>
-                <div class="car-card">
-                    <h3>Hyundai Tucson</h3>
-                    <p>Комплектация: Comfort</p>
-                    <p>Цвет: Белый</p>
-                    <p>Статус: <span class="status reserved">Забронирован</span></p>
-                    <button class="btn-black">Подробнее</button>
-                </div>
-            </div>
-        </div>
-
         <div class="cars-block">
             <h2>Купленные автомобили</h2>
             <div class="car-list">
