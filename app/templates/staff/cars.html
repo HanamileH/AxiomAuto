@@ -5,9 +5,8 @@
 
 {% block addpanel %}
     <form id="carForm">
-        <input type="text" placeholder="VIN / Серийный номер" required>
         <select required>
-            <option value="" disabled selected>Марка</option>
+            <option value="" disabled selected>Производитель</option>
             <option value="BMW">BMW</option>
             <option value="Audi">Audi</option>
             <option value="Mercedes-Benz">Mercedes-Benz</option>
@@ -18,11 +17,31 @@
             <option value="Land Rover">Land Rover</option>
             <option value="Tesla">Tesla</option>
         </select>
-        <input type="text" placeholder="Модель" required>
-        <input type="text" placeholder="Комплектация" required>
-        <input type="text" placeholder="Год" required>
-        <input type="text" placeholder="Цвет" required>
-        <input type="text" placeholder="Цена" required>
+        <select required>
+            <option value="" disabled selected>Модель</option>
+            <option value="3 Series">3 Series</option>
+            <option value="A4">A4</option>
+            <option value="E-Class">E-Class</option>
+            <option value="Golf">Golf</option>
+            <option value="Cayenne">Cayenne</option>
+            <option value="RX">RX</option>
+            <option value="F-Type">F-Type</option>
+            <option value="Range Rover">Range Rover</option>
+            <option value="Model 3">Model 3</option>
+        </select>
+        <select required>
+            <option value="" disabled selected>Цвет</option>
+            <option value="Black">Чёрный</option>
+            <option value="Red">Красный</option>
+            <option value="White">Белый</option>
+            <option value="Silver">Серебристый</option>
+            <option value="Blue">Синий</option>
+            <option value="Green">Зелёный</option>
+            <option value="Yellow">Жёлтый</option>
+            <option value="Orange">Оранжевый</option>
+            <option value="Purple">Фиолетовый</option>
+        </select>
+        <input type="text" placeholder="VIN / Серийный номер" required>
         <button type="submit" class="btn-red">Добавить</button>
     </form>
 {% endblock %}
@@ -34,50 +53,38 @@
     <table class="entity-table">
         <thead>
             <tr>
-                <th>VIN</th>
                 <th>Марка</th>
                 <th>Модель</th>
-                <th>Год</th>
+                <th>VIN</th>
                 <th>Цвет</th>
-                <th>Комплектация</th>
-                <th>Цена</th>
                 <th>Статус</th>
                 <th>Действие</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td>WBA8D9C55HA123456</td>
                 <td>BMW</td>
                 <td>3 Series</td>
-                <td>2018</td>
+                <td>WBA8D9C55HA123456</td>
                 <td>Чёрный</td>
-                <td>Luxury</td>
-                <td>2 000 000 ₽</td>
                 <td><span class="status available">В продаже</span></td>
                 <td><button class="btn-outline">Изменить</button></td>
             </tr>
 
             <tr>
-                <td>WAUZZZF45JN012345</td>
                 <td>Audi</td>
                 <td>A4</td>
-                <td>2019</td>
+                <td>WAUZZZF45JN012345</td>
                 <td>Красный</td>
-                <td>Sport</td>
-                <td>1 800 000 ₽</td>
                 <td><span class="status sold">Куплен</span></td>
                 <td><button class="btn-outline">Изменить</button></td>
             </tr>
 
             <tr>
-                <td>WDDZF4JBXJA987654</td>
                 <td>Mercedes-Benz</td>
                 <td>E-Class</td>
-                <td>2020</td>
+                <td>WDDZF4JBXJA987654</td>
                 <td>Белый</td>
-                <td>AMG Line</td>
-                <td>2 200 000 ₽</td>
                 <td><span class="status available">В продаже</span></td>
                 <td><button class="btn-outline">Изменить</button></td>
             </tr>
