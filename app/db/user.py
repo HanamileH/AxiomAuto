@@ -148,8 +148,8 @@ def register_user(name, surname, patronymic, email, password, role='user'):
       return False, 'unknown role'
 
 
+   # Проверяем, есть ли уже пользователь с таким email
    with db.get_cursor() as cursor:
-      # Проверяем, есть ли уже пользователь с таким email
       cursor.execute("""
       SELECT id FROM users WHERE email = %s
       """, (email,))
@@ -176,9 +176,10 @@ def register_user(name, surname, patronymic, email, password, role='user'):
          cursor.execute("""
          INSERT INTO users (id, role, email, password_hash)
          VALUES (%s, %s, %s, %s)
+         RETURNING id
          """, (client_id, role, email, password_hash))
 
-         user_id = cursor.lastrowid
+         user_id = cursor.fetchone()[0]
 
          return user_id, ''
    except Exception as e:
