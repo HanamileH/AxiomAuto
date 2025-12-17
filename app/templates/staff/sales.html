@@ -1,10 +1,15 @@
 {% extends "staff/base.html" %}
 
-<!-- Панель добавления продаж -->
-{% block addtext %}Оформить продажу{% endblock %}
-
+<!-- Панель добавления продаж (отключена) -->
 {% block addpanel %}
-    <button class="btn-outline">Оформить</button>
+<style>
+   .add-form {
+      visibility: hidden;
+      height: 0;
+      padding: 0;
+      margin: 0;
+   }
+</style>
 {% endblock %}
 
 <!-- Таблица всех продаж -->

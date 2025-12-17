@@ -30,14 +30,14 @@
 
 <!-- Панель добавления -->
 <section class="add-form" id="add-form">
-    <h2>{% block addtext %}Добавить сущность{% endblock %}</h2>
+    <h2>{% block addtext %}{% endblock %}</h2>
     {% block addpanel %}
     {% endblock %}
 </section>
 
 <!-- Панель всех сущностей -->
 <section class="table-section">
-    <h2>{% block tablename %}Имя сущности{% endblock %}</h2>
+    <h2>{% block tablename %}{% endblock %}</h2>
     {% block table %}
     {% endblock %}
 </section>

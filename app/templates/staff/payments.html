@@ -1,11 +1,19 @@
 {% extends "staff/base.html" %}
 
-<!-- Панель добавления оплаты -->
-{% block addtext %}{% endblock %}
-{% block addpanel %}{% endblock %}
+<!-- Панель добавления оплаты (отключена) -->
+{% block addpanel %}
+<style>
+   .add-form {
+      visibility: hidden;
+      height: 0;
+      padding: 0;
+      margin: 0;
+   }
+</style>
+{% endblock %}
 
 <!-- Таблица всех оплат -->
-{% block tablename %}Список транзакций оплаты{% endblock %}
+{% block tablename %}История транзакций оплаты{% endblock %}
 
 {% block table %}
    <table class="entity-table">
