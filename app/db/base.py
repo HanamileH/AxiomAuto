@@ -65,6 +65,13 @@ ENTITIES_TYPES = [
       "ru_list": "Список заказов"
    },
    {
+      "table_name": "payment",
+      "tab_name": "payments",
+      "ru_name": "Оплаты",
+      "ru_add": "Добавить оплату",
+      "ru_list": "Список оплат"
+   },
+   {
       "table_name": None,
       "tab_name": "statistics",
       "ru_name": "Статистика",

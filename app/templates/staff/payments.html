@@ -1,0 +1,49 @@
+{% extends "staff/base.html" %}
+
+<!-- Панель добавления оплаты -->
+{% block addtext %}{% endblock %}
+{% block addpanel %}{% endblock %}
+
+<!-- Таблица всех оплат -->
+{% block tablename %}Список транзакций оплаты{% endblock %}
+
+{% block table %}
+   <table class="entity-table">
+      <thead>
+         <tr>
+            <th>Тип</th>
+            <th>Дата</th>
+            <th>Сумма</th>
+            <th>Номер счёта</th>
+            <th>Статус</th>
+         </tr>
+      </thead>
+
+      <tbody>
+         <tr>
+            <td>Онлайн</td>
+            <td>2022-01-01</td>
+            <td>1000</td>
+            <td>····-····-····-1234</td>
+            <td><span class="status available">Оплачено</span></td>
+         </tr>
+
+         <tr>
+            <td>Наличными</td>
+            <td>2022-01-02</td>
+            <td>2000</td>
+            <td></td>
+            <td><span class="status available">Оплачено</span></td>
+         </tr>
+
+         <tr>
+            <td>Через терминал</td>
+            <td>2022-01-03</td>
+            <td>1500</td>
+            <td>····-····-····-5678</td>
+            <td><span class="status sold">Отказ</span></td>
+         </tr>
+         
+      </tbody>
+   </table>
+{% endblock %}
