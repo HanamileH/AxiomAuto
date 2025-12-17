@@ -1,6 +1,5 @@
 from flask import Blueprint, request, jsonify
-from app.db.brand import Brand
-from app.db.user import manager_required
+from app.db import Brand, manager_required
 
 bp = Blueprint('staff/brand', __name__)
 

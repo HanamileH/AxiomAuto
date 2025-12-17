@@ -1,6 +1,5 @@
 from flask import Blueprint, request, jsonify
-from app.db.body_type import Body_type
-from app.db.user import manager_required
+from app.db import Body_type, manager_required
 
 bp = Blueprint('staff/body_type', __name__)
 
