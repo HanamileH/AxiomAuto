@@ -4,7 +4,7 @@
 {% block addtext %}Добавить производителя{% endblock %}
 
 {% block addpanel %}
-    <form id="carForm">
+    <form id="addObjectForm">
         <input type="text" placeholder="название" id="brandName" required>
         <button type="submit" class="btn-red">Добавить</button>
     </form>
@@ -22,7 +22,7 @@
                 <th>Действие</th>
             </tr>
         </thead>
-        <tbody id="brandsTableBody">
+        <tbody id="objectsTableBody">
         </tbody>
     </table>
 {% endblock %}

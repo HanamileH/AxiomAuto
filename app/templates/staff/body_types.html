@@ -4,7 +4,7 @@
 {% block addtext %}Добавить тип кузова{% endblock %}
 
 {% block addpanel %}
-    <form id="bodyTypeForm">
+    <form id="addObjectForm">
         <input type="text" placeholder="название" id="bodyTypeName" required>
         <button type="submit" class="btn-red">Добавить</button>
     </form>
@@ -22,7 +22,7 @@
                 <th>Действие</th>
             </tr>
         </thead>
-        <tbody id="bodyTypesTableBody">
+        <tbody id="objectsTableBody">
         </tbody>
     </table>
 {% endblock %}

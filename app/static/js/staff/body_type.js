@@ -1,23 +1,20 @@
 // Глобальные переменные
-let bodyTypes = [];
+let objects = [];
 let editMode = false;
 let currentEditId = null;
 
 // DOM элементы
-const bodyTypesTableBody = document.getElementById('bodyTypesTableBody');
+const objectTableBody = document.getElementById('objectsTableBody');
 const addForm = document.getElementById('add-form');
-const bodyTypeNameInput = document.getElementById('bodyTypeName');
 const errorMessage = document.getElementById('errorMessage');
+
+// Элементы ввода
+const objectNameInput = document.getElementById('bodyTypeName');
 
 // Показать ошибку
 function showError(message) {
    errorMessage.textContent = message;
    errorMessage.style.display = 'block';
-
-   // Автоматически скрыть через 10 секунд
-   setTimeout(() => {
-      errorMessage.style.display = 'none';
-   }, 10000);
 }
 
 // Скрыть ошибку
@@ -25,15 +22,15 @@ function hideError() {
    errorMessage.style.display = 'none';
 }
 
-// Загрузить все бренды
-async function loadBodyTypes() {
+// Загрузить все объекты
+async function loadObjects() {
    try {
       const response = await fetch('/api/crud/body_types');
       const result = await response.json();
 
       if (result.success) {
-         bodyTypes = result.data;
-         renderBodyTypesTable();
+         objects = result.data;
+         renderObjectTable();
       } else {
          showError('Ошибка при загрузке данных: ' + result.error);
       }
@@ -42,20 +39,20 @@ async function loadBodyTypes() {
    }
 }
 
-// Отобразить таблицы типов кузовов
-function renderBodyTypesTable() {
-   bodyTypesTableBody.innerHTML = '';
+// Отобразить таблицу объектов
+function renderObjectTable() {
+   objectTableBody.innerHTML = '';
 
-   bodyTypes.forEach(bodyType => {
+   objects.forEach(brand => {
       const row = document.createElement('tr');
-      row.id = `body-type-row-${bodyType.id}`;
+      row.id = `object-row-${brand.id}`;
       row.innerHTML = `
-            <td id="body-type-name-${bodyType.id}">${escapeHtml(bodyType.name)}</td>
+            <td id="bodytype-name-${brand.id}">${brand.name}</td>
             <td>
-                <button class="btn-outline edit-btn" data-id="${bodyType.id}">Изменить</button>
+                <button class="btn-outline edit-btn" data-id="${brand.id}">Изменить</button>
             </td>
         `;
-      bodyTypesTableBody.appendChild(row);
+      objectTableBody.appendChild(row);
    });
 
    // Добавить обработчики для кнопок "Изменить"
@@ -73,24 +70,24 @@ function enterEditMode(id) {
       cancelEdit();
    }
 
-   const bodyType = bodyTypes.find(b => b.id === id);
-   if (!bodyType) return;
+   const object = objects.find(b => b.id === id);
+   if (!object) return;
 
    currentEditId = id;
    editMode = true;
 
-   const nameCell = document.getElementById(`body-type-name-${id}`);
+   const nameCell = document.getElementById(`bodytype-name-${id}`);
    const actionCell = nameCell.nextElementSibling;
 
    // Сохраняем оригинальное значение
-   const originalName = bodyType.name;
+   const originalName = object.name;
 
    // Создаем панель редактирования
    const editPanel = document.createElement('div');
    editPanel.className = 'edit-panel';
    editPanel.id = `edit-panel-${id}`;
    editPanel.innerHTML = `
-        <input type="text" id="edit-input-${id}" value="${escapeHtml(originalName)}" class="edit-input">
+        <input type="text" id="edit-input-${id}" value="${originalName}" class="edit-input">
         <div class="edit-buttons">
             <button class="btn-outline" id="btn-save-${id}" data-id="${id}">Сохранить</button>
             <button class="btn-outline" id="btn-cancel-${id}" data-id="${id}">Отмена</button>
@@ -110,22 +107,22 @@ function enterEditMode(id) {
    input.select();
 
    // Добавляем обработчики для кнопок панели
-   document.getElementById(`btn-save-${id}`).addEventListener('click', saveBodyType);
+   document.getElementById(`btn-save-${id}`).addEventListener('click', saveObject);
    document.getElementById(`btn-cancel-${id}`).addEventListener('click', cancelEdit);
-   document.getElementById(`btn-delete-${id}`).addEventListener('click', deleteBrand);
+   document.getElementById(`btn-delete-${id}`).addEventListener('click', deleteObject);
 
    // Обработка нажатия Enter и Escape
    input.addEventListener('keydown', function (e) {
       if (e.key === 'Enter') {
-         saveBodyType();
+         saveObject();
       } else if (e.key === 'Escape') {
          cancelEdit();
       }
    });
 }
 
-// Сохранить изменение названия кузова
-async function saveBodyType() {
+// Сохранить изменения объекта
+async function saveObject() {
    if (!currentEditId) return;
 
    const input = document.getElementById(`edit-input-${currentEditId}`);
@@ -150,16 +147,16 @@ async function saveBodyType() {
 
       if (result.success) {
          // Обновляем локальные данные
-         const brandIndex = bodyTypes.findIndex(b => b.id === currentEditId);
+         const brandIndex = objects.findIndex(b => b.id === currentEditId);
          if (brandIndex !== -1) {
-            bodyTypes[brandIndex].name = newName;
+            objects[brandIndex].name = newName;
          }
 
          // Выходим из режима редактирования
          exitEditMode();
 
          // Перерисовываем таблицу
-         renderBodyTypesTable();
+         renderObjectTable();
 
          hideError();
       } else {
@@ -172,11 +169,11 @@ async function saveBodyType() {
    }
 }
 
-// Удалить тип кузова
-async function deleteBrand() {
+// Удалить объект
+async function deleteObject() {
    if (!currentEditId) return;
 
-   if (!confirm('Вы уверены, что хотите удалить этот тип кузова?')) {
+   if (!confirm('Вы уверены, что хотите удалить этот объект?')) {
       return;
    }
 
@@ -189,13 +186,13 @@ async function deleteBrand() {
 
       if (result.success) {
          // Удаляем из локальных данных
-         bodyTypes = bodyTypes.filter(b => b.id !== currentEditId);
+         objects = objects.filter(b => b.id !== currentEditId);
 
          // Выходим из режима редактирования
          exitEditMode();
 
          // Перерисовываем таблицу
-         renderBodyTypesTable();
+         renderObjectTable();
 
          hideError();
       } else {
@@ -209,7 +206,7 @@ async function deleteBrand() {
 // Отменить редактирование
 function cancelEdit() {
    exitEditMode();
-   renderBodyTypesTable();
+   renderObjectTable();
 }
 
 // Выйти из режима редактирования
@@ -220,7 +217,7 @@ function exitEditMode() {
          editPanel.remove();
       }
 
-      const nameCell = document.getElementById(`body-type-name-${currentEditId}`);
+      const nameCell = document.getElementById(`bodytype-name-${currentEditId}`);
       if (nameCell) {
          nameCell.style.display = '';
       }
@@ -230,14 +227,14 @@ function exitEditMode() {
    }
 }
 
-// Добавить новый тип кузова
+// Добавить новый объект
 addForm.addEventListener('submit', async function (e) {
    e.preventDefault();
 
-   const name = bodyTypeNameInput.value.trim();
+   const name = objectNameInput.value.trim();
 
    if (!name) {
-      showError('Введите тип кузова');
+      showError('Введите название типа кузова');
       return;
    }
 
@@ -253,17 +250,17 @@ addForm.addEventListener('submit', async function (e) {
       const result = await response.json();
 
       if (result.success) {
-         // Добавляем новый тип кузова в локальные данные
-         bodyTypes.push({
+         // Добавляем новый объект в локальные данные
+         objects.push({
             id: result.id,
             name: name
          });
 
          // Перерисовываем таблицу
-         renderBodyTypesTable();
+         renderObjectTable();
 
          // Очищаем форму
-         bodyTypeNameInput.value = '';
+         objectNameInput.value = '';
          hideError();
       } else {
          showError('Ошибка при добавлении: ' + result.error);
@@ -273,14 +270,7 @@ addForm.addEventListener('submit', async function (e) {
    }
 });
 
-// Экранирование HTML для безопасности
-function escapeHtml(text) {
-   const div = document.createElement('div');
-   div.textContent = text;
-   return div.innerHTML;
-}
-
 // Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', function () {
-   loadBodyTypes();
+   loadObjects();
 });

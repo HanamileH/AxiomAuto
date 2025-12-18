@@ -1,23 +1,20 @@
 // Глобальные переменные
-let brands = [];
+let objects = [];
 let editMode = false;
 let currentEditId = null;
 
 // DOM элементы
-const brandsTableBody = document.getElementById('brandsTableBody');
+const objectTableBody = document.getElementById('objectsTableBody');
 const addForm = document.getElementById('add-form');
-const brandNameInput = document.getElementById('brandName');
 const errorMessage = document.getElementById('errorMessage');
+
+// Элементы ввода
+const objectNameInput = document.getElementById('brandName');
 
 // Показать ошибку
 function showError(message) {
    errorMessage.textContent = message;
    errorMessage.style.display = 'block';
-
-   // Автоматически скрыть через 10 секунд
-   setTimeout(() => {
-      errorMessage.style.display = 'none';
-   }, 10000);
 }
 
 // Скрыть ошибку
@@ -25,15 +22,15 @@ function hideError() {
    errorMessage.style.display = 'none';
 }
 
-// Загрузить все бренды
-async function loadBrands() {
+// Загрузить все объекты
+async function loadObjects() {
    try {
       const response = await fetch('/api/crud/brands');
       const result = await response.json();
 
       if (result.success) {
-         brands = result.data;
-         renderBrandsTable();
+         objects = result.data;
+         renderObjectTable();
       } else {
          showError('Ошибка при загрузке данных: ' + result.error);
       }
@@ -42,20 +39,20 @@ async function loadBrands() {
    }
 }
 
-// Отобразить таблицу брендов
-function renderBrandsTable() {
-   brandsTableBody.innerHTML = '';
+// Отобразить таблицу объектов
+function renderObjectTable() {
+   objectTableBody.innerHTML = '';
 
-   brands.forEach(brand => {
+   objects.forEach(brand => {
       const row = document.createElement('tr');
-      row.id = `brand-row-${brand.id}`;
+      row.id = `object-row-${brand.id}`;
       row.innerHTML = `
-            <td id="brand-name-${brand.id}">${escapeHtml(brand.name)}</td>
+            <td id="brand-name-${brand.id}">${brand.name}</td>
             <td>
                 <button class="btn-outline edit-btn" data-id="${brand.id}">Изменить</button>
             </td>
         `;
-      brandsTableBody.appendChild(row);
+      objectTableBody.appendChild(row);
    });
 
    // Добавить обработчики для кнопок "Изменить"
@@ -73,8 +70,8 @@ function enterEditMode(id) {
       cancelEdit();
    }
 
-   const brand = brands.find(b => b.id === id);
-   if (!brand) return;
+   const object = objects.find(b => b.id === id);
+   if (!object) return;
 
    currentEditId = id;
    editMode = true;
@@ -83,14 +80,14 @@ function enterEditMode(id) {
    const actionCell = nameCell.nextElementSibling;
 
    // Сохраняем оригинальное значение
-   const originalName = brand.name;
+   const originalName = object.name;
 
    // Создаем панель редактирования
    const editPanel = document.createElement('div');
    editPanel.className = 'edit-panel';
    editPanel.id = `edit-panel-${id}`;
    editPanel.innerHTML = `
-        <input type="text" id="edit-input-${id}" value="${escapeHtml(originalName)}" class="edit-input">
+        <input type="text" id="edit-input-${id}" value="${originalName}" class="edit-input">
         <div class="edit-buttons">
             <button class="btn-outline" id="btn-save-${id}" data-id="${id}">Сохранить</button>
             <button class="btn-outline" id="btn-cancel-${id}" data-id="${id}">Отмена</button>
@@ -110,22 +107,22 @@ function enterEditMode(id) {
    input.select();
 
    // Добавляем обработчики для кнопок панели
-   document.getElementById(`btn-save-${id}`).addEventListener('click', saveBrand);
+   document.getElementById(`btn-save-${id}`).addEventListener('click', saveObject);
    document.getElementById(`btn-cancel-${id}`).addEventListener('click', cancelEdit);
-   document.getElementById(`btn-delete-${id}`).addEventListener('click', deleteBrand);
+   document.getElementById(`btn-delete-${id}`).addEventListener('click', deleteObject);
 
    // Обработка нажатия Enter и Escape
    input.addEventListener('keydown', function (e) {
       if (e.key === 'Enter') {
-         saveBrand();
+         saveObject();
       } else if (e.key === 'Escape') {
          cancelEdit();
       }
    });
 }
 
-// Сохранить изменения бренда
-async function saveBrand() {
+// Сохранить изменения объекта
+async function saveObject() {
    if (!currentEditId) return;
 
    const input = document.getElementById(`edit-input-${currentEditId}`);
@@ -150,16 +147,16 @@ async function saveBrand() {
 
       if (result.success) {
          // Обновляем локальные данные
-         const brandIndex = brands.findIndex(b => b.id === currentEditId);
+         const brandIndex = objects.findIndex(b => b.id === currentEditId);
          if (brandIndex !== -1) {
-            brands[brandIndex].name = newName;
+            objects[brandIndex].name = newName;
          }
 
          // Выходим из режима редактирования
          exitEditMode();
 
          // Перерисовываем таблицу
-         renderBrandsTable();
+         renderObjectTable();
 
          hideError();
       } else {
@@ -172,11 +169,11 @@ async function saveBrand() {
    }
 }
 
-// Удалить бренд
-async function deleteBrand() {
+// Удалить объект
+async function deleteObject() {
    if (!currentEditId) return;
 
-   if (!confirm('Вы уверены, что хотите удалить этого производителя?')) {
+   if (!confirm('Вы уверены, что хотите удалить этот объект?')) {
       return;
    }
 
@@ -189,13 +186,13 @@ async function deleteBrand() {
 
       if (result.success) {
          // Удаляем из локальных данных
-         brands = brands.filter(b => b.id !== currentEditId);
+         objects = objects.filter(b => b.id !== currentEditId);
 
          // Выходим из режима редактирования
          exitEditMode();
 
          // Перерисовываем таблицу
-         renderBrandsTable();
+         renderObjectTable();
 
          hideError();
       } else {
@@ -209,7 +206,7 @@ async function deleteBrand() {
 // Отменить редактирование
 function cancelEdit() {
    exitEditMode();
-   renderBrandsTable();
+   renderObjectTable();
 }
 
 // Выйти из режима редактирования
@@ -230,11 +227,11 @@ function exitEditMode() {
    }
 }
 
-// Добавить новый бренд
+// Добавить новый объект
 addForm.addEventListener('submit', async function (e) {
    e.preventDefault();
 
-   const name = brandNameInput.value.trim();
+   const name = objectNameInput.value.trim();
 
    if (!name) {
       showError('Введите название производителя');
@@ -253,17 +250,17 @@ addForm.addEventListener('submit', async function (e) {
       const result = await response.json();
 
       if (result.success) {
-         // Добавляем новый бренд в локальные данные
-         brands.push({
+         // Добавляем новый объект в локальные данные
+         objects.push({
             id: result.id,
             name: name
          });
 
          // Перерисовываем таблицу
-         renderBrandsTable();
+         renderObjectTable();
 
          // Очищаем форму
-         brandNameInput.value = '';
+         objectNameInput.value = '';
          hideError();
       } else {
          showError('Ошибка при добавлении: ' + result.error);
@@ -273,14 +270,7 @@ addForm.addEventListener('submit', async function (e) {
    }
 });
 
-// Экранирование HTML для безопасности
-function escapeHtml(text) {
-   const div = document.createElement('div');
-   div.textContent = text;
-   return div.innerHTML;
-}
-
 // Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', function () {
-   loadBrands();
+   loadObjects();
 });
