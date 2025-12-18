@@ -1,5 +1,18 @@
 {% extends "staff/base.html" %}
 
+<!-- Устанавливаем фиксированную ширину столбцов -->
+{% block additional_styles %}
+    <style>
+        .entity-table th:nth-child(1) {
+            width: 70%;
+        }
+        
+        .entity-table th:nth-child(2) {
+            width: 30%;
+        }
+    </style>
+{% endblock %}
+
 <!-- Панель добавления производителя -->
 {% block addtext %}Добавить производителя{% endblock %}
 
