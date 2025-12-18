@@ -31,7 +31,7 @@ class Brand:
             row = cursor.fetchone()
             return row, ''
       except Exception as e:
-         return None, str(e)
+         return None, f'server error: {str(e)}'
 
 
    @staticmethod
@@ -50,7 +50,7 @@ class Brand:
             row = cursor.fetchone()
 
             if row:
-               return None, 'Это название уже используется'
+               return None, 'this name is already taken'
 
             # Выполняем вставку
             cursor.execute("INSERT INTO brand (name) VALUES (%s) RETURNING id", (name,))
@@ -59,7 +59,7 @@ class Brand:
             id = cursor.fetchone()[0]
             return id, ''
       except Exception as e:
-         return None, f'Ошибка базы данных: {str(e)}'
+         return None, f'server error: {str(e)}'
 
 
    @staticmethod
@@ -78,20 +78,20 @@ class Brand:
             row = cursor.fetchone()
 
             if row is None:
-               return False, 'Запись не существует'
+               return False, 'this record does not exist'
 
             # Проверяем отсутствие зависимых записей
             cursor.execute("SELECT id FROM model WHERE brand_id = %s;", (id,))
             row = cursor.fetchone()
 
             if row:
-               return False, 'Есть зависимые записи (модели). Удаление невозможно'
+               return False, 'this record has dependent records'
 
             # Выполняем удаление
             cursor.execute("DELETE FROM brand WHERE id = %s;", (id,))
             return True, ''
       except Exception as e:
-         return False, f'Ошибка базы данных: {str(e)}'
+         return False, f'server error: {str(e)}'
       
       
    @staticmethod
@@ -111,20 +111,20 @@ class Brand:
             row = cursor.fetchone()
 
             if row is None:
-               return False, 'Запись не существует'
+               return False, 'this record does not exist'
 
             # Проверяем, что данное имя ещё не используется
             cursor.execute("SELECT id FROM brand WHERE name = %s AND id != %s;", (name, id))
             row = cursor.fetchone()
 
             if row:
-               return False, 'Это название уже используется'
+               return False, 'this name is already taken'
 
             # Выполняем обновление
             cursor.execute("UPDATE brand SET name = %s WHERE id = %s;", (name, id))
             return True, ''
       except Exception as e:
-         return False, f'Ошибка базы данных: {str(e)}'
+         return False, f'server error: {str(e)}'
       
 
 # CRUD-операции над записями таблицы body_type
@@ -141,7 +141,7 @@ class Body_type:
             rows = cursor.fetchall()
             return rows, ''
       except Exception as e:
-         return None, str(e)
+         return None, f'server error: {str(e)}'
       
 
    @staticmethod
@@ -158,7 +158,7 @@ class Body_type:
             row = cursor.fetchone()
             return row, ''
       except Exception as e:
-         return None, str(e)
+         return None, f'server error: {str(e)}'
 
 
    @staticmethod
@@ -177,8 +177,8 @@ class Body_type:
             row = cursor.fetchone()
 
             if row:
-               return None, 'Это название уже используется'
-
+               return None, 'this name is already taken'
+            
             # Выполняем вставку
             cursor.execute("INSERT INTO body_type (name) VALUES (%s) RETURNING id", (name,))
 
@@ -186,7 +186,7 @@ class Body_type:
             id = cursor.fetchone()[0]
             return id, ''
       except Exception as e:
-         return None, f'Ошибка базы данных: {str(e)}'
+         return None, f'server error: {str(e)}'
 
 
    @staticmethod
@@ -205,20 +205,20 @@ class Body_type:
             row = cursor.fetchone()
 
             if row is None:
-               return False, 'Запись не существует'
+               return False, 'this record does not exist'
 
             # Проверяем отсутствие зависимых записей
             cursor.execute("SELECT id FROM model WHERE body_type = %s;", (id,))
             row = cursor.fetchone()
 
             if row:
-               return False, 'Есть зависимые записи (модели). Удаление невозможно'
+               return False, 'this record has dependent records'
 
             # Выполняем удаление
             cursor.execute("DELETE FROM body_type WHERE id = %s;", (id,))
             return True, ''
       except Exception as e:
-         return False, f'Ошибка базы данных: {str(e)}'
+         return False, f'server error: {str(e)}'
       
       
    @staticmethod
@@ -238,17 +238,18 @@ class Body_type:
             row = cursor.fetchone()
 
             if row is None:
-               return False, 'Запись не существует'
+               return False, 'this record does not exist'
 
             # Проверяем, что данное имя ещё не используется
             cursor.execute("SELECT id FROM body_type WHERE name = %s AND id != %s;", (name, id))
             row = cursor.fetchone()
 
             if row:
-               return False, 'Это название уже используется'
+               return False, 'this name is already taken'
 
             # Выполняем обновление
             cursor.execute("UPDATE body_type SET name = %s WHERE id = %s;", (name, id))
             return True, ''
+         
       except Exception as e:
-         return False, f'Ошибка базы данных: {str(e)}'
+         return False, f'server error: {str(e)}'
