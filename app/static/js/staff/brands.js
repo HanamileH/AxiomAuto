@@ -28,7 +28,7 @@ function hideError() {
 // Загрузить все бренды
 async function loadBrands() {
    try {
-      const response = await fetch('/api/brands');
+      const response = await fetch('/api/crud/brands');
       const result = await response.json();
 
       if (result.success) {
@@ -138,7 +138,7 @@ async function saveBrand() {
    }
 
    try {
-      const response = await fetch(`/api/brands/${currentEditId}`, {
+      const response = await fetch(`/api/crud/brands/${currentEditId}`, {
          method: 'PUT',
          headers: {
             'Content-Type': 'application/json',
@@ -181,7 +181,7 @@ async function deleteBrand() {
    }
 
    try {
-      const response = await fetch(`/api/brands/${currentEditId}`, {
+      const response = await fetch(`/api/crud/brands/${currentEditId}`, {
          method: 'DELETE'
       });
 
@@ -242,7 +242,7 @@ addForm.addEventListener('submit', async function (e) {
    }
 
    try {
-      const response = await fetch('/api/brands', {
+      const response = await fetch('/api/crud/brands', {
          method: 'POST',
          headers: {
             'Content-Type': 'application/json',

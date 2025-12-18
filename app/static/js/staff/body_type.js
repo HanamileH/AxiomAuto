@@ -28,7 +28,7 @@ function hideError() {
 // Загрузить все бренды
 async function loadBodyTypes() {
    try {
-      const response = await fetch('/api/body_types');
+      const response = await fetch('/api/crud/body_types');
       const result = await response.json();
 
       if (result.success) {
@@ -138,7 +138,7 @@ async function saveBodyType() {
    }
 
    try {
-      const response = await fetch(`/api/body_types/${currentEditId}`, {
+      const response = await fetch(`/api/crud/body_types/${currentEditId}`, {
          method: 'PUT',
          headers: {
             'Content-Type': 'application/json',
@@ -181,7 +181,7 @@ async function deleteBrand() {
    }
 
    try {
-      const response = await fetch(`/api/body_types/${currentEditId}`, {
+      const response = await fetch(`/api/crud/body_types/${currentEditId}`, {
          method: 'DELETE'
       });
 
@@ -242,7 +242,7 @@ addForm.addEventListener('submit', async function (e) {
    }
 
    try {
-      const response = await fetch('/api/body_types', {
+      const response = await fetch('/api/crud/body_types', {
          method: 'POST',
          headers: {
             'Content-Type': 'application/json',
