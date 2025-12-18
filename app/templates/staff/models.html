@@ -4,7 +4,7 @@
 {% block addtext %}Добавить модель{% endblock %}
 
 {% block addpanel %}
-    <form id="modelForm">
+    <form id="addObjectForm">
         <select required>
             <option value="" disabled selected>Производитель</option>
             <option value="BMW">BMW</option>
@@ -17,7 +17,7 @@
             <option value="Land Rover">Land Rover</option>
             <option value="Tesla">Tesla</option>
         </select>
-        <input type="text" placeholder="Название" required>
+        <input type="text" placeholder="Название модели" required>
         <select required>
             <option value="" disabled selected>Тип кузова</option>
             <option value="Sedan">Седан</option>
@@ -27,7 +27,7 @@
             <option value="Convertible">Кабриолет</option>
             <option value="Wagon">Универсал</option>
         </select>
-        <input type="text" placeholder="Описание" required>
+        <input type="text" placeholder="Описание" style="grid-column: span 2;" required>
         <input type="text" placeholder="Год" required>
         <select required>
             <option value="" disabled selected>Тип двигателя</option>
@@ -70,7 +70,7 @@
                 <th>Действие</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="objectsTableBody">
             <tr>
                 <td>BMW</td>
                 <td>3 Series</td>
