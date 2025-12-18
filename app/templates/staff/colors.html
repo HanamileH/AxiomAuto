@@ -1,46 +1,71 @@
 {% extends "staff/base.html" %}
 
+<!-- Устанавливаем фиксированную ширину столбцов -->
+{% block additional_styles %}
+    <style>
+        .entity-table th:nth-child(1) {
+            width: 4rem;
+        }
+        
+        .entity-table th:nth-child(2) {
+            width: 65%;
+        }
+
+        .entity-table th:nth-child(3) {
+            width: 30%;
+        }
+
+        .color-preview {
+            width: 3.5rem;
+            height: 1.5rem;
+            border: 1px solid #CCCCCC;
+            border-radius: 0.5rem;
+        }
+    </style>
+{% endblock %}
+
 <!-- Панель добавления цветов -->
 {% block addtext %}Добавить цвет{% endblock %}
 
 {% block addpanel %}
-    <form id="carForm">
-        <input type="text" placeholder="Название цвета" required>
-        <input type="color" placeholder="Значение цвета" value="#FFFFFF" required>
+    <form id="addObjectForm">
+        <input type="text" placeholder="название" id="colorName" required>
+        <input type="color" value='#FFFFFF' id="colorValue" required>
         <button type="submit" class="btn-red">Добавить</button>
     </form>
+    <div id="errorMessage" class="error-message" style="display: none;"></div>
 {% endblock %}
 
 <!-- Таблица всех цветов -->
-{% block tablename %}Список цветов{% endblock %}
+{% block tablename %}Цвета{% endblock %}
 
 {% block table %}
     <table class="entity-table">
         <thead>
             <tr>
+                <th></th>
                 <th>Название</th>
-                <th>Код цвета</th>
                 <th>Действие</th>
             </tr>
         </thead>
-        <tbody>
-            <tr>
-                <td>Белый</td>
-                <td>#FFFFFF</td>
-                <td><button class="btn-outline">Изменить</button></td>
-            </tr>
 
-            <tr>
-                <td>Черный</td>
-                <td>#000000</td>
-                <td><button class="btn-outline">Изменить</button></td>
-            </tr>
-
-            <tr>
-                <td>Красный</td>
-                <td>#FF0000</td>
-                <td><button class="btn-outline">Изменить</button></td>
-            </tr>
+        <!-- Заполняем таблицу случайными данными перед тем, как заполнить фактическими данными через API -->
+        <tbody id="objectsTableBody">
+            {% for row in template_rows: %}
+                <tr id="object-row-unknown">
+                    <td id="color-value-unknown">
+                        <div class="color-preview" style="background-color: white;">
+                    </td>
+                    <td id="color-name-unknown" style="filter: blur(5px)">{{ row }}</td>
+                    <td>
+                        <button class="btn-outline">Изменить</button>
+                    </td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
+{% endblock %}
+
+{% block script %}
+<script src="{{ url_for('static', filename='js/staff/color.js') }}"></script>
 {% endblock %}

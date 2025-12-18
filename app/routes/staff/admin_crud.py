@@ -1,9 +1,10 @@
 from flask import Blueprint, request, jsonify
-from app.db import Brand, Body_type, manager_required
+from app.db import Brand, Body_type, Color, manager_required
 
 OBJECTS_MATCH = {
    'brands': Brand,
-   'body_types': Body_type
+   'body_types': Body_type,
+   'colors': Color
 }
 
 
@@ -90,6 +91,25 @@ def create(object_name):
             }), 400
 
          id, error = Body_type.create(name=name)
+
+      # Цвета
+      elif object_name == 'colors':
+         name = data.get('name')
+         hex_code = data.get('hex_code')
+
+         if not name:
+            return jsonify({
+               'success': False,
+               'error': 'Name is required'
+            }), 400
+
+         if not hex_code:
+            return jsonify({
+               'success': False,
+               'error': 'Hex code is required'
+            }), 400
+         
+         id, error = Color.create(name=name, hex_code=hex_code)
       
       # Неизвестный объект
       else:
@@ -162,6 +182,19 @@ def update(object_name, id):
             }), 400
 
          _, error = Body_type.update(id=id, name=name)
+
+      # Цвета
+      elif object_name == 'colors':
+         name = data.get('name')
+         hex_code = data.get('hex_code')
+
+         if not name or not hex_code:
+            return jsonify({
+               'success': False,
+               'error': 'Name or hex code are required'
+            }), 400
+         
+         _, error = Color.update(id=id, name=name, hex_code=hex_code)
 
       # Неизвестный объект
       else:
