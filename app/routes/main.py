@@ -1,3 +1,6 @@
+import string
+import random
+
 from flask import Blueprint, render_template, abort
 from flask_login import login_required, current_user
 from app import db
@@ -39,7 +42,13 @@ def staff(entity_name):
          break
    
    if current_entity:
-      return render_template(f"staff/{entity['tab_name']}.html", entities=entities, current_entity=current_entity)
+      # Генерируем случайные строки для отображения во время загрузки
+      template_rows = []
+
+      for i in range(10):
+         template_rows.append(''.join([random.choice(string.ascii_lowercase) for _ in range(random.randint(5, 10))]))
+
+      return render_template(f"staff/{entity['tab_name']}.html", entities=entities, current_entity=current_entity, template_rows=template_rows)
    else:
       return abort(404)
 
