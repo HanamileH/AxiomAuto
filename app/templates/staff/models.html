@@ -83,5 +83,10 @@
 {% endblock %}
 
 {% block script %}
+<script>
+    // Передаем данные из шаблона в JavaScript
+    window.brands = {{ brands|tojson }};
+    window.bodyTypes = {{ body_types|tojson }};
+</script>
 <script src="{{ url_for('static', filename='js/staff/models.js') }}"></script>
 {% endblock %}
