@@ -47,10 +47,10 @@ function renderObjectTable() {
       const row = document.createElement('tr');
       row.id = `object-row-${brand.id}`;
       row.innerHTML = `
-            <td id="brand-name-${brand.id}">${brand.name}</td>
-            <td>
-                <button class="btn-outline edit-btn" data-id="${brand.id}">Изменить</button>
-            </td>
+         <td id="brand-name-${brand.id}">${brand.name}</td>
+         <td>
+            <button class="btn-outline edit-btn" data-id="${brand.id}">Изменить</button>
+         </td>
         `;
       objectTableBody.appendChild(row);
    });
@@ -85,18 +85,19 @@ function enterEditMode(id) {
    // Создаем панель редактирования (отдельную строку таблицы)
    const editRow = document.createElement('tr');
    editRow.id = `edit-row-${id}`;
+   editRow.classList.add('edit-panel');
    editRow.innerHTML = `
-        <td colspan="2" style="padding: 0;">
-            <div class="edit-panel" id="edit-panel-${id}">
-                <input type="text" id="edit-input-${id}" value="${originalName}" class="edit-input">
-                <div class="edit-buttons">
-                    <button class="btn-outline" id="btn-save-${id}" data-id="${id}">Сохранить</button>
-                    <button class="btn-outline" id="btn-cancel-${id}" data-id="${id}">Отмена</button>
-                    <button class="btn-red" id="btn-delete-${id}" data-id="${id}">Удалить</button>
-                </div>
-            </div>
-        </td>
-    `;
+      <td>
+         <input type="text" id="edit-input-${id}" value="${originalName}" class="edit-input">
+      </td>
+      <td>
+         <div class="edit-buttons">
+            <button class="btn-outline" id="btn-save-${id}" data-id="${id}">Сохранить</button>
+            <button class="btn-outline" id="btn-cancel-${id}" data-id="${id}">Отмена</button>
+            <button class="btn-red" id="btn-delete-${id}" data-id="${id}">Удалить</button>
+         </div>
+      </td>
+   `;
 
    // Скрываем оригинальную строку и вставляем панель редактирования вместо нее
    row.style.display = 'none';

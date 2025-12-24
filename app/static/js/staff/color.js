@@ -48,13 +48,13 @@ function renderObjectTable() {
       const row = document.createElement('tr');
       row.id = `object-row-${color.id}`;
       row.innerHTML = `
-            <td id="color-value-${color.id}">
-                <div class="color-preview" id="color-preview-${color.id}" style="background-color: #${color.hex_code};"></div>
-            </td>
-            <td id="color-name-${color.id}">${color.name}</td>
-            <td>
-                <button class="btn-outline edit-btn" data-id="${color.id}">Изменить</button>
-            </td>
+         <td id="color-value-${color.id}">
+            <div class="color-preview" id="color-preview-${color.id}" style="background-color: #${color.hex_code};"></div>
+         </td>
+         <td id="color-name-${color.id}">${color.name}</td>
+         <td>
+            <button class="btn-outline edit-btn" data-id="${color.id}">Изменить</button>
+         </td>
         `;
       objectTableBody.appendChild(row);
    });
@@ -90,21 +90,22 @@ function enterEditMode(id) {
    // Создаем панель редактирования (отдельную строку таблицы)
    const editRow = document.createElement('tr');
    editRow.id = `edit-row-${id}`;
+   editRow.classList.add('edit-panel');
    editRow.innerHTML = `
-        <td colspan="3" style="padding: 0;">
-            <div class="edit-panel" id="edit-panel-${id}">
-                <div class="edit-inputs-row">
-                    <input type="color" id="edit-color-value-${id}" value="#${originalValue}" class="color-input">
-                    <input type="text" id="edit-input-${id}" value="${originalName}" class="edit-input" placeholder="Название цвета">
-                </div>
-                <div class="edit-buttons">
-                    <button class="btn-outline" id="btn-save-${id}" data-id="${id}">Сохранить</button>
-                    <button class="btn-outline" id="btn-cancel-${id}" data-id="${id}">Отмена</button>
-                    <button class="btn-red" id="btn-delete-${id}" data-id="${id}">Удалить</button>
-                </div>
-            </div>
-        </td>
-    `;
+      <td>
+         <input type="color" id="edit-color-value-${id}" value="#${originalValue}" class="color-input">
+      </td>
+      <td>
+         <input type="text" id="edit-input-${id}" value="${originalName}" class="edit-input" placeholder="Название цвета">
+      </td>
+      <td>
+      <div class="edit-buttons">
+         <button class="btn-outline" id="btn-save-${id}" data-id="${id}">Сохранить</button>
+         <button class="btn-outline" id="btn-cancel-${id}" data-id="${id}">Отмена</button>
+         <button class="btn-red" id="btn-delete-${id}" data-id="${id}">Удалить</button>
+      </div>
+      </td>
+   `;
 
    // Скрываем оригинальную строку и вставляем панель редактирования вместо нее
    row.style.display = 'none';
