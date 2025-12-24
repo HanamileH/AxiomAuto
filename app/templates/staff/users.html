@@ -1,5 +1,26 @@
 {% extends "staff/base.html" %}
 
+<!-- Устанавливаем доп стиль -->
+{% block additional_styles %}
+    <style>
+        .entity-table th:nth-child(1) {width: 15%;}
+        .entity-table th:nth-child(2) {width: 15%;}
+        .entity-table th:nth-child(3) {width: 15%;}
+        .entity-table th:nth-child(4) {width: 23%;}
+        .entity-table th:nth-child(6) {width: 9%;}
+        .entity-table th:nth-child(7) {width: 23%;}
+
+        .hide-data {
+            filter: blur(5px);
+            transition: all 0.5s ease-in-out;
+        }
+
+        .hide-data:hover {
+            filter: blur(0px);
+        }
+    </style>
+{% endblock %}
+
 <!-- Панель добавления пользователей -->
 {% block addtext %}Добавить пользователя{% endblock %}
 
@@ -39,7 +60,7 @@
                 <td>Иван</td>
                 <td>Иванов</td>
                 <td>Иванович</td>
-                <td>ivan.ivanov@gmail.com</td>
+                <td class="hide-data">ivan.ivanov@gmail.com</td>
                 <td>Администратор</td>
                 <td><button class="btn-outline">Изменить</button></td>
             </tr>
@@ -48,7 +69,7 @@
                 <td>Петр</td>
                 <td>Петров</td>
                 <td>Петрович</td>
-                <td>petr.petrov@gmail.com</td>
+                <td  class="hide-data">petr.petrov@gmail.com</td>
                 <td>Пользователь</td>
                 <td><button class="btn-outline">Изменить</button></td>
             </tr>
@@ -57,7 +78,7 @@
                 <td>Сергей</td>
                 <td>Сергеев</td>
                 <td>Сергеевич</td>
-                <td>sergey.sergeev@gmail.com</td>
+                <td class="hide-data">sergey.sergeev@gmail.com</td>
                 <td>Менеджер</td>
                 <td><button class="btn-outline">Изменить</button></td>
             </tr>
