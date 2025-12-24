@@ -4,6 +4,7 @@ import random
 from flask import Blueprint, render_template, abort
 from flask_login import login_required, current_user
 from app import db
+from app.db import Brand, Body_type
 
 bp = Blueprint('main', __name__)
 
@@ -48,7 +49,23 @@ def staff(entity_name):
       for i in range(10):
          template_rows.append(''.join([random.choice(string.ascii_lowercase) for _ in range(random.randint(5, 10))]))
 
-      return render_template(f"staff/{entity['tab_name']}.html", entities=entities, current_entity=current_entity, template_rows=template_rows)
+      # Данные для заполнения выпадающих списков
+      if entity['tab_name'] == "models":
+         brands, _ = Brand.get_all()
+         body_types, _ = Body_type.get_all()
+      else:
+         brands = None
+         body_types = None
+
+      return render_template(
+         f"staff/{entity['tab_name']}.html",
+         entities=entities,
+         current_entity=current_entity,
+         template_rows=template_rows,
+         brands=brands,
+         body_types=body_types
+      )
+
    else:
       return abort(404)
 

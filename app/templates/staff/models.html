@@ -7,47 +7,39 @@
     <form id="addObjectForm">
         <select required>
             <option value="" disabled selected>Производитель</option>
-            <option value="BMW">BMW</option>
-            <option value="Audi">Audi</option>
-            <option value="Mercedes-Benz">Mercedes-Benz</option>
-            <option value="Volkswagen">Volkswagen</option>
-            <option value="Porsche">Porsche</option>
-            <option value="Lexus">Lexus</option>
-            <option value="Jaguar">Jaguar</option>
-            <option value="Land Rover">Land Rover</option>
-            <option value="Tesla">Tesla</option>
+            {% for brand in brands %}
+                <option value="{{ brand['id'] }}">{{ brand['name'] }}</option>
+            {% endfor %}
         </select>
         <input type="text" placeholder="Название модели" required>
         <select required>
             <option value="" disabled selected>Тип кузова</option>
-            <option value="Sedan">Седан</option>
-            <option value="Coupe">Купе</option>
-            <option value="Hatchback">Хэтчбек</option>
-            <option value="SUV">SUV</option>
-            <option value="Convertible">Кабриолет</option>
-            <option value="Wagon">Универсал</option>
+            {% for body_type in body_types %}
+                <option value="{{ body_type['id'] }}">{{ body_type['name'] }}</option>
+            {% endfor %}
         </select>
         <input type="text" placeholder="Описание" style="grid-column: span 2;" required>
         <input type="text" placeholder="Год" required>
         <select required>
             <option value="" disabled selected>Тип двигателя</option>
-            <option value="Petrol">Бензин</option>
-            <option value="Diesel">Дизель</option>
-            <option value="Hybrid">Гибрид</option>
-            <option value="Electric">Электро</option>
+            <option value="petrol">Бензин</option>
+            <option value="diesel">Дизель</option>
+            <option value="hybrid">Гибрид</option>
+            <option value="electric">Электро</option>
         </select>
-        <input type="text" placeholder="Объём двигателя" required>
+        <input type="text" placeholder="Объём двигателя (л.)">
         <input type="text" placeholder="Мощность (л.с.)" required>
         <select required>
             <option value="" disabled selected>Трансмиссия</option>
-            <option value="Manual">Механическая</option>
-            <option value="Automatic">Автоматическая</option>
+            <option value="manual">Механическая</option>
+            <option value="automatic">Автоматическая</option>
             <option value="variator">Вариатор</option>
             <option value="robotic">Роботизированная</option>
         </select>
-        <input type="text" placeholder="Цена" required>
+        <input type="text" placeholder="Цена (руб.)" required>
         <button type="submit" class="btn-red">Добавить</button>
     </form>
+    <div id="errorMessage" class="error-message" style="display: none;"></div>
 {% endblock %}
 
 <!-- Таблица всех моделей -->
@@ -63,27 +55,33 @@
                 <th>Описание</th>
                 <th>Год</th>
                 <th>Тип двигателя</th>
-                <th>Объём двигателя</th>
+                <th>Объём двигателя (л.)</th>
                 <th>Мощность (л.с.)</th>
                 <th>Трансмиссия</th>
-                <th>Цена</th>
+                <th>Цена (руб.)</th>
                 <th>Действие</th>
             </tr>
         </thead>
         <tbody id="objectsTableBody">
-            <tr>
-                <td>BMW</td>
-                <td>3 Series</td>
-                <td>Sedan</td>
-                <td>...</td>
-                <td>2022</td>
-                <td>Petrol</td>
-                <td>2.0</td>
-                <td>184</td>
-                <td>Automatic</td>
-                <td>1 000 000</td>
-                <td><button class="btn-outline">Изменить</button></td>
-            </tr>
+            {% for row in template_rows: %}
+                <tr id="object-row-unknown">
+                    <td style="filter: blur(5px)">{{ row }}</td>
+                    <td style="filter: blur(5px)">{{ row }}</td>
+                    <td style="filter: blur(5px)">{{ row }}</td>
+                    <td style="filter: blur(5px)">...</td>
+                    <td style="filter: blur(5px)">{{ row[0:3] }}</td>
+                    <td style="filter: blur(5px)">{{ row }}</td>
+                    <td style="filter: blur(5px)">{{ row[0:2] }}</td>
+                    <td style="filter: blur(5px)">{{ row[0:2] }}</td>
+                    <td style="filter: blur(5px)">{{ row }}</td>
+                    <td style="filter: blur(5px)">{{ row }}</td>
+                    <td><button class="btn-outline">Изменить</button></td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
+{% endblock %}
+
+{% block script %}
+<script src="{{ url_for('static', filename='js/staff/models.js') }}"></script>
 {% endblock %}

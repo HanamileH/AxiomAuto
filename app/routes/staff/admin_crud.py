@@ -1,10 +1,11 @@
 from flask import Blueprint, request, jsonify
-from app.db import Brand, Body_type, Color, manager_required
+from app.db import Brand, Body_type, Color, Model, manager_required
 
 OBJECTS_MATCH = {
    'brands': Brand,
    'body_types': Body_type,
-   'colors': Color
+   'colors': Color,
+   'models': Model
 }
 
 
@@ -111,6 +112,92 @@ def create(object_name):
          
          id, error = Color.create(name=name, hex_code=hex_code)
       
+      # Модели
+      elif object_name == 'models':
+         name = data.get('name')
+         description = data.get('description')
+         price = int(data.get('price'))
+         year = int(data.get('year'))
+         engine_type = data.get('engine_type')
+         engine_power = int(data.get('engine_power'))
+         engine_volume = float(data.get('engine_volume'))
+         transmission = data.get('transmission')
+         brand_id = data.get('brand_id')
+         body_type_id = data.get('body_type_id')
+
+         if not name:
+            return jsonify({
+               'success': False,
+               'error': 'Name is required'
+            }), 400
+
+         if not description:
+            return jsonify({
+               'success': False,
+               'error': 'Description is required'
+            }), 400
+
+         if not price:
+            return jsonify({
+               'success': False,
+               'error': 'Price is required'
+            }), 400
+         
+         if not year:
+            return jsonify({
+               'success': False,
+               'error': 'Year is required'
+            }), 400
+
+         if not engine_type:
+            return jsonify({
+               'success': False,
+               'error': 'Engine type is required'
+            }), 400
+
+         if not engine_power:
+            return jsonify({
+               'success': False,
+               'error': 'Engine power is required'
+            }), 400
+
+         if engine_type != 'electric' and not engine_volume:
+            return jsonify({
+               'success': False,
+               'error': 'Engine volume is required'
+            }), 400
+         
+         if not transmission:
+            return jsonify({
+               'success': False,
+               'error': 'Transmission is required'
+            }), 400
+         
+         if not brand_id:
+            return jsonify({
+               'success': False,
+               'error': 'Brand is required'
+            }), 400
+         
+         if not body_type_id:
+            return jsonify({
+               'success': False,
+               'error': 'Body type is required'
+            }), 400
+
+         id, error = Model.create(
+            name=name,
+            description=description,
+            price=price,
+            year=year,
+            engine_type=engine_type,
+            engine_power=engine_power,
+            engine_volume=engine_volume,
+            transmission=transmission,
+            brand_id=brand_id,
+            body_type_id=body_type_id
+         )
+         
       # Неизвестный объект
       else:
          return jsonify({
@@ -195,6 +282,33 @@ def update(object_name, id):
             }), 400
          
          _, error = Color.update(id=id, name=name, hex_code=hex_code)
+
+      # Модели
+      elif object_name == 'models':
+         name = data.get('name')
+         description = data.get('description')
+         price = int(data.get('price'))
+         year = int(data.get('year'))
+         engine_type = data.get('engine_type')
+         engine_power = int(data.get('engine_power'))
+         engine_volume = float(data.get('engine_volume'))
+         transmission = data.get('transmission')
+         brand_id = data.get('brand_id')
+         body_type_id = data.get('body_type_id')
+
+         _, error = Model.update(
+            id=id,
+            name=name,
+            description=description,
+            price=price,
+            year=year,
+            engine_type=engine_type,
+            engine_power=engine_power,
+            engine_volume=engine_volume,
+            transmission=transmission,
+            brand_id=brand_id,
+            body_type_id=body_type_id
+         )
 
       # Неизвестный объект
       else:
