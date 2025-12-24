@@ -49,7 +49,7 @@ function renderObjectTable() {
       row.id = `object-row-${color.id}`;
       row.innerHTML = `
             <td id="color-value-${color.id}">
-                <div class="color-preview color-preview-${color.id}" style="background-color: #${color.hex_code};"></div>
+                <div class="color-preview" id="color-preview-${color.id}" style="background-color: #${color.hex_code};"></div>
             </td>
             <td id="color-name-${color.id}">${color.name}</td>
             <td>
@@ -80,47 +80,50 @@ function enterEditMode(id) {
    currentEditId = id;
    editMode = true;
 
-   const valueCell = document.getElementById(`color-value-${id}`);
-   const nameCell = document.getElementById(`color-name-${id}`);
-   const actionCell = nameCell.nextElementSibling;
+   const row = document.getElementById(`object-row-${id}`);
+   if (!row) return;
 
    // Сохраняем оригинальные значения
    const originalName = object.name;
    const originalValue = object.hex_code;
 
-   // Создаем панель редактирования
-   const editPanel = document.createElement('div');
-   editPanel.className = 'edit-panel';
-   editPanel.id = `edit-panel-${id}`;
-   editPanel.innerHTML = `
-            <input type="color" id="edit-color-value-${id}" value="#${originalValue}" class="color-input">
-            <input type="text" id="edit-input-${id}" value="${originalName}" class="edit-input" placeholder="Название цвета">
-            <div class="edit-buttons">
-                <button class="btn-outline" id="btn-save-${id}" data-id="${id}">Сохранить</button>
-                <button class="btn-outline" id="btn-cancel-${id}" data-id="${id}">Отмена</button>
-                <button class="btn-red" id="btn-delete-${id}" data-id="${id}">Удалить</button>
+   // Создаем панель редактирования (отдельную строку таблицы)
+   const editRow = document.createElement('tr');
+   editRow.id = `edit-row-${id}`;
+   editRow.innerHTML = `
+        <td colspan="3" style="padding: 0;">
+            <div class="edit-panel" id="edit-panel-${id}">
+                <div class="edit-inputs-row">
+                    <input type="color" id="edit-color-value-${id}" value="#${originalValue}" class="color-input">
+                    <input type="text" id="edit-input-${id}" value="${originalName}" class="edit-input" placeholder="Название цвета">
+                </div>
+                <div class="edit-buttons">
+                    <button class="btn-outline" id="btn-save-${id}" data-id="${id}">Сохранить</button>
+                    <button class="btn-outline" id="btn-cancel-${id}" data-id="${id}">Отмена</button>
+                    <button class="btn-red" id="btn-delete-${id}" data-id="${id}">Удалить</button>
+                </div>
             </div>
-        </div>
+        </td>
     `;
 
-   // Скрываем оригинальный контент
-   valueCell.style.display = 'none';
-   nameCell.style.display = 'none';
-
-   // Вставляем панель редактирования
-   nameCell.parentNode.insertBefore(editPanel, actionCell);
+   // Скрываем оригинальную строку и вставляем панель редактирования вместо нее
+   row.style.display = 'none';
+   row.parentNode.insertBefore(editRow, row.nextSibling);
 
    // Фокусируемся на поле ввода названия
    const nameInput = document.getElementById(`edit-input-${id}`);
    nameInput.focus();
    nameInput.select();
 
-   // Добавляем обработчик для изменения цвета
+   // Добавляем обработчик для изменения цвета (обновление превью)
    const colorInput = document.getElementById(`edit-color-value-${id}`);
-   const colorPreview = document.getElementById(`color-preview-${id}`);
+   const colorPreview = document.querySelector(`#color-preview-${id}`);
    
    colorInput.addEventListener('input', function() {
-      colorPreview.style.backgroundColor = `#${this.hex_code}`;
+      // Обновляем предпросмотр цвета, если он есть
+      if (colorPreview) {
+         colorPreview.style.backgroundColor = this.value;
+      }
    });
 
    // Добавляем обработчики для кнопок панели
@@ -146,7 +149,7 @@ async function saveObject() {
    const colorInput = document.getElementById(`edit-color-value-${currentEditId}`);
    
    const newName = nameInput.value.trim();
-   const newValue = colorInput.value.trim().slice(1);
+   const newValue = colorInput.value.trim().slice(1); // Убираем #
 
    if (!newName) {
       showError('Название не может быть пустым');
@@ -242,19 +245,14 @@ function cancelEdit() {
 // Выйти из режима редактирования
 function exitEditMode() {
    if (currentEditId && editMode) {
-      const editPanel = document.getElementById(`edit-panel-${currentEditId}`);
-      if (editPanel) {
-         editPanel.remove();
+      const editRow = document.getElementById(`edit-row-${currentEditId}`);
+      if (editRow) {
+         editRow.remove();
       }
 
-      const valueCell = document.getElementById(`color-value-${currentEditId}`);
-      const nameCell = document.getElementById(`color-name-${currentEditId}`);
-      
-      if (valueCell) {
-         valueCell.style.display = '';
-      }
-      if (nameCell) {
-         nameCell.style.display = '';
+      const row = document.getElementById(`object-row-${currentEditId}`);
+      if (row) {
+         row.style.display = '';
       }
 
       currentEditId = null;
@@ -267,7 +265,7 @@ addForm.addEventListener('submit', async function (e) {
    e.preventDefault();
 
    const name = colorNameInput.value.trim();
-   const value = colorValueInput.value.trim().slice(1);
+   const value = colorValueInput.value.trim().slice(1); // Убираем #
 
    if (!name) {
       showError('Введите название цвета');

@@ -5,7 +5,7 @@ let currentEditId = null;
 
 // DOM элементы
 const objectTableBody = document.getElementById('objectsTableBody');
-const addForm = document.getElementById('add-form');
+const addForm = document.getElementById('addObjectForm');
 const errorMessage = document.getElementById('errorMessage');
 
 // Элементы ввода
@@ -76,30 +76,31 @@ function enterEditMode(id) {
    currentEditId = id;
    editMode = true;
 
-   const nameCell = document.getElementById(`brand-name-${id}`);
-   const actionCell = nameCell.nextElementSibling;
+   const row = document.getElementById(`object-row-${id}`);
+   if (!row) return;
 
    // Сохраняем оригинальное значение
    const originalName = object.name;
 
-   // Создаем панель редактирования
-   const editPanel = document.createElement('div');
-   editPanel.className = 'edit-panel';
-   editPanel.id = `edit-panel-${id}`;
-   editPanel.innerHTML = `
-        <input type="text" id="edit-input-${id}" value="${originalName}" class="edit-input">
-        <div class="edit-buttons">
-            <button class="btn-outline" id="btn-save-${id}" data-id="${id}">Сохранить</button>
-            <button class="btn-outline" id="btn-cancel-${id}" data-id="${id}">Отмена</button>
-            <button class="btn-red" id="btn-delete-${id}" data-id="${id}">Удалить</button>
-        </div>
+   // Создаем панель редактирования (отдельную строку таблицы)
+   const editRow = document.createElement('tr');
+   editRow.id = `edit-row-${id}`;
+   editRow.innerHTML = `
+        <td colspan="2" style="padding: 0;">
+            <div class="edit-panel" id="edit-panel-${id}">
+                <input type="text" id="edit-input-${id}" value="${originalName}" class="edit-input">
+                <div class="edit-buttons">
+                    <button class="btn-outline" id="btn-save-${id}" data-id="${id}">Сохранить</button>
+                    <button class="btn-outline" id="btn-cancel-${id}" data-id="${id}">Отмена</button>
+                    <button class="btn-red" id="btn-delete-${id}" data-id="${id}">Удалить</button>
+                </div>
+            </div>
+        </td>
     `;
 
-   // Скрываем оригинальный контент
-   nameCell.style.display = 'none';
-
-   // Вставляем панель редактирования
-   nameCell.parentNode.insertBefore(editPanel, actionCell);
+   // Скрываем оригинальную строку и вставляем панель редактирования вместо нее
+   row.style.display = 'none';
+   row.parentNode.insertBefore(editRow, row.nextSibling);
 
    // Фокусируемся на поле ввода
    const input = document.getElementById(`edit-input-${id}`);
@@ -212,14 +213,14 @@ function cancelEdit() {
 // Выйти из режима редактирования
 function exitEditMode() {
    if (currentEditId && editMode) {
-      const editPanel = document.getElementById(`edit-panel-${currentEditId}`);
-      if (editPanel) {
-         editPanel.remove();
+      const editRow = document.getElementById(`edit-row-${currentEditId}`);
+      if (editRow) {
+         editRow.remove();
       }
 
-      const nameCell = document.getElementById(`brand-name-${currentEditId}`);
-      if (nameCell) {
-         nameCell.style.display = '';
+      const row = document.getElementById(`object-row-${currentEditId}`);
+      if (row) {
+         row.style.display = '';
       }
 
       currentEditId = null;
