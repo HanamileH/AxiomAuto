@@ -11,13 +11,6 @@ def create_app(config_class=Config):
     # Каптча
     app.config['HCAPTCHA_ENABLED'] = True
 
-    print('=' * 50)
-    print()
-    print(app.config['HCAPTCHA_SITE_KEY'])
-    print(app.config['HCAPTCHA_SECRET_KEY'])
-    print()
-    print('=' * 50)
-
     hcaptcha = hCaptcha(app)
 
     # Авторизация
