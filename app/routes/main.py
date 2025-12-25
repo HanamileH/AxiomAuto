@@ -1,6 +1,6 @@
 import string
 import random
-from flask import Blueprint, render_template, abort
+from flask import Blueprint, render_template, abort, jsonify
 from flask_login import login_required, current_user
 from app.db import get_catalog, get_model_data, Brand, Body_type, ENTITIES_TYPES, STATS_TYPES, get_statistics
 
@@ -107,12 +107,16 @@ def statistics(stats_id):
 
     if not stats_id:
         return abort(404)
+    
+    # Данные для графиков
+    chart_data = stats_data["chart_data"]
 
     return render_template(
         "staff/statistics.html",
         stats_data=stats_data,
         stats_types=stats_types,
         entities=entities,
+        chart_data=chart_data,
     )
 
 
