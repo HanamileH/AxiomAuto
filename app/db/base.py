@@ -1,90 +1,90 @@
 from .connection import db
 
 ENGINE_TYPES = {
-   "petrol": "Бензин",
-   "diesel": "Дизель",
-   "electric": "Электро",
-   "hybrid": "Гибрид"
+    "petrol": "Бензин",
+    "diesel": "Дизель",
+    "electric": "Электро",
+    "hybrid": "Гибрид",
 }
 
 TRANSMISSION_TYPES = {
-   "manual": "Механическая",
-   "automatic": "Автоматическая",
-   "variator": "Вариатор",
-   "robotic": "Роботизированная"
+    "manual": "Механическая",
+    "automatic": "Автоматическая",
+    "variator": "Вариатор",
+    "robotic": "Роботизированная",
 }
 
 ENTITIES_TYPES = [
-   {
-      "tab_name": "brands",
-      "ru_name": "Марки",
-   },
-   {
-      "tab_name": "body_types",
-      "ru_name": "Типы кузова",
-   },
-   {
-      "tab_name": "models",
-      "ru_name": "Модели",
-   },
-   {
-      "tab_name": "colors",
-      "ru_name": "Цвета",
-   },
-   {
-      "tab_name": "cars",
-      "ru_name": "Автомобили",
-   },
-   {
-      "tab_name": "users",
-      "ru_name": "Пользователи",
-   },
-   {
-      "tab_name": "sales",
-      "ru_name": "Заказы",
-   },
-   {
-      "tab_name": "payments",
-      "ru_name": "Оплаты",
-   }
+    {
+        "tab_name": "brands",
+        "ru_name": "Марки",
+    },
+    {
+        "tab_name": "body_types",
+        "ru_name": "Типы кузова",
+    },
+    {
+        "tab_name": "models",
+        "ru_name": "Модели",
+    },
+    {
+        "tab_name": "colors",
+        "ru_name": "Цвета",
+    },
+    {
+        "tab_name": "cars",
+        "ru_name": "Автомобили",
+    },
+    {
+        "tab_name": "users",
+        "ru_name": "Пользователи",
+    },
+    {
+        "tab_name": "sales",
+        "ru_name": "Заказы",
+    },
+    {
+        "tab_name": "payments",
+        "ru_name": "Оплаты",
+    },
 ]
 
 STATS_TYPES = [
-   {
-      "name": "Продажи по маркам",
-      "table": "brand_sales_view",
-      "columns": {
-         "brand": "Производитель",
-         "count": "Продаж"
-      }
-   },
-   {
-      "name": "Продажи по цветам",
-      "table": "color_sales_view",
-      "columns": {
-         "color": "Цвет",
-         "count": "Продаж"
-      }
-   },
-   {
-      "name": "Продажи по типам кузовов",
-      "table": "body_type_sales_view",
-      "columns": {
-         "body_type": "Тип кузова",
-         "count": "Продаж"
-      }
-   },
-   {
-      "name": "Эффективность менеджеров",
-      "table": "manager_perfomance_view",
-      "columns": {
-         "name": "Имя",
-         "surname": "Фамилия",
-         "patronymic": "Отчество",
-         "sales": "Оформлено продаж",
-         "deliveries": "Оформлено доставок"
-      }
-   }
+    {
+        "name": "Продажи по маркам",
+        "table": "brand_sales_view",
+        "columns": {
+            "brand": "Производитель",
+            "count": "Продаж"
+        },
+    },
+    {
+        "name": "Продажи по цветам",
+        "table": "color_sales_view",
+        "columns": {
+            "color": "Цвет",
+            "count": "Продаж"
+        },
+    },
+    {
+        "name": "Продажи по типам кузовов",
+        "table": "body_type_sales_view",
+        "columns": {
+            "body_type": "Тип кузова",
+            "count": "Продаж"
+        },
+    },
+    {
+        "name": "Эффективность менеджеров",
+        "table": "manager_perfomance_view",
+        "columns": {
+            "name": "Имя",
+            "surname": "Фамилия",
+            "patronymic": "Отчество",
+            "sales": "Оформлено продаж",
+            "deliveries": "Оформлено доставок",
+        },
+    },
 ]
 
 
@@ -95,7 +95,8 @@ def get_catalog():
     """
 
     with db.get_cursor(as_dict=True) as cursor:
-            cursor.execute("""
+        cursor.execute(
+            """
             SELECT
                m.id AS id,
                b.name AS brand,
@@ -108,17 +109,18 @@ def get_catalog():
             FROM model m
             JOIN brand b
             ON m.brand_id = b.id;
-            """)
-            
-            rows = cursor.fetchall()
-            
-            for row in rows:
-                row["engine_type"] = ENGINE_TYPES[row["engine_type"]]
-                row["transmission"] = TRANSMISSION_TYPES[row["transmission"]]
-                row["price"] = f"{int(row["price"]):,}".replace(",", " ")
+            """
+        )
 
-            return rows
-    
+        rows = cursor.fetchall()
+
+        for row in rows:
+            row["engine_type"] = ENGINE_TYPES[row["engine_type"]]
+            row["transmission"] = TRANSMISSION_TYPES[row["transmission"]]
+            row["price"] = f"{int(row["price"]):,}".replace(",", " ")
+
+        return rows
+
 
 def get_model_data(model_id):
     """Получить данных модели по ID
@@ -127,9 +129,10 @@ def get_model_data(model_id):
     Returns:
         dict: Модель (или None, если не найдена)
     """
-   
+
     with db.get_cursor(as_dict=True) as cursor:
-        cursor.execute("""
+        cursor.execute(
+            """
          SELECT
             b.name AS brand,
             m.name AS model,
@@ -149,13 +152,15 @@ def get_model_data(model_id):
          JOIN body_type bt
          ON m.body_type = bt.id
          WHERE m.id = %s;
-        """, (model_id,))
+        """,
+            (model_id,),
+        )
 
         row = cursor.fetchone()
-        
+
         if row is None:
             return None
-        
+
         result = dict(row)
 
         result["engine_type"] = ENGINE_TYPES[result["engine_type"]]
@@ -163,7 +168,7 @@ def get_model_data(model_id):
         result["price"] = f"{int(result["price"]):,}".replace(",", " ")
 
         return result
-    
+
 
 def get_statistics(stats_id):
     """Получить данные для статистики
@@ -176,14 +181,14 @@ def get_statistics(stats_id):
     with db.get_cursor(as_dict=True) as cursor:
         if stats_id is None:
             return None
-        
+
         stats_id = int(stats_id)
-        
+
         if stats_id < 0 or stats_id >= len(STATS_TYPES):
             return None
 
         stats_info = STATS_TYPES[stats_id]
-        
+
         # Получаем данные из представления
         columns_name = list(stats_info["columns"].keys())
 
@@ -196,5 +201,5 @@ def get_statistics(stats_id):
             "name": stats_info["name"],
             "columns": columns_name,
             "columns_ru": list(stats_info["columns"].values()),
-            "rows": rows
+            "rows": rows,
         }

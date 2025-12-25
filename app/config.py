@@ -4,9 +4,12 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 class Config:
     SECRET_KEY = os.getenv("SECRET_KEY")
-    PERMANENT_SESSION_LIFETIME = timedelta(days=int(os.getenv("PERMANENT_SESSION_LIFETIME", default=30)))
+    PERMANENT_SESSION_LIFETIME = timedelta(
+        days=int(os.getenv("PERMANENT_SESSION_LIFETIME", default=30))
+    )
 
     DB_HOSTNAME = os.getenv("DB_HOSTNAME")
     DB_PORT = os.getenv("DB_PORT")

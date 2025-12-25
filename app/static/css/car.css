@@ -1,95 +1,95 @@
 .car-container {
-    display: grid;
-    grid-template-columns: 2fr 3fr;
-    gap: 3rem;
-    align-items: start;
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+  gap: 3rem;
+  align-items: start;
 }
 
 .car-image {
-    height: 100%;
+  height: 100%;
 }
 
 .car-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    border-radius: 1rem;
-    border: 1px solid #DDDDDD;
-	box-shadow: 0rem 0.1rem 0.5rem rgba(0,0,0,0.15);
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 1rem;
+  border: 1px solid #dddddd;
+  box-shadow: 0rem 0.1rem 0.5rem rgba(0, 0, 0, 0.15);
 }
 
 .car-info h1 {
-    font-size: 2rem;
-    font-weight: 800;
-    margin-bottom: 0.5rem;
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
 }
 
 .subtitle {
-    font-size: 1rem;
-    color: #666666;
-    margin-bottom: 0.75rem;
+  font-size: 1rem;
+  color: #666666;
+  margin-bottom: 0.75rem;
 }
 
 .price {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
 }
 
 .status {
-    display: inline-block;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
 }
 
 .status.available {
-    background: #D4EDDA;
-    color: #155724;
+  background: #d4edda;
+  color: #155724;
 }
 
 .status.sold {
-    background: #F8D7DA;
-    color: #721C24;
+  background: #f8d7da;
+  color: #721c24;
 }
 
 .car-info h2 {
-    margin-top: 1.5rem;
-    margin-bottom: 1rem;
-    font-size: 1.5rem;
-    font-weight: bold;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  font-weight: bold;
 }
 
 .specs {
-    list-style: none;
-    border: 1px solid #DDDDDD;
-    border-radius: 1rem;
-    padding: 1rem 1.5rem;
-    background: #FAFAFA;
-	box-shadow: 0rem 0.1rem 0.5rem rgba(0,0,0,0.15);
+  list-style: none;
+  border: 1px solid #dddddd;
+  border-radius: 1rem;
+  padding: 1rem 1.5rem;
+  background: #fafafa;
+  box-shadow: 0rem 0.1rem 0.5rem rgba(0, 0, 0, 0.15);
 }
 
 .specs li {
-    margin-bottom: 0.5rem;
-    font-size: 1rem;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
 }
 
 .specs li strong {
-    display: inline-block;
-    width: 13rem;
+  display: inline-block;
+  width: 13rem;
 }
 
 .description {
-    font-size: 1rem;
-    line-height: 1.6;
-    margin-top: 1rem;
-    margin-bottom: 1.5rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .actions {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
 }

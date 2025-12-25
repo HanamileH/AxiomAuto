@@ -4,142 +4,163 @@ from flask import Blueprint, render_template, abort
 from flask_login import login_required, current_user
 from app.db import get_catalog, get_model_data, Brand, Body_type, ENTITIES_TYPES, STATS_TYPES, get_statistics
 
-bp = Blueprint('main', __name__)
+bp = Blueprint("main", __name__)
+
 
 # Главная страница (каталог)
-@bp.route('/')
+@bp.route("/")
 def main():
-   all_models = get_catalog()
+    all_models = get_catalog()
 
-   return render_template('catalog.html', models=all_models)
+    return render_template("catalog.html", models=all_models)
 
 
 # Страница описания автомобиля
-@bp.route('/car/<model_id>')
+@bp.route("/car/<model_id>")
 def car(model_id):
-   model = get_model_data(model_id)
-   
-   if model:
-      return render_template('car.html', model=model)
-   else:
-      return abort(404)
+    model = get_model_data(model_id)
+
+    if model:
+        return render_template("car.html", model=model)
+    else:
+        return abort(404)
 
 
 # Страница менеджера
-@bp.route('/staff/<entity_name>')
+@bp.route("/staff/<entity_name>")
 @login_required
 def staff(entity_name):
-   if not current_user.role in ['admin', 'manager']:
-      return abort(403)
+    if not current_user.role in ["admin", "manager"]:
+        return abort(403)
 
-   entities = ENTITIES_TYPES
-   current_entity = None
-   
-   for entity in entities:
-      if entity["tab_name"] == entity_name:
-         current_entity = entity
-         break
-   
-   if current_entity:
-      # Генерируем случайные строки для отображения во время загрузки
-      template_rows = []
+    entities = ENTITIES_TYPES
+    current_entity = None
 
-      for i in range(10):
-         template_rows.append(''.join([random.choice(string.ascii_lowercase) for _ in range(random.randint(5, 10))]))
+    for entity in entities:
+        if entity["tab_name"] == entity_name:
+            current_entity = entity
+            break
 
-      # Данные для заполнения выпадающих списков
-      if entity['tab_name'] == "models":
-         brands, _ = Brand.get_all()
-         body_types, _ = Body_type.get_all()
-      else:
-         brands = None
-         body_types = None
+    if current_entity:
+        # Генерируем случайные строки для отображения во время загрузки
+        template_rows = []
 
-      return render_template(
-         f"staff/{entity['tab_name']}.html",
-         entities=entities,
-         current_entity=current_entity,
-         template_rows=template_rows,
-         brands=brands,
-         body_types=body_types
-      )
+        for i in range(10):
+            template_rows.append(
+                "".join(
+                    [
+                        random.choice(string.ascii_lowercase)
+                        for _ in range(random.randint(5, 10))
+                    ]
+                )
+            )
 
-   else:
-      return abort(404)
-   
+        # Данные для заполнения выпадающих списков
+        if entity["tab_name"] == "models":
+            brands, _ = Brand.get_all()
+            body_types, _ = Body_type.get_all()
+        else:
+            brands = None
+            body_types = None
+
+        return render_template(
+            f"staff/{entity['tab_name']}.html",
+            entities=entities,
+            current_entity=current_entity,
+            template_rows=template_rows,
+            brands=brands,
+            body_types=body_types,
+        )
+
+    else:
+        return abort(404)
+
 
 # Страница статистики
-@bp.route('/statistics/<stats_id>')
+@bp.route("/statistics/<stats_id>")
 @login_required
 def statistics(stats_id):
-   if not current_user.role in ['admin', 'manager']:
-      return abort(403)
+    if not current_user.role in ["admin", "manager"]:
+        return abort(403)
 
-   entities = ENTITIES_TYPES
-   stats_types = [t['name'] for t in STATS_TYPES]
-   stats_data = get_statistics(stats_id)
+    entities = ENTITIES_TYPES
+    stats_types = [t["name"] for t in STATS_TYPES]
+    stats_data = get_statistics(stats_id)
 
-   print(stats_types)
+    print(stats_types)
 
-   if not stats_id:
-      return abort(404)
-   
-   return render_template(
-      'staff/statistics.html',
-      stats_data=stats_data,
-      stats_types=stats_types,
-      entities=entities
-   )
+    if not stats_id:
+        return abort(404)
+
+    return render_template(
+        "staff/statistics.html",
+        stats_data=stats_data,
+        stats_types=stats_types,
+        entities=entities,
+    )
 
 
 # Информация о компании
-@bp.route('/about')
+@bp.route("/about")
 def about():
-   return render_template('about.html')
+    return render_template("about.html")
 
 
 # Страница ошибка 401
 @bp.errorhandler(401)
 def unauthorized(e):
-   return render_template(
-      'error.html',
-      error_title='Ошибка 401 - Неавторизованный доступ',
-      error_code='401',
-      error_message='Неавторизованный доступ.',
-      error_description='Вы не авторизованы. Пожалуйста, авторизуйтесь для доступа к этой странице.'
-   ), 401
+    return (
+        render_template(
+            "error.html",
+            error_title="Ошибка 401 - Неавторизованный доступ",
+            error_code="401",
+            error_message="Неавторизованный доступ.",
+            error_description="Вы не авторизованы. Пожалуйста, авторизуйтесь для доступа к этой странице.",
+        ),
+        401,
+    )
 
 
 # Страница ошибки 403
 @bp.errorhandler(403)
 def forbidden(e):
-   return render_template(
-      'error.html',
-      error_title='Ошибка 403 - Доступ запрещен',
-      error_code='403',
-      error_message='Доступ к странице запрещен.',
-      error_description='У вас недостаточно прав для просмотра этой страницы.'
-   ), 403
+    return (
+        render_template(
+            "error.html",
+            error_title="Ошибка 403 - Доступ запрещен",
+            error_code="403",
+            error_message="Доступ к странице запрещен.",
+            error_description="У вас недостаточно прав для просмотра этой страницы.",
+        ),
+        403,
+    )
 
 
 # Страница ошибки 404
 @bp.errorhandler(404)
 def page_not_found(e):
-   return render_template(
-      'error.html',
-      error_title='Ошибка 404 - Страница не найдена',
-      error_code='404',
-      error_message='Страница не найдена.',
-      error_description='Запрашиваемая страница не существует или была удалена.'
-   ), 404
+    return (
+        render_template(
+            "error.html",
+            error_title="Ошибка 404 - Страница не найдена",
+            error_code="404",
+            error_message="Страница не найдена.",
+            error_description="Запрашиваемая страница не существует или была удалена.",
+        ),
+        404,
+    )
+
 
 # Страница ошибки 500
 @bp.errorhandler(500)
 def internal_server_error(e):
-   return render_template(
-      'error.html',
-      error_title='Ошибка 500 - Внутренняя ошибка сервера',
-      error_code='500',
-      error_message='Внутренняя ошибка сервера.',
-      error_description='Произошла ошибка на сервере. Попробуйте повторить запрос позже или обратитесь к системному администратору.'
-   ), 500
+    return (
+        render_template(
+            "error.html",
+            error_title="Ошибка 500 - Внутренняя ошибка сервера",
+            error_code="500",
+            error_message="Внутренняя ошибка сервера.",
+            error_description="Произошла ошибка на сервере. Попробуйте повторить запрос позже или обратитесь к системному администратору.",
+        ),
+        500,
+    )

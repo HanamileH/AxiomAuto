@@ -1,172 +1,174 @@
 .title {
-    font-size: 36px;
-    font-weight: 800;
-    margin-bottom: 30px;
+  font-size: 36px;
+  font-weight: 800;
+  margin-bottom: 30px;
 }
 
 /* Entity select */
 .entity-select {
-    background: #fafafa;
-    border: 1px solid #eee;
-    border-radius: 12px;
-    padding: 25px;
-    margin-bottom: 40px;
+  background: #fafafa;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 40px;
 }
 
 .entity-select h2 {
-    margin-bottom: 15px;
-    font-size: 22px;
+  margin-bottom: 15px;
+  font-size: 22px;
 }
 
 .entity-group {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 10px;
 }
 
 .entity-group button {
-    width: 100%;
+  width: 100%;
 }
 
 /* Add form */
 .add-form {
-    background: #fafafa;
-    border: 1px solid #eee;
-    border-radius: 12px;
-    padding: 25px;
-    margin-bottom: 40px;
+  background: #fafafa;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 40px;
 }
 
 .add-form h2 {
-    margin-bottom: 15px;
-    font-size: 22px;
+  margin-bottom: 15px;
+  font-size: 22px;
 }
 
 .add-form form {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 15px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 15px;
 }
 
-.add-form input, .add-form select {
-    padding: 10px 12px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 14px;
-    width: 100%;
+.add-form input,
+.add-form select {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  width: 100%;
 }
 
 .btn-red {
-    background: #e63946;
-    color: #fff;
-    border: none;
-    padding: 10px 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 15px;
-    transition: 0.2s;
+  background: #e63946;
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: 0.2s;
 }
 
 .btn-red:hover {
-    background: #d62828;
+  background: #d62828;
 }
 
 .error-message {
-    font-size: 100%;
-    font-weight: 400;
-    margin-top: 1rem;
+  font-size: 100%;
+  font-weight: 400;
+  margin-top: 1rem;
 }
 
 /* Table */
 .table-section h2 {
-    margin-bottom: 15px;
-    font-size: 22px;
+  margin-bottom: 15px;
+  font-size: 22px;
 }
 
 .entity-table {
-    width: 100%;
-    border-collapse: collapse;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    overflow: hidden;
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
-.entity-table th, .entity-table td {
-    padding: 12px 15px;
-    border-bottom: 1px solid #eee;
-    text-align: left;
+.entity-table th,
+.entity-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
 }
 
 .entity-table thead {
-    background: #f8f8f8;
-    font-weight: bold;
+  background: #f8f8f8;
+  font-weight: bold;
 }
 
 .entity-table tr:hover {
-    background: #fafafa;
+  background: #fafafa;
 }
 
 .status {
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 13px;
-    font-weight: bold;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: bold;
 }
 
 .status.available {
-    background: #d4edda;
-    color: #155724;
+  background: #d4edda;
+  color: #155724;
 }
 
 .status.sold {
-    background: #f8d7da;
-    color: #721c24;
+  background: #f8d7da;
+  color: #721c24;
 }
 
 .btn-status {
-    background: #0066cc;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    padding: 6px 12px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: 0.2s;
+  background: #0066cc;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.2s;
 }
 
 .btn-status:hover {
-    background: #004b99;
+  background: #004b99;
 }
 
 /* Панель редактирования */
 .edit-panel {
-    background: #fafafa;
-    border: 1px solid #eee;
-    border-radius: 12px;
-    padding: 20px;
-    margin: 10px 0;
-    transition: all 0.3s ease;
+  background: #fafafa;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 10px 0;
+  transition: all 0.3s ease;
 }
 
 .edit-input {
-    width: 100%;
-    padding: 12px 15px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 14px;
-    background: white;
-    transition: all 0.2s;
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  background: white;
+  transition: all 0.2s;
 }
 
 .edit-input:focus {
-    outline: none;
-    border-color: #0066cc;
-    box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+  outline: none;
+  border-color: #0066cc;
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
 }
 
 /* Кнопки панели редактирования */
 .edit-buttons {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
 }

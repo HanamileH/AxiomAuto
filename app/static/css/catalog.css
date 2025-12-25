@@ -1,81 +1,80 @@
 /* Панель фильтров */
 .filters-card {
-    background: #FAFAFA;
-    border: 1px solid #DDDDDD;
-    border-radius: 0.5rem;
-    margin-bottom: 2.5rem;
-    padding: 2rem;
+  background: #fafafa;
+  border: 1px solid #dddddd;
+  border-radius: 0.5rem;
+  margin-bottom: 2.5rem;
+  padding: 2rem;
 }
 
 .filters-card h2 {
-	font-size: 1.5rem;
+  font-size: 1.5rem;
 }
 
 .filters-panel {
-	margin-top: 2rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
+  margin-top: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .filters-panel input,
 .filters-panel select {
-    padding: 0.5rem 1rem;
-    border: 1px solid #DDDDDD;
-    border-radius: 0.5rem;
-    font-size: 1rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid #dddddd;
+  border-radius: 0.5rem;
+  font-size: 1rem;
 }
 
 .filters-panel label {
-    display: flex;
-    align-items: center;
-    color: #333333;
-    font-size: 1rem;
+  display: flex;
+  align-items: center;
+  color: #333333;
+  font-size: 1rem;
 }
-
 
 /* Каталог товаров */
 .catalog {
-	display: grid;
-	grid-template-columns: repeat(4, 1fr);
-	gap: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
 }
 
 .card {
-	border: 1px solid #DDDDDD;
-	border-radius: 1rem;
-	padding: 1rem;
-	display: grid;
-	grid-template-rows: auto min-content min-content;
-	
-	text-align: center;
-	background: #FFFFFF;
-	transition: 0.2s ease;
+  border: 1px solid #dddddd;
+  border-radius: 1rem;
+  padding: 1rem;
+  display: grid;
+  grid-template-rows: auto min-content min-content;
+
+  text-align: center;
+  background: #ffffff;
+  transition: 0.2s ease;
 }
 
 .card:hover {
-	box-shadow: 0rem 0.1rem 0.5rem rgba(0,0,0,0.15);
+  box-shadow: 0rem 0.1rem 0.5rem rgba(0, 0, 0, 0.15);
 }
 
 .card img {
-	width: 100%;
-	height: 100%;
-	object-fit: contain;
-	margin-bottom: 0.75rem;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  margin-bottom: 0.75rem;
 }
 
 .card h3 {
-	font-size: 1rem;
-	margin-bottom: 0.3rem;
+  font-size: 1rem;
+  margin-bottom: 0.3rem;
 }
 
 .card p {
-	font-size: 1rem;
-	margin-bottom: 0.3rem;
+  font-size: 1rem;
+  margin-bottom: 0.3rem;
 }
 
 .card .price {
-	font-weight: bold;
-	font-size: 100%;
-	margin-bottom: 0.8rem;
+  font-weight: bold;
+  font-size: 100%;
+  margin-bottom: 0.8rem;
 }

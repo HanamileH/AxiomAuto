@@ -2,11 +2,11 @@ from psycopg2 import pool
 from psycopg2.extras import RealDictCursor
 from contextlib import contextmanager
 
+
 class DatabaseConnection:
     def __init__(self):
         self.connection_pool = None
 
-    
     def init_app(self, app):
         """Инициализация пула соединений
         Args:
@@ -16,35 +16,30 @@ class DatabaseConnection:
         self.connection_pool = pool.ThreadedConnectionPool(
             minconn=1,
             maxconn=20,
-            user=app.config['DB_USERNAME'],
-            password=app.config['DB_PASSWORD'],
-            host=app.config['DB_HOSTNAME'],
-            port=app.config['DB_PORT'],
-            database=app.config['DB_DATABASE']
+            user=app.config["DB_USERNAME"],
+            password=app.config["DB_PASSWORD"],
+            host=app.config["DB_HOSTNAME"],
+            port=app.config["DB_PORT"],
+            database=app.config["DB_DATABASE"],
         )
 
         # Переключаемся на нужную схему
         with self.get_cursor(commit=True) as cursor:
             cursor.execute(f"SET search_path TO {app.config['DB_SCHEMA']}")
 
-
     def init_db(self):
-        """Инициализация базы данных
-        """
+        """Инициализация базы данных"""
 
         pass
 
-
     @contextmanager
     def get_connection(self):
-        """Контекстный менеджер для получения соединения из пула
-        """
+        """Контекстный менеджер для получения соединения из пула"""
         connection = self.connection_pool.getconn()
         try:
             yield connection
         finally:
             self.connection_pool.putconn(connection)
-
 
     @contextmanager
     def get_cursor(self, commit=False, as_dict=False):
