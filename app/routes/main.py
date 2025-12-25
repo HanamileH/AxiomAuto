@@ -36,10 +36,20 @@ def staff(entity_name):
     entities = ENTITIES_TYPES
     current_entity = None
 
+    # Скрываем вкладку users для менеджеров
+    if current_user.role != "admin":
+        entities = [entity for entity in entities if entity["tab_name"] != "users"]
+
+
     for entity in entities:
         if entity["tab_name"] == entity_name:
             current_entity = entity
             break
+        
+    # Запрещаем доступ ко вкладке users для менеджера
+    if entity_name == "users" and current_user != "admin":
+        return abort(403)
+
 
     if current_entity:
         # Генерируем случайные строки для отображения во время загрузки
@@ -84,10 +94,16 @@ def statistics(stats_id):
         return abort(403)
 
     entities = ENTITIES_TYPES
+    
+    # Скрываем вкладку users для менеджеров
+    if current_user.role != "admin":
+        entities = [entity for entity in entities if entity["tab_name"] != "users"]
+    
+    # Список всех типов статистик
     stats_types = [t["name"] for t in STATS_TYPES]
-    stats_data = get_statistics(stats_id)
 
-    print(stats_types)
+    # Данные текущей статистики
+    stats_data = get_statistics(stats_id)
 
     if not stats_id:
         return abort(404)

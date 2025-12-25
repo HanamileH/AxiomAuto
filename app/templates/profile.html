@@ -33,6 +33,18 @@
                 <label>Почта:</label>
                 <p>{{ current_user.email }}</p>
             </div>
+
+            {% if current_user.role == 'admin' %}
+                <div class="info-block">
+                    <label>Уровень доступа:</label>
+                    <p>Администратор</p>
+                </div>
+            {% elif current_user.role == 'manager' %}
+                <div class="info-block">
+                    <label>Уровень доступа:</label>
+                    <p>Менеджер</p>
+                </div>
+            {% endif %}
         </div>
 
         <div class="profile-buttons">
