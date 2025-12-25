@@ -47,7 +47,7 @@ def staff(entity_name):
             break
         
     # Запрещаем доступ ко вкладке users для менеджера
-    if entity_name == "users" and current_user != "admin":
+    if entity_name == "users" and current_user.role != "admin":
         return abort(403)
 
 
