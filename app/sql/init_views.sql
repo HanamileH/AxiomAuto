@@ -27,36 +27,35 @@ LEFT JOIN client cl ON s.client_id = cl.id;
 -- Статистика продаж по маркам
 CREATE OR REPLACE VIEW brand_sales_view AS
 SELECT
-	b.name AS brand,
-	COUNT(cs.car_id) AS count
+    b.name AS brand,
+    COUNT(CASE WHEN cs.status IN ('paid', 'delivered') THEN cs.car_id END) AS count
 FROM brand b
 LEFT JOIN model m ON m.brand_id = b.id
-JOIN car c ON c.model_id = m.id
-JOIN car_status_view cs ON cs.car_id = c.id
-WHERE cs.status IN ('paid', 'delivered')
-GROUP BY brand;
+LEFT JOIN car c ON c.model_id = m.id
+LEFT JOIN car_status_view cs ON cs.car_id = c.id
+GROUP BY b.name;
+
+SELECT * FROM brand_sales_view;
 
 -- Статистика продаж по цветам
 CREATE OR REPLACE VIEW color_sales_view AS
 SELECT
-	COUNT(cs.car_id) AS count,
-	col.name AS color
-FROM car c
-JOIN color col ON c.color_id = col.id
-JOIN car_status_view cs ON cs.car_id = c.id
-WHERE cs.status IN ('paid', 'delivered')
-GROUP BY color;
+    COUNT(CASE WHEN cs.status IN ('paid', 'delivered') THEN cs.car_id END) AS count,
+    col.name AS color
+FROM color col
+LEFT JOIN car c ON c.color_id = col.id
+LEFT JOIN car_status_view cs ON cs.car_id = c.id
+GROUP BY col.name;
 
 -- Статистика продаж по типам кузовов
 CREATE OR REPLACE VIEW body_type_sales_view AS
 SELECT
-	COUNT(cs.car_id) AS count,
-	bt.name AS body_type
-FROM car c
-JOIN model m ON c.model_id = m.id
-JOIN body_type bt ON m.body_type = bt.id
-JOIN car_status_view cs ON cs.car_id = c.id
-WHERE cs.status IN ('paid', 'delivered')
+    COUNT(CASE WHEN cs.status IN ('paid', 'delivered') THEN cs.car_id END) AS count,
+    bt.name AS body_type
+FROM body_type bt
+LEFT JOIN model m ON m.body_type = bt.id
+LEFT JOIN car c ON c.model_id = m.id
+LEFT JOIN car_status_view cs ON cs.car_id = c.id
 GROUP BY bt.name;
 
 -- Статистика эффективности менеджеров
