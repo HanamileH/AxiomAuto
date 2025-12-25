@@ -1,11 +1,24 @@
 from flask import Flask
 from flask_login import LoginManager
+from flask_hcaptcha import hCaptcha
 from app.config import Config
 
 
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
+
+    # Каптча
+    app.config['HCAPTCHA_ENABLED'] = True
+
+    print('=' * 50)
+    print()
+    print(app.config['HCAPTCHA_SITE_KEY'])
+    print(app.config['HCAPTCHA_SECRET_KEY'])
+    print()
+    print('=' * 50)
+
+    hcaptcha = hCaptcha(app)
 
     # Авторизация
     from app.db.user import User
@@ -20,9 +33,11 @@ def create_app(config_class=Config):
 
     # Инициализация модулей
     from app.db.connection import db
+    from app.routes import init_captcha
 
     db.init_app(app)
     db.init_db()
+    init_captcha(hcaptcha)
 
     # Регистрация Blueprint'ов
     from app.routes import main_bp, auth_bp, admin_crud_bp

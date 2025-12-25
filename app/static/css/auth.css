@@ -80,6 +80,12 @@
   background: #333333;
 }
 
+.captcha-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
 /* Ссылка на вход */
 .auth-link {
   text-align: center;

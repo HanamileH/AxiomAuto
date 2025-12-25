@@ -3,6 +3,13 @@ from flask_login import login_user, logout_user, login_required
 from app.db.user import register_user as db_register_user
 from app.db.user import login_user as db_login_user
 
+
+# Инициализация капчи
+def init_captcha(instance):
+    global hcaptcha
+    hcaptcha = instance
+
+
 bp = Blueprint("auth", __name__)
 
 
@@ -19,8 +26,14 @@ def register():
             patronymic = data["patronymic"]
             email = data["email"]
             password = data["password"]
+            hcaptcha_response = data["hcaptcha_response"]
         except:
             data = {"status": "error", "error_text": "incorrect request"}
+            return jsonify(data), 400
+        
+        # Проверка капчи
+        if not hcaptcha_response or not hcaptcha.verify(hcaptcha_response):
+            data = {"status": "error", "error_text": "incorrect captcha"}
             return jsonify(data), 400
 
         # Регистрируем пользователя

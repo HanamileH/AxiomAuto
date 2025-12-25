@@ -12,6 +12,14 @@ document.getElementById("btn-auth").addEventListener("click", async () => {
     .getElementById("confirm-password")
     .value.trim();
 
+  // Токен hCaptcha
+  const hcaptchaResponse = hcaptcha.getResponse();
+
+  if (!hcaptchaResponse) {
+    showError("Пожалуйста, подтвердите, что вы не робот.");
+    return;
+  }
+
   // Проверяем обязательные поля
   if (!name || !surname || !email || !password || !confirmPassword) {
     showError("Заполните все обязательные поля.");
@@ -35,6 +43,7 @@ document.getElementById("btn-auth").addEventListener("click", async () => {
         patronymic,
         email,
         password,
+        "hcaptcha_response": hcaptchaResponse,
       }),
     });
   } catch (e) {
@@ -83,6 +92,8 @@ function convertError(code) {
     "this email already exists": "Этот email уже зарегистрирован.",
 
     "unknown error": "Неизвестная ошибка. Повторите попытку.",
+
+    "incorrect captcha": "Пожалуйста, подтвердите, что вы не робот."
   };
 
   return map[code] || "Ошибка: " + code;
