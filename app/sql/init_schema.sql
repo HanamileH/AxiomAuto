@@ -112,10 +112,12 @@ CREATE TABLE IF NOT EXISTS sale (
     personal_id INTEGER, -- Ответственный менеджер (NULL если заказ онлайн)
     contact_number VARCHAR(20) NOT NULL, -- Номер телефона клиента
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, -- Дата и время создания заказа
+    payment_id INT; -- Транзакция оплаты
 
     FOREIGN KEY (car_id) REFERENCES car(id),
     FOREIGN KEY (client_id) REFERENCES client(id),
-    FOREIGN KEY (personal_id) REFERENCES users(id)
+    FOREIGN KEY (personal_id) REFERENCES users(id),
+    FOREIGN KEY (payment_id) REFERENCES payment(id)
 );
 
 -- Транзакция оплаты
@@ -126,10 +128,7 @@ CREATE TABLE IF NOT EXISTS payment (
     amount INTEGER NOT NULL CHECK (amount > 0), -- Сумма в рублях на момент оплаты
     datetime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     transaction_id VARCHAR(64) UNIQUE, -- ID банковской транзакции (NULL если оплата наличными)
-    bank_account CHAR(4), -- Последние 4 цифры банковского счёта (NULL если оплата наличными)
-    sale_id INTEGER NOT NULL, -- Акт купли-продажи
-
-    FOREIGN KEY (sale_id) REFERENCES sale(id)
+    bank_account CHAR(4) -- Последние 4 цифры банковского счёта (NULL если оплата наличными)
 );
 
 -- Акт выдачи автомобиля
