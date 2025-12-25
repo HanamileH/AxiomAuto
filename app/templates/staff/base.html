@@ -28,6 +28,10 @@
             {% endif %}
         </a>
         {% endfor %}
+        
+        <a href="{{ url_for('main.statistics', stats_id=0) }}">
+            <button class="btn-outline">Статистика</button>
+        </a>
     </div>
 </section>
 

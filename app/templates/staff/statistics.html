@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+<!-- Заголовок окна -->
+{% block title %}Панель менеджера{% endblock %}
+
+<!-- Подключаем доп стиль -->
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/staff.css') }}">
+{% endblock %}
+
+<!-- Контент окна -->
+{% block content %}
+
+<h1 class="title">Панель персонала</h1>
+
+<!-- Панель выбора сущности -->
+<section class="entity-select">
+    <h2>Выберите таблицу</h2>
+    <div class="entity-group">
+        {% for entity in entities %}
+        <a href="{{ url_for('main.staff', entity_name=entity['tab_name']) }}">
+            <button class="btn-outline">{{ entity['ru_name'] }}</button>
+        </a>
+        {% endfor %}
+        
+        <a href="{{ url_for('main.statistics', stats_id=0) }}">
+            <button class="btn-black">Статистика</button>
+        </a>
+    </div>
+</section>
+
+<!-- Панель выбора статистики -->
+<section class="entity-select">
+    <h2>Выберите статистику</h2>
+    <div class="entity-group">
+        {% for name in stats_types %}
+        <a href="{{ url_for('main.statistics', stats_id=loop.index0) }}" style="grid-column: span 2;">
+            {% if name == stats_data['name'] %}
+                <button class="btn-black">{{ name }}</button>
+            {% else %}
+                <button class="btn-outline">{{ name }}</button>
+            {% endif %}
+        </a>
+        {% endfor %}
+    </div>
+</section>
+
+
+<!-- Панель статистики -->
+<section class="table-section">
+   <h2>{{ stats_data['name'] }}</h2>
+   
+    <table class="entity-table">
+        <thead>
+            <tr>
+                {% for name in stats_data['columns_ru'] %}
+                    <th>{{ name }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        
+        <tbody id="objectsTableBody">
+            {% for row in stats_data['rows'] %}
+            <tr id="object-row">
+                {% for column_name in stats_data['columns'] %}
+                    <td>{{ row[column_name] }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+{% endblock %}

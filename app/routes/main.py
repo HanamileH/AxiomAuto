@@ -1,17 +1,15 @@
 import string
 import random
-
 from flask import Blueprint, render_template, abort
 from flask_login import login_required, current_user
-from app import db
-from app.db import Brand, Body_type
+from app.db import get_catalog, get_model_data, Brand, Body_type, ENTITIES_TYPES, STATS_TYPES, get_statistics
 
 bp = Blueprint('main', __name__)
 
 # Главная страница (каталог)
 @bp.route('/')
 def main():
-   all_models = db.get_catalog()
+   all_models = get_catalog()
 
    return render_template('catalog.html', models=all_models)
 
@@ -19,7 +17,7 @@ def main():
 # Страница описания автомобиля
 @bp.route('/car/<model_id>')
 def car(model_id):
-   model = db.get_model_data(model_id)
+   model = get_model_data(model_id)
    
    if model:
       return render_template('car.html', model=model)
@@ -34,7 +32,7 @@ def staff(entity_name):
    if not current_user.role in ['admin', 'manager']:
       return abort(403)
 
-   entities = db.ENTITIES_TYPES
+   entities = ENTITIES_TYPES
    current_entity = None
    
    for entity in entities:
@@ -68,6 +66,30 @@ def staff(entity_name):
 
    else:
       return abort(404)
+   
+
+# Страница статистики
+@bp.route('/statistics/<stats_id>')
+@login_required
+def statistics(stats_id):
+   if not current_user.role in ['admin', 'manager']:
+      return abort(403)
+
+   entities = ENTITIES_TYPES
+   stats_types = [t['name'] for t in STATS_TYPES]
+   stats_data = get_statistics(stats_id)
+
+   print(stats_types)
+
+   if not stats_id:
+      return abort(404)
+   
+   return render_template(
+      'staff/statistics.html',
+      stats_data=stats_data,
+      stats_types=stats_types,
+      entities=entities
+   )
 
 
 # Информация о компании

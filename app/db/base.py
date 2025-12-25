@@ -46,10 +46,44 @@ ENTITIES_TYPES = [
    {
       "tab_name": "payments",
       "ru_name": "Оплаты",
+   }
+]
+
+STATS_TYPES = [
+   {
+      "name": "Продажи по маркам",
+      "table": "brand_sales_view",
+      "columns": {
+         "brand": "Производитель",
+         "count": "Продаж"
+      }
    },
    {
-      "tab_name": "statistics",
-      "ru_name": "Статистика",
+      "name": "Продажи по цветам",
+      "table": "color_sales_view",
+      "columns": {
+         "color": "Цвет",
+         "count": "Продаж"
+      }
+   },
+   {
+      "name": "Продажи по типам кузовов",
+      "table": "body_type_sales_view",
+      "columns": {
+         "body_type": "Тип кузова",
+         "count": "Продаж"
+      }
+   },
+   {
+      "name": "Эффективность менеджеров",
+      "table": "manager_perfomance_view",
+      "columns": {
+         "name": "Имя",
+         "surname": "Фамилия",
+         "patronymic": "Отчество",
+         "sales": "Оформлено продаж",
+         "deliveries": "Оформлено доставок"
+      }
    }
 ]
 
@@ -129,4 +163,38 @@ def get_model_data(model_id):
         result["price"] = f"{int(result["price"]):,}".replace(",", " ")
 
         return result
-   
+    
+
+def get_statistics(stats_id):
+    """Получить данные для статистики
+    Args:
+        stats_id (int): ID статистики
+    Returns:
+        dict: Статистика (или None, если не найдена)
+    """
+
+    with db.get_cursor(as_dict=True) as cursor:
+        if stats_id is None:
+            return None
+        
+        stats_id = int(stats_id)
+        
+        if stats_id < 0 or stats_id >= len(STATS_TYPES):
+            return None
+
+        stats_info = STATS_TYPES[stats_id]
+        
+        # Получаем данные из представления
+        columns_name = list(stats_info["columns"].keys())
+
+        cursor.execute(f"SELECT {', '.join(columns_name)} FROM {stats_info['table']};")
+
+        rows = cursor.fetchall()
+
+        # Возвращаем данные
+        return {
+            "name": stats_info["name"],
+            "columns": columns_name,
+            "columns_ru": list(stats_info["columns"].values()),
+            "rows": rows
+        }
