@@ -1,9 +1,59 @@
 import re
 from functools import wraps
-from flask import abort
+import base64
+from flask import abort, current_app
 from flask_login import UserMixin, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
+from cryptography.fernet import Fernet
+import hashlib
 from .connection import db
+
+
+class DataEncryption:
+    @staticmethod
+    def get_key():
+        """Возвращает ключ для шифрования, указанный
+        в переменных окружения
+
+        Returns:
+            bytes: ключ для шифрования
+        """
+        key = current_app.config.get('ENCRYPTION_KEY')
+        hashed_key = hashlib.sha256(key.encode()).digest()
+        fernet_key = base64.urlsafe_b64encode(hashed_key)
+        return fernet_key
+
+
+    @staticmethod
+    def encrypt(data):
+        """Шифрует данные ключом, указанным
+        в переменных окружения
+
+        Args:
+            data (str): данные для шифрования
+
+        Returns:
+            str: зашифрованные данные
+        """
+        fernet = Fernet(DataEncryption.get_key())
+        encrypted_email = fernet.encrypt(data.encode('utf-8'))
+        return encrypted_email.decode('utf-8')
+
+
+    @staticmethod
+    def decrypt(data):
+        """Расшифровывает данные ключом, указанным
+        в переменных окружения
+
+        Args:
+            data (str): зашифрованные данные
+
+        Returns:
+            str: расшифрованные данные
+        """
+        fernet = Fernet(DataEncryption.get_key())
+        decrypted_email = fernet.decrypt(data.encode('utf-8'))
+        return decrypted_email.decode('utf-8')
 
 
 class User(UserMixin):
@@ -20,7 +70,7 @@ class User(UserMixin):
 
     @staticmethod
     def get_by_id(user_id):
-        with db.get_cursor() as cursor:
+        with db.get_cursor(as_dict=True) as cursor:
             cursor.execute(
                 """
          SELECT
@@ -41,8 +91,19 @@ class User(UserMixin):
 
             row = cursor.fetchone()
 
+            # Расшифровываем почту
+            row['email'] = DataEncryption.decrypt(row['email'])
+
             if row:
-                return User(*row)
+                return User(
+                    id = row['id'],
+                    name=row['name'],
+                    surname=row['surname'],
+                    patronymic=row['patronymic'],
+                    email=row['email'],
+                    password_hash=row['password_hash'],
+                    role=row['role']
+                )
             return None
 
 
@@ -147,6 +208,14 @@ def register_user(name, surname, patronymic, email, password, role="user"):
     if not re.match(email_pattern, email):
         return False, "invalid email format"
 
+    print(f"Email: {email}")
+
+    email_hash = hashlib.sha256(email.encode("utf-8")).hexdigest()
+
+    print(f"Email hash: {email_hash}")
+
+    email = DataEncryption.encrypt(email)
+
     # Пароль
     if not password:
         return False, "empty password"
@@ -164,9 +233,9 @@ def register_user(name, surname, patronymic, email, password, role="user"):
     with db.get_cursor() as cursor:
         cursor.execute(
             """
-      SELECT id FROM users WHERE email = %s
+      SELECT id FROM users WHERE email_hash = %s
       """,
-            (email,),
+            (email_hash,),
         )
 
         row = cursor.fetchone()
@@ -192,11 +261,11 @@ def register_user(name, surname, patronymic, email, password, role="user"):
 
             cursor.execute(
                 """
-         INSERT INTO users (id, role, email, password_hash)
-         VALUES (%s, %s, %s, %s)
+         INSERT INTO users (id, role, email, email_hash, password_hash)
+         VALUES (%s, %s, %s, %s, %s)
          RETURNING id
          """,
-                (client_id, role, email, password_hash),
+                (client_id, role, email, email_hash, password_hash),
             )
 
             user_id = cursor.fetchone()[0]
@@ -223,6 +292,10 @@ def login_user(email, password):
         return None, "empty email"
 
     email = email.strip()
+    email_hash = hashlib.sha256(email.encode("utf-8")).hexdigest()
+
+    print(f"Email: '{email}'")
+    print(f"Email hash: '{email_hash}'")
 
     if not password:
         return None, "empty password"
@@ -231,29 +304,31 @@ def login_user(email, password):
 
     with db.get_cursor(as_dict=True) as cursor:
         cursor.execute(
-            """
-      SELECT
-         u.id AS id,
-         c.name AS name,
-         c.surname AS surname,
-         c.patronymic AS patronymic,
-         u.email AS email,
-         u.password_hash AS password_hash,
-         u.role AS role
-      FROM users u
-      JOIN client c
-      ON u.id = c.id
-      WHERE u.email = %s
-      """,
-            (email,),
+        """
+        SELECT
+            u.id AS id,
+            c.name AS name,
+            c.surname AS surname,
+            c.patronymic AS patronymic,
+            u.email AS email,
+            u.password_hash AS password_hash,
+            u.role AS role
+        FROM users u
+        JOIN client c
+        ON u.id = c.id
+        WHERE u.email_hash = %s
+        """,
+            (email_hash,),
         )
 
         row = cursor.fetchone()
 
         if not row:
+            print("Email is incorrect")
             return None, "email or password is incorrect"
 
         if not check_password_hash(row["password_hash"], password):
+            print("Password is incorrect")
             return None, "email or password is incorrect"
 
         return (
@@ -262,7 +337,7 @@ def login_user(email, password):
                 row["name"],
                 row["surname"],
                 row["patronymic"],
-                row["email"],
+                DataEncryption.decrypt(row["email"]),
                 row["password_hash"],
                 row["role"],
             ),

@@ -18,5 +18,7 @@ class Config:
     DB_DATABASE = os.getenv("DB_DATABASE")
     DB_SCHEMA = os.getenv("DB_SCHEMA")
 
+    ENCRYPTION_KEY = os.getenv("ENCRYPTION_KEY")
+
     HCAPTCHA_SITE_KEY = os.getenv("HCAPTCHA_SITE_KEY")
     HCAPTCHA_SECRET_KEY = os.getenv("HCAPTCHA_SECRET_KEY")
