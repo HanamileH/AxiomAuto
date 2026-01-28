@@ -172,18 +172,3 @@
   gap: 12px;
   flex-wrap: wrap;
 }
-
-/* Панель диаграмм */
-.chart-section {
-  background: #fafafa;
-  border: 1px solid #eee;
-  border-radius: 12px;
-  padding: 25px;
-  margin-top: 2rem;
-  margin-bottom: 2rem;
-}
-
-.chart-section h2 {
-  margin-bottom: 15px;
-  font-size: 22px;
-}

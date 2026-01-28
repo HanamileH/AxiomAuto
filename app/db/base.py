@@ -57,9 +57,6 @@ STATS_TYPES = [
             "brand": "Производитель",
             "count": "Продаж"
         },
-
-        "chart_label": "brand",
-        "chart_values": "count",
     },
     {
         "name": "Продажи по цветам",
@@ -68,9 +65,6 @@ STATS_TYPES = [
             "color": "Цвет",
             "count": "Продаж"
         },
-
-        "chart_label": "color",
-        "chart_values": "count",
     },
     {
         "name": "Продажи по типам кузовов",
@@ -79,9 +73,6 @@ STATS_TYPES = [
             "body_type": "Тип кузова",
             "count": "Продаж"
         },
-
-        "chart_label": "body_type",
-        "chart_values": "count",
     },
     {
         "name": "Эффективность менеджеров",
@@ -205,25 +196,10 @@ def get_statistics(stats_id):
 
         rows = cursor.fetchall()
 
-        # Генерируем данные для графиков
-        if "chart_label" in stats_info:
-            chart_label = stats_info["chart_label"]
-            chart_values = stats_info["chart_values"]
-
-            chart_data = {
-                "labels": [row[chart_label] for row in rows],
-                "values": [row[chart_values] for row in rows],
-            }
-
-        else:
-            chart_data = None
-
-
         # Возвращаем данные
         return {
             "name": stats_info["name"],
             "columns": columns_name,
             "columns_ru": list(stats_info["columns"].values()),
             "rows": rows,
-            "chart_data": chart_data,
         }
