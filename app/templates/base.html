@@ -24,7 +24,7 @@
          <div class="auth-buttons">
             {% if current_user.is_authenticated %}
             <a href="/profile">
-               <button class="btn-outline">Личный кабинет</button>
+               <button class="btn-outline">{{ current_user.surname ~ ' ' ~ current_user.name }}</button>
             </a>
             <a href="/logout">
                <button class="btn-black">Выход</button>
