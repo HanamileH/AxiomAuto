@@ -586,8 +586,13 @@ class Model:
                 params = []
 
                 if name:
-                    # Проверяем, что данное имя ещё не занято
-                    cursor.execute("SELECT id FROM model WHERE name = %s;", (name,))
+                    # Получаем текущий ID бренда (если он не заменён)
+                    if brand_id is None:
+                        cursor.execute("SELECT brand_id FROM model WHERE id = %s;", (id,))
+                        brand_id = cursor.fetchone()[0]
+
+                    # Проверяем, что данное имя в этом бренде уже занято
+                    cursor.execute("SELECT id FROM model WHERE name = %s AND brand_id = %s AND id != %s;", (name, brand_id, id,))
                     row = cursor.fetchone()
 
                     if row:
@@ -627,6 +632,18 @@ class Model:
                     params.append(transmission)
 
                 if brand_id:
+                    # Получаем текущее имя (если оно не заменено)
+                    if name is None:
+                        cursor.execute("SELECT name FROM model WHERE id = %s;", (id,))
+                        name = cursor.fetchone()[0]
+
+                    # Проверяем, что данное имя в этом бренде уже занято
+                    cursor.execute("SELECT id FROM model WHERE name = %s AND brand_id = %s AND id != %s;", (name, brand_id, id,))
+                    row = cursor.fetchone()
+
+                    if row:
+                        return False, "this name is already taken"
+
                     updates.append("brand_id = %s")
                     params.append(brand_id)
 
