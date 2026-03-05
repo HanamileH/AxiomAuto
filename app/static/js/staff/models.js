@@ -171,7 +171,7 @@ function enterEditMode(id) {
                     <div class="form-group">
                         <label for="edit-brand-${id}">Производитель</label>
                         <select id="edit-brand-${id}" class="edit-input">
-                            <option value="" disabled selected>Выберите производителя</option>
+                            <option value="" disabled>Выберите производителя</option>
                             ${
                               window.brands
                                 ? window.brands
@@ -184,7 +184,7 @@ function enterEditMode(id) {
                                         }>${brand.name}</option>`
                                     )
                                     .join("")
-                                : ""
+                                : `<option value="${object.brand_id}" selected>${object.brand}</option>`
                             }
                         </select>
                     </div>
@@ -199,7 +199,7 @@ function enterEditMode(id) {
                     <div class="form-group">
                         <label for="edit-body-type-${id}">Тип кузова</label>
                         <select id="edit-body-type-${id}" class="edit-input">
-                            <option value="" disabled selected>Выберите тип кузова</option>
+                            <option value="" disabled>Выберите тип кузова</option>
                             ${
                               window.bodyTypes
                                 ? window.bodyTypes
@@ -212,7 +212,7 @@ function enterEditMode(id) {
                                         }>${type.name}</option>`
                                     )
                                     .join("")
-                                : ""
+                                : `<option value="${object.body_type_id}" selected>${object.body_type}</option>`
                             }
                         </select>
                     </div>
