@@ -11,7 +11,7 @@ class Brand:
         """
         try:
             with db.get_cursor(as_dict=True) as cursor:
-                cursor.execute("SELECT id AS id, name AS name FROM brand;")
+                cursor.execute("SELECT id AS id, name AS name FROM brand ORDER BY name;")
                 rows = cursor.fetchall()
                 return rows, ""
         except Exception as e:
@@ -140,7 +140,7 @@ class Body_type:
         """
         try:
             with db.get_cursor(as_dict=True) as cursor:
-                cursor.execute("SELECT id AS id, name AS name FROM body_type;")
+                cursor.execute("SELECT id AS id, name AS name FROM body_type ORDER BY name;")
                 rows = cursor.fetchall()
                 return rows, ""
         except Exception as e:
@@ -273,7 +273,7 @@ class Color:
         try:
             with db.get_cursor(as_dict=True) as cursor:
                 cursor.execute(
-                    "SELECT id AS id, name AS name, hex_code AS hex_code FROM color;"
+                    "SELECT id AS id, name AS name, hex_code AS hex_code FROM color ORDER BY name;"
                 )
                 rows = cursor.fetchall()
                 return rows, ""
@@ -430,7 +430,8 @@ class Model:
                bt.name AS body_type
             FROM model m
             JOIN brand b ON b.id = m.brand_id
-            JOIN body_type bt ON bt.id = m.body_type;          
+            JOIN body_type bt ON bt.id = m.body_type
+            ORDER by brand, model;        
             """
                 )
                 rows = cursor.fetchall()
