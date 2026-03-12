@@ -1,4 +1,8 @@
 from .connection import db
+import re
+import hashlib
+from werkzeug.security import generate_password_hash
+from .user import DataEncryption
 
 
 # CRUD-операции над записями таблицы brand
@@ -819,3 +823,148 @@ class Car:
         except Exception as e:
             return False, f"server error: {str(e)}"
 
+
+class StaffUser:
+    @staticmethod
+    def get_all():
+        try:
+            with db.get_cursor(as_dict=True) as cursor:
+                cursor.execute(
+                    """
+                    SELECT
+                        u.id AS id,
+                        c.name AS name,
+                        c.surname AS surname,
+                        c.patronymic AS patronymic,
+                        u.email AS email,
+                        u.role AS role
+                    FROM users u
+                    JOIN client c ON c.id = u.id
+                    ORDER BY c.surname, c.name;
+                    """
+                )
+                rows = cursor.fetchall()
+
+                for row in rows:
+                    row["email"] = DataEncryption.decrypt(row["email"])
+
+                return rows, ""
+        except Exception as e:
+            return None, f"server error: {str(e)}"
+
+    @staticmethod
+    def create(name, surname, patronymic, email, password, role):
+        from .user import register_user
+
+        user_id, error = register_user(
+            name=name,
+            surname=surname,
+            patronymic=patronymic,
+            email=email,
+            password=password,
+            role=role,
+        )
+        if not user_id:
+            return None, error
+        return user_id, ""
+
+    @staticmethod
+    def update(id, name, surname, patronymic, email, role, new_password=None):
+        try:
+            full_name_pattern = r"^[a-zA-Zа-яёА-ЯЁ\s]+$"
+            email_pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+
+            name = (name or "").strip()
+            surname = (surname or "").strip()
+            patronymic = (patronymic or "").strip()
+            email = (email or "").strip()
+
+            if len(name) < 2 or len(name) > 20 or not re.match(full_name_pattern, name):
+                return False, "invalid name"
+            if len(surname) < 2 or len(surname) > 20 or not re.match(full_name_pattern, surname):
+                return False, "invalid surname"
+            if patronymic and (
+                len(patronymic) < 2
+                or len(patronymic) > 20
+                or not re.match(full_name_pattern, patronymic)
+            ):
+                return False, "invalid patronymic"
+            if len(email) < 5 or len(email) > 50 or not re.match(email_pattern, email):
+                return False, "invalid email"
+            if role not in ["user", "manager", "admin"]:
+                return False, "unknown role"
+
+            password_hash = None
+            if new_password is not None and new_password.strip() != "":
+                if len(new_password.strip()) < 8 or len(new_password.strip()) > 50:
+                    return False, "invalid password length"
+                password_hash = generate_password_hash(new_password.strip())
+
+            encrypted_email = DataEncryption.encrypt(email)
+
+            email_hash = hashlib.sha256(email.encode("utf-8")).hexdigest()
+
+            with db.get_cursor(commit=True) as cursor:
+                cursor.execute("SELECT id FROM users WHERE id = %s;", (id,))
+                if cursor.fetchone() is None:
+                    return False, "this record does not exist"
+
+                cursor.execute(
+                    "SELECT id FROM users WHERE email_hash = %s AND id != %s;",
+                    (email_hash, id),
+                )
+                if cursor.fetchone() is not None:
+                    return False, "this email already exists"
+
+                cursor.execute(
+                    """
+                    UPDATE client
+                    SET name = %s, surname = %s, patronymic = %s
+                    WHERE id = %s;
+                    """,
+                    (name, surname, patronymic if patronymic else None, id),
+                )
+
+                if password_hash:
+                    cursor.execute(
+                        """
+                        UPDATE users
+                        SET role = %s, email = %s, email_hash = %s, password_hash = %s
+                        WHERE id = %s;
+                        """,
+                        (role, encrypted_email, email_hash, password_hash, id),
+                    )
+                else:
+                    cursor.execute(
+                        """
+                        UPDATE users
+                        SET role = %s, email = %s, email_hash = %s
+                        WHERE id = %s;
+                        """,
+                        (role, encrypted_email, email_hash, id),
+                    )
+
+            return True, ""
+        except Exception as e:
+            return False, f"server error: {str(e)}"
+
+    @staticmethod
+    def delete(id):
+        try:
+            with db.get_cursor(commit=True) as cursor:
+                cursor.execute("SELECT id FROM users WHERE id = %s;", (id,))
+                if cursor.fetchone() is None:
+                    return False, "this record does not exist"
+
+                cursor.execute("SELECT id FROM sale WHERE personal_id = %s LIMIT 1;", (id,))
+                if cursor.fetchone() is not None:
+                    return False, "this record has dependent sales"
+
+                cursor.execute("SELECT id FROM delivery WHERE personal_id = %s LIMIT 1;", (id,))
+                if cursor.fetchone() is not None:
+                    return False, "this record has dependent deliveries"
+
+                cursor.execute("DELETE FROM users WHERE id = %s;", (id,))
+                return True, ""
+        except Exception as e:
+            return False, f"server error: {str(e)}"
