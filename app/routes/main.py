@@ -2,7 +2,7 @@ import string
 import random
 from flask import Blueprint, render_template, abort
 from flask_login import login_required, current_user
-from app.db import get_catalog, get_model_data, Brand, Body_type, ENTITIES_TYPES, STATS_TYPES, get_statistics
+from app.db import get_catalog, get_model_data, Brand, Body_type, Color, Model, ENTITIES_TYPES, STATS_TYPES, get_statistics
 
 bp = Blueprint("main", __name__)
 
@@ -66,20 +66,29 @@ def staff(entity_name):
             )
 
         # Данные для заполнения выпадающих списков
-        if entity["tab_name"] == "models":
+        brands = None
+        body_types = None
+        models = None
+        colors = None
+
+        if current_entity["tab_name"] == "models":
             brands, _ = Brand.get_all()
             body_types, _ = Body_type.get_all()
-        else:
-            brands = None
-            body_types = None
+
+        if current_entity["tab_name"] == "cars":
+            brands, _ = Brand.get_all()
+            models, _ = Model.get_all()
+            colors, _ = Color.get_all()
 
         return render_template(
-            f"staff/{entity['tab_name']}.html",
+            f"staff/{current_entity['tab_name']}.html",
             entities=entities,
             current_entity=current_entity,
             template_rows=template_rows,
             brands=brands,
             body_types=body_types,
+            models=models,
+            colors=colors,
         )
 
     else:
