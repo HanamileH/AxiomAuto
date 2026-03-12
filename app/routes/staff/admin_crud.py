@@ -1,11 +1,12 @@
 from flask import Blueprint, request, jsonify
-from app.db import Brand, Body_type, Color, Model, manager_required
+from app.db import Brand, Body_type, Color, Model, Car, manager_required
 
 OBJECTS_MATCH = {
     "brands": Brand,
     "body_types": Body_type,
     "colors": Color,
     "models": Model,
+    "cars": Car,
 }
 
 bp = Blueprint("staff/admin_crud", __name__)
@@ -164,6 +165,33 @@ def create(object_name):
                 body_type_id=body_type_id,
             )
 
+        # Автомобили
+        elif object_name == "cars":
+            vin = data.get("vin")
+            model_id = data.get("model_id")
+            color_id = data.get("color_id")
+
+            if not vin:
+                return jsonify({"success": False, "error": "VIN is required"}), 400
+
+            if len(vin.strip()) != 17:
+                return (
+                    jsonify({"success": False, "error": "VIN must be 17 characters"}),
+                    400,
+                )
+
+            if not model_id:
+                return jsonify({"success": False, "error": "Model is required"}), 400
+
+            if not color_id:
+                return jsonify({"success": False, "error": "Color is required"}), 400
+
+            id, error = Car.create(
+                model_id=int(model_id),
+                color_id=int(color_id),
+                vin=vin.strip().upper(),
+            )
+
         # Неизвестный объект
         else:
             return (
@@ -261,6 +289,34 @@ def update(object_name, id):
                 transmission=transmission,
                 brand_id=brand_id,
                 body_type_id=body_type_id,
+            )
+
+        # Автомобили
+        elif object_name == "cars":
+            vin = data.get("vin")
+            model_id = data.get("model_id")
+            color_id = data.get("color_id")
+
+            if not vin:
+                return jsonify({"success": False, "error": "VIN is required"}), 400
+
+            if len(vin.strip()) != 17:
+                return (
+                    jsonify({"success": False, "error": "VIN must be 17 characters"}),
+                    400,
+                )
+
+            if not model_id:
+                return jsonify({"success": False, "error": "Model is required"}), 400
+
+            if not color_id:
+                return jsonify({"success": False, "error": "Color is required"}), 400
+
+            _, error = Car.update(
+                id=id,
+                model_id=int(model_id),
+                color_id=int(color_id),
+                vin=vin.strip().upper(),
             )
 
         # Неизвестный объект

@@ -426,6 +426,8 @@ class Model:
                m.engine_power AS engine_power,
                m.engine_volume AS engine_volume,
                m.transmission AS transmission,
+               m.brand_id AS brand_id,
+               m.body_type AS body_type_id,
                b.name AS brand,
                bt.name AS body_type
             FROM model m
@@ -462,6 +464,8 @@ class Model:
                m.engine_power AS engine_power,
                m.engine_volume AS engine_volume,
                m.transmission AS transmission,
+               m.brand_id AS brand_id,
+               m.body_type AS body_type_id,
                b.name AS brand,
                bt.name AS body_type
             FROM model m
@@ -662,6 +666,7 @@ class Model:
         except Exception as e:
             return False, f"server error: {str(e)}"
 
+
     @staticmethod
     def delete(id):
         """Удаление записи
@@ -694,3 +699,123 @@ class Model:
 
         except Exception as e:
             return False, f"server error: {str(e)}"
+
+
+# CRUD-операции над записями таблицы car
+class Car:
+    @staticmethod
+    def get_all():
+        try:
+            with db.get_cursor(as_dict=True) as cursor:
+                cursor.execute(
+                    """
+                    SELECT
+                        c.id AS id,
+                        c.vin AS vin,
+                        c.model_id AS model_id,
+                        m.name AS model,
+                        m.brand_id AS brand_id,
+                        b.name AS brand,
+                        c.color_id AS color_id,
+                        clr.name AS color,
+                        EXISTS(
+                            SELECT 1 FROM sale s WHERE s.car_id = c.id
+                        ) AS is_sold
+                    FROM car c
+                    JOIN model m ON m.id = c.model_id
+                    JOIN brand b ON b.id = m.brand_id
+                    JOIN color clr ON clr.id = c.color_id
+                    ORDER BY b.name, m.name, c.vin;
+                    """
+                )
+                rows = cursor.fetchall()
+                return rows, ""
+        except Exception as e:
+            return None, f"server error: {str(e)}"
+
+    @staticmethod
+    def create(model_id, color_id, vin):
+        try:
+            with db.get_cursor(commit=True) as cursor:
+                cursor.execute("SELECT id FROM model WHERE id = %s;", (model_id,))
+                if cursor.fetchone() is None:
+                    return None, "model not found"
+
+                cursor.execute("SELECT id FROM color WHERE id = %s;", (color_id,))
+                if cursor.fetchone() is None:
+                    return None, "color not found"
+
+                cursor.execute("SELECT id FROM car WHERE vin = %s;", (vin,))
+                if cursor.fetchone() is not None:
+                    return None, "this VIN is already taken"
+
+                cursor.execute(
+                    "INSERT INTO car (model_id, color_id, vin) VALUES (%s, %s, %s) RETURNING id;",
+                    (model_id, color_id, vin),
+                )
+                car_id = cursor.fetchone()[0]
+                return car_id, ""
+        except Exception as e:
+            return None, f"server error: {str(e)}"
+
+    @staticmethod
+    def update(id, model_id=None, color_id=None, vin=None):
+        try:
+            with db.get_cursor(commit=True) as cursor:
+                cursor.execute("SELECT id FROM car WHERE id = %s;", (id,))
+                if cursor.fetchone() is None:
+                    return False, "this record does not exist"
+
+                updates = []
+                params = []
+
+                if model_id is not None:
+                    cursor.execute("SELECT id FROM model WHERE id = %s;", (model_id,))
+                    if cursor.fetchone() is None:
+                        return False, "model not found"
+                    updates.append("model_id = %s")
+                    params.append(model_id)
+
+                if color_id is not None:
+                    cursor.execute("SELECT id FROM color WHERE id = %s;", (color_id,))
+                    if cursor.fetchone() is None:
+                        return False, "color not found"
+                    updates.append("color_id = %s")
+                    params.append(color_id)
+
+                if vin is not None:
+                    cursor.execute("SELECT id FROM car WHERE vin = %s AND id != %s;", (vin, id))
+                    if cursor.fetchone() is not None:
+                        return False, "this VIN is already taken"
+                    updates.append("vin = %s")
+                    params.append(vin)
+
+                if not updates:
+                    return True, ""
+
+                params.append(id)
+                cursor.execute(
+                    f"UPDATE car SET {', '.join(updates)} WHERE id = %s;",
+                    params,
+                )
+                return True, ""
+        except Exception as e:
+            return False, f"server error: {str(e)}"
+
+    @staticmethod
+    def delete(id):
+        try:
+            with db.get_cursor(commit=True) as cursor:
+                cursor.execute("SELECT id FROM car WHERE id = %s;", (id,))
+                if cursor.fetchone() is None:
+                    return False, "this record does not exist"
+
+                cursor.execute("SELECT id FROM sale WHERE car_id = %s;", (id,))
+                if cursor.fetchone() is not None:
+                    return False, "this record has dependent records"
+
+                cursor.execute("DELETE FROM car WHERE id = %s;", (id,))
+                return True, ""
+        except Exception as e:
+            return False, f"server error: {str(e)}"
+
