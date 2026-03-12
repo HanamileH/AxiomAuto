@@ -1,6 +1,6 @@
 from app.db.base import get_catalog, get_model_data, ENTITIES_TYPES, STATS_TYPES, get_statistics
 from app.db.user import User, admin_required, manager_required
-from app.db.admin_crud import Brand, Body_type, Color, Model, Car
+from app.db.admin_crud import Brand, Body_type, Color, Model, Car, StaffUser
 
 __all__ = [
     # app.db.base
@@ -19,4 +19,5 @@ __all__ = [
     "Color",
     "Model",
     "Car",
+    "StaffUser",
 ]

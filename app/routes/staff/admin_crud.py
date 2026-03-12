@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
-from app.db import Brand, Body_type, Color, Model, Car, manager_required
+from flask_login import current_user
+from app.db import Brand, Body_type, Color, Model, Car, StaffUser, manager_required
 
 OBJECTS_MATCH = {
     "brands": Brand,
@@ -7,9 +8,17 @@ OBJECTS_MATCH = {
     "colors": Color,
     "models": Model,
     "cars": Car,
+    "users": StaffUser,
 }
 
 bp = Blueprint("staff/admin_crud", __name__)
+
+
+def check_users_admin_access(object_name):
+    if object_name == "users" and current_user.role != "admin":
+        return jsonify({"success": False, "error": "forbidden"}), 403
+
+    return None
 
 # GET-запрос на получение всех записей объекта
 @bp.route("/api/crud/<object_name>", methods=["GET"])
@@ -17,6 +26,10 @@ bp = Blueprint("staff/admin_crud", __name__)
 def get_all(object_name):
     try:
         object_name = object_name.strip().lower()
+
+        forbidden_response = check_users_admin_access(object_name)
+        if forbidden_response:
+            return forbidden_response
 
         # Получаем класс нужного объекта
         object_class = OBJECTS_MATCH.get(object_name)
@@ -46,6 +59,10 @@ def get_all(object_name):
 def create(object_name):
     try:
         object_name = object_name.strip().lower()
+
+        forbidden_response = check_users_admin_access(object_name)
+        if forbidden_response:
+            return forbidden_response
 
         # Получаем класс нужного объекта
         object_class = OBJECTS_MATCH.get(object_name)
@@ -192,6 +209,30 @@ def create(object_name):
                 vin=vin.strip().upper(),
             )
 
+        # Пользователи
+        elif object_name == "users":
+            name = data.get("name")
+            surname = data.get("surname")
+            patronymic = data.get("patronymic")
+            email = data.get("email")
+            password = data.get("password")
+            role = data.get("role")
+
+            if not all([name, surname, email, password, role]):
+                return (
+                    jsonify({"success": False, "error": "required fields are missing"}),
+                    400,
+                )
+
+            id, error = StaffUser.create(
+                name=name,
+                surname=surname,
+                patronymic=patronymic,
+                email=email,
+                password=password,
+                role=role,
+            )
+
         # Неизвестный объект
         else:
             return (
@@ -217,6 +258,10 @@ def create(object_name):
 def update(object_name, id):
     try:
         object_name = object_name.strip().lower()
+
+        forbidden_response = check_users_admin_access(object_name)
+        if forbidden_response:
+            return forbidden_response
 
         # Получаем класс нужного объекта
         object_class = OBJECTS_MATCH.get(object_name)
@@ -319,6 +364,31 @@ def update(object_name, id):
                 vin=vin.strip().upper(),
             )
 
+        # Пользователи
+        elif object_name == "users":
+            name = data.get("name")
+            surname = data.get("surname")
+            patronymic = data.get("patronymic")
+            email = data.get("email")
+            role = data.get("role")
+            new_password = data.get("new_password")
+
+            if not all([name, surname, email, role]):
+                return (
+                    jsonify({"success": False, "error": "required fields are missing"}),
+                    400,
+                )
+
+            _, error = StaffUser.update(
+                id=id,
+                name=name,
+                surname=surname,
+                patronymic=patronymic,
+                email=email,
+                role=role,
+                new_password=new_password,
+            )
+
         # Неизвестный объект
         else:
             return (
@@ -344,6 +414,10 @@ def update(object_name, id):
 def delete(object_name, id):
     try:
         object_name = object_name.strip().lower()
+
+        forbidden_response = check_users_admin_access(object_name)
+        if forbidden_response:
+            return forbidden_response
 
         # Получаем класс нужного объекта
         object_class = OBJECTS_MATCH.get(object_name)

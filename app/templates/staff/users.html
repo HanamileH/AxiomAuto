@@ -1,46 +1,44 @@
 {% extends "staff/base.html" %}
 
-<!-- Устанавливаем доп стиль -->
 {% block additional_styles %}
     <style>
-        .entity-table th:nth-child(1) {width: 15%;}
-        .entity-table th:nth-child(2) {width: 15%;}
-        .entity-table th:nth-child(3) {width: 15%;}
-        .entity-table th:nth-child(4) {width: 23%;}
-        .entity-table th:nth-child(6) {width: 9%;}
-        .entity-table th:nth-child(7) {width: 23%;}
+        .entity-table th:nth-child(1) { width: 14%; }
+        .entity-table th:nth-child(2) { width: 14%; }
+        .entity-table th:nth-child(3) { width: 14%; }
+        .entity-table th:nth-child(4) { width: 28%; }
+        .entity-table th:nth-child(5) { width: 15%; }
+        .entity-table th:nth-child(6) { width: 15%; }
 
         .hide-data {
             filter: blur(5px);
-            transition: all 0.5s ease-in-out;
+            transition: all 0.4s ease-in-out;
         }
 
         .hide-data:hover {
-            filter: blur(0px);
+            filter: blur(0);
         }
     </style>
 {% endblock %}
 
-<!-- Панель добавления пользователей -->
 {% block addtext %}Добавить пользователя{% endblock %}
 
 {% block addpanel %}
-    <form id="carForm">
-        <input type="text" placeholder="Имя" required>
-        <input type="text" placeholder="Фамилия" required>
-        <input type="text" placeholder="Отчество (при наличии)" required>
-        <input type="email" placeholder="Электронная почта" required>
-        <input type="password" placeholder="Пароль" required>
-        <select required>
+    <form id="addObjectForm">
+        <input type="text" id="userName" placeholder="Имя" required>
+        <input type="text" id="userSurname" placeholder="Фамилия" required>
+        <input type="text" id="userPatronymic" placeholder="Отчество (при наличии)">
+        <input type="email" id="userEmail" placeholder="Электронная почта" required>
+        <input type="password" id="userPassword" placeholder="Пароль" required>
+        <select id="userRole" required>
             <option value="user">Пользователь</option>
             <option value="manager">Менеджер</option>
             <option value="admin">Администратор</option>
         </select>
         <button type="submit" class="btn-red">Добавить</button>
     </form>
+    <div id="errorMessage" class="error-message" style="display: none;"></div>
 {% endblock %}
 
-<!-- Таблица всех пользователей -->
 {% block tablename %}Список пользователей{% endblock %}
 
 {% block table %}
@@ -55,142 +53,21 @@
                 <th>Действие</th>
             </tr>
         </thead>
-        <tbody>
-            <tr>
-                <td>Иван</td>
-                <td>Иванов</td>
-                <td>Иванович</td>
-                <td class="hide-data">ivan.ivanov@gmail.com</td>
-                <td>Администратор</td>
-                <td><button class="btn-outline">Изменить</button></td>
-            </tr>
-
-            <tr>
-                <td>Петр</td>
-                <td>Петров</td>
-                <td>Петрович</td>
-                <td class="hide-data">petr.petrov@gmail.com</td>
-                <td>Пользователь</td>
-                <td><button class="btn-outline">Изменить</button></td>
-            </tr>
-
-            <tr>
-                <td>Сергей</td>
-                <td>Сергеев</td>
-                <td>Сергеевич</td>
-                <td class="hide-data">sergey.sergeev@gmail.com</td>
-                <td>Менеджер</td>
-                <td><button class="btn-outline">Изменить</button></td>
-            </tr>
-
-            <tr>
-                <td>Антон</td>
-                <td>Антонов</td>
-                <td>Антонович</td>
-                <td class="hide-data">anton.ant@gmail.com</td>
-                <td>Пользователь</td>
-                <td><button class="btn-outline">Изменить</button></td>
-            </tr>
-
-            <tr>
-                <td>Владимир</td>
-                <td>Владимиров</td>
-                <td>Владимирович</td>
-                <td class="hide-data">vladimir.vlad@gmail.com</td>
-                <td>Пользователь</td>
-                <td><button class="btn-outline">Изменить</button></td>
-            </tr>
-            
-            <tr>
-                <td>Александр</td>
-                <td>Александров</td>
-                <td>Александрович</td>
-                <td class="hide-data">alex.alexandrov@gmail.com</td>
-                <td>Менеджер</td>
-                <td><button class="btn-outline">Изменить</button></td>
-            </tr>
-
-            <tr>
-                <td>Дмитрий</td>
-                <td>Дмитриев</td>
-                <td>Дмитриевич</td>
-                <td class="hide-data">dmitry.dmitriev@gmail.com</td>
-                <td>Пользователь</td>
-                <td><button class="btn-outline">Изменить</button></td>
-            </tr>
-
-            <tr>
-                <td>Михаил</td>
-                <td>Михайлов</td>
-                <td>Михайлович</td>
-                <td class="hide-data">mikhail.mikhaylov@gmail.com</td>
-                <td>Пользователь</td>
-                <td><button class="btn-outline">Изменить</button></td>
-            </tr>
-
-            <tr>
-                <td>Николай</td>
-                <td>Николаев</td>
-                <td>Николаевич</td>
-                <td class="hide-data">nikolay.nikolaev@gmail.com</td>
-                <td>Менеджер</td>
-                <td><button class="btn-outline">Изменить</button></td>
-            </tr>
-
-            <tr>
-                <td>Алексей</td>
-                <td>Алексеев</td>
-                <td>Алексеевич</td>
-                <td class="hide-data">alexey.alekseev@gmail.com</td>
-                <td>Пользователь</td>
-                <td><button class="btn-outline">Изменить</button></td>
-            </tr>
-
-            <tr>
-                <td>Виктор</td>
-                <td>Викторов</td>
-                <td>Викторович</td>
-                <td class="hide-data">viktor.viktorov@gmail.com</td>
-                <td>Администратор</td>
-                <td><button class="btn-outline">Изменить</button></td>
-            </tr>
-
-            <tr>
-                <td>Юрий</td>
-                <td>Юрьев</td>
-                <td>Юрьевич</td>
-                <td class="hide-data">yury.yuryev@gmail.com</td>
-                <td>Пользователь</td>
-                <td><button class="btn-outline">Изменить</button></td>
-            </tr>
-
-            <tr>
-                <td>Валентин</td>
-                <td>Валентинов</td>
-                <td>Валентинович</td>
-                <td class="hide-data">valentin.valentinov@gmail.com</td>
-                <td>Менеджер</td>
-                <td><button class="btn-outline">Изменить</button></td>
-            </tr>
-
-            <tr>
-                <td>Роман</td>
-                <td>Романов</td>
-                <td>Романович</td>
-                <td class="hide-data">roman.romanov@gmail.com</td>
-                <td>Пользователь</td>
-                <td><button class="btn-outline">Изменить</button></td>
-            </tr>
-
-            <tr>
-                <td>Станислав</td>
-                <td>Станиславов</td>
-                <td>Станиславович</td>
-                <td class="hide-data">stanislav.stanislavov@gmail.com</td>
-                <td>Пользователь</td>
-                <td><button class="btn-outline">Изменить</button></td>
-            </tr>
-
+        <tbody id="objectsTableBody">
+            {% for row in template_rows: %}
+                <tr>
+                    <td style="filter: blur(5px)">{{ row }}</td>
+                    <td style="filter: blur(5px)">{{ row }}</td>
+                    <td style="filter: blur(5px)">{{ row }}</td>
+                    <td style="filter: blur(5px)">{{ row }}</td>
+                    <td style="filter: blur(5px)">user</td>
+                    <td><button class="btn-outline">Изменить</button></td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
+{% endblock %}
+
+{% block script %}
+<script src="{{ url_for('static', filename='js/staff/users.js') }}"></script>
 {% endblock %}
