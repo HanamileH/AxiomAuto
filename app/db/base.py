@@ -88,38 +88,93 @@ STATS_TYPES = [
 ]
 
 
-def get_catalog():
+def _format_catalog_row(row):
+    row["engine_type"] = ENGINE_TYPES[row["engine_type"]]
+    row["transmission"] = TRANSMISSION_TYPES[row["transmission"]]
+    row["price_formatted"] = f"{int(row['price']):,}".replace(",", " ")
+
+    return row
+
+
+def get_catalog(filters=None):
     """Получить каталог моделей
     Returns:
         list: Массив моделей
     """
 
+    filters = filters or {}
+
+    query = """
+        SELECT
+           m.id AS id,
+           b.name AS brand,
+           m.name AS model,
+           m.image_path AS image_path,
+           m.price AS price,
+           m.year AS year,
+           m.engine_type AS engine_type,
+           m.engine_volume AS engine_volume,
+           m.engine_power AS engine_power,
+           m.transmission AS transmission
+        FROM model m
+        JOIN brand b
+        ON m.brand_id = b.id
+    """
+
+    conditions = []
+    params = []
+
+    if filters.get("brand"):
+        conditions.append("LOWER(b.name) LIKE LOWER(%s)")
+        params.append(f"%{filters['brand']}%")
+
+    if filters.get("model"):
+        conditions.append("LOWER(m.name) LIKE LOWER(%s)")
+        params.append(f"%{filters['model']}%")
+
+    if filters.get("year_from") is not None:
+        conditions.append("m.year >= %s")
+        params.append(filters["year_from"])
+
+    if filters.get("year_to") is not None:
+        conditions.append("m.year <= %s")
+        params.append(filters["year_to"])
+
+    if filters.get("price_from") is not None:
+        conditions.append("m.price >= %s")
+        params.append(filters["price_from"])
+
+    if filters.get("price_to") is not None:
+        conditions.append("m.price <= %s")
+        params.append(filters["price_to"])
+
+    if filters.get("engine_type"):
+        conditions.append("m.engine_type = %s")
+        params.append(filters["engine_type"])
+
+    if filters.get("transmission"):
+        conditions.append("m.transmission = %s")
+        params.append(filters["transmission"])
+
+    if filters.get("engine_volume_min") is not None:
+        conditions.append("m.engine_volume >= %s")
+        params.append(filters["engine_volume_min"])
+
+    if filters.get("engine_power_min") is not None:
+        conditions.append("m.engine_power >= %s")
+        params.append(filters["engine_power_min"])
+
+    if conditions:
+        query += " WHERE " + " AND ".join(conditions)
+
+    query += " ORDER BY m.id DESC;"
+
     with db.get_cursor(as_dict=True) as cursor:
-        cursor.execute(
-            """
-            SELECT
-               m.id AS id,
-               b.name AS brand,
-               m.name AS model,
-               m.image_path AS image_path,
-               m.price AS price,
-               m.year AS year,
-               m.engine_type AS engine_type,
-               m.transmission AS transmission
-            FROM model m
-            JOIN brand b
-            ON m.brand_id = b.id;
-            """
-        )
+        cursor.execute(query, tuple(params))
 
         rows = cursor.fetchall()
 
-        for row in rows:
-            row["engine_type"] = ENGINE_TYPES[row["engine_type"]]
-            row["transmission"] = TRANSMISSION_TYPES[row["transmission"]]
-            row["price"] = f"{int(row["price"]):,}".replace(",", " ")
-
-        return rows
+        return [_format_catalog_row(row) for row in rows]
 
 
 def get_model_data(model_id):
@@ -165,7 +220,7 @@ def get_model_data(model_id):
 
         result["engine_type"] = ENGINE_TYPES[result["engine_type"]]
         result["transmission"] = TRANSMISSION_TYPES[result["transmission"]]
-        result["price"] = f"{int(result["price"]):,}".replace(",", " ")
+        result["price"] = f"{int(result['price']):,}".replace(",", " ")
 
         return result
 

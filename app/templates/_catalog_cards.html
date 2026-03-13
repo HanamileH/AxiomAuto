@@ -1,0 +1,21 @@
+{% if models %}
+   {% for model in models %}
+      <div class="card">
+         <img src="{{ url_for('static', filename='img/' ~ model.image_path)}}" alt="{{ model.title }}">
+
+         <div>
+            <h3>{{ model.brand ~ ' ' ~ model.model }}</h3>
+            <p>{{ model.engine_type ~ ' • ' ~ model.year ~ ' год • ' ~ model.transmission}}</p>
+            <p class="price">{{ model.price_formatted ~ ' руб.' }}</p>
+         </div>
+
+         <a href="{{ url_for('main.car', model_id=model.id) }}">
+            <button class="btn-red">Подробнее</button>
+         </a>
+      </div>
+   {% endfor %}
+{% else %}
+   <div class="catalog-empty" role="status">
+      Нет подходящих автомобилей, попробуйте изменить фильтры поиска
+   </div>
+{% endif %}

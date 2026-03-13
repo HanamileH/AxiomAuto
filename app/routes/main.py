@@ -1,6 +1,6 @@
 import string
 import random
-from flask import Blueprint, render_template, abort
+from flask import Blueprint, render_template, abort, request, jsonify
 from flask_login import login_required, current_user
 from app.db import get_catalog, get_model_data, Brand, Body_type, Color, Model, ENTITIES_TYPES, STATS_TYPES, get_statistics
 
@@ -13,6 +13,46 @@ def main():
     all_models = get_catalog()
 
     return render_template("catalog.html", models=all_models)
+
+
+@bp.route("/catalog/filter")
+def filter_catalog():
+    def parse_int(value):
+        if value is None or value == "":
+            return None
+
+        try:
+            return int(value)
+        except (TypeError, ValueError):
+            return None
+
+    def parse_float(value):
+        if value is None or value == "":
+            return None
+
+        try:
+            return float(value)
+        except (TypeError, ValueError):
+            return None
+
+    filters = {
+        "brand": request.args.get("brand", "").strip() or None,
+        "model": request.args.get("model", "").strip() or None,
+        "year_from": parse_int(request.args.get("year_from")),
+        "year_to": parse_int(request.args.get("year_to")),
+        "price_from": parse_int(request.args.get("price_from")),
+        "price_to": parse_int(request.args.get("price_to")),
+        "engine_type": request.args.get("engine_type", "").strip() or None,
+        "transmission": request.args.get("transmission", "").strip() or None,
+        "engine_volume_min": parse_float(request.args.get("engine_volume_min")),
+        "engine_power_min": parse_int(request.args.get("engine_power_min")),
+    }
+
+    filtered_models = get_catalog(filters)
+
+    html = render_template("_catalog_cards.html", models=filtered_models)
+
+    return jsonify({"html": html, "count": len(filtered_models)})
 
 
 # Страница описания автомобиля
