@@ -78,3 +78,13 @@
   font-size: 100%;
   margin-bottom: 0.8rem;
 }
+
+.catalog-empty {
+  grid-column: 1 / -1;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #f1b6b6;
+  background-color: #fff4f4;
+  color: #b3261e;
+  font-weight: 600;
+}

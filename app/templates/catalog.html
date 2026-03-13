@@ -22,32 +22,30 @@
       <input type="number" placeholder="Год до" id="filter-year-to">
       <input type="number" placeholder="Цена от" id="filter-price-from">
       <input type="number" placeholder="Цена до" id="filter-price-to">
+      <select id="filter-engine-type" name="engine_type">
+         <option value="">Тип двигателя</option>
+         <option value="petrol">Бензин</option>
+         <option value="diesel">Дизель</option>
+         <option value="electric">Электро</option>
+         <option value="hybrid">Гибрид</option>
+      </select>
       <select id="filter-transmission" name="transmission">
-         <option value="all">Коробка передач</option>
+         <option value="">Коробка передач</option>
          <option value="manual">Механика</option>
          <option value="automatic">Автомат</option>
-         <option value="semi-automatic">Полуавтомат</option>
+         <option value="variator">Вариатор</option>
+         <option value="robotic">Роботизированная</option>
       </select>
+      <input type="number" placeholder="Мин. объем двигателя (л)" step="0.1" id="filter-engine-volume-min">
+      <input type="number" placeholder="Мин. мощность (л.с.)" id="filter-engine-power-min">
    </div>
 </div>
 
 <!-- Панель карточек -->
-<div class="catalog">
-   {% for model in models %}
-      <div class="card">
-         <img src="{{ url_for('static', filename='img/' ~ model.image_path)}}" alt="{{ model.title }}">
-
-         <div>
-            <h3>{{ model.brand ~ ' ' ~ model.model }}</h3>
-            <p>{{ model.engine_type ~ ' • ' ~ model.year ~ ' год • ' ~ model.transmission}}</p>
-            <p class="price">{{model.price ~ ' руб.'}}</p>
-         </div>
-         
-         <a href="{{ url_for('main.car', model_id=model.id) }}">
-            <button class="btn-red">Подробнее</button>
-         </a>
-      </div>
-   {% endfor %}
+<div class="catalog" id="catalog-list">
+   {% include "_catalog_cards.html" %}
 </div>
+
+<script src="{{ url_for('static', filename='js/catalog.js') }}"></script>
 
 {% endblock %}
