@@ -15,7 +15,7 @@ OBJECTS_MATCH = {
 }
 
 bp = Blueprint("staff/admin_crud", __name__)
-MODEL_IMAGE_DIR = "/app/static/img/cars"
+MODEL_IMAGE_DIR = "./app/static/img/cars"
 MODEL_IMAGE_PREFIX = "cars"
 ALLOWED_IMAGE_EXTENSIONS = {"jpg", "jpeg", "png", "webp"}
 
