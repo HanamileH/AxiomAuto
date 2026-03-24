@@ -9,45 +9,26 @@ const addForm = document.getElementById("addObjectForm");
 const errorMessage = document.getElementById("errorMessage");
 
 // Элементы ввода формы добавления
-const brandSelect = document.querySelector(
-  "#addObjectForm select:nth-child(1)"
-);
+const brandSelect = document.getElementById("brand_id");
 
-const modelNameInput = document.querySelector(
-  '#addObjectForm input[placeholder="Название модели"]'
-);
+const modelNameInput = document.getElementById("model_name");
 
-const bodyTypeSelect = document.querySelector(
-  "#addObjectForm select:nth-child(3)"
-);
+const bodyTypeSelect = document.getElementById("body_type_id");
 
-const descriptionInput = document.querySelector(
-  '#addObjectForm input[placeholder="Описание"]'
-);
+const descriptionInput = document.getElementById("description");
 
-const yearInput = document.querySelector(
-  '#addObjectForm input[placeholder="Год"]'
-);
+const yearInput = document.getElementById("year");
 
-const engineTypeSelect = document.querySelector(
-  "#addObjectForm select:nth-child(6)"
-);
+const engineTypeSelect = document.getElementById("engine_type");
 
-const engineVolumeInput = document.querySelector(
-  '#addObjectForm input[placeholder="Объём двигателя (л.)"]'
-);
+const engineVolumeInput = document.getElementById("engine_volume");
 
-const enginePowerInput = document.querySelector(
-  '#addObjectForm input[placeholder="Мощность (л.с.)"]'
-);
+const enginePowerInput = document.getElementById("engine_power");
 
-const transmissionSelect = document.querySelector(
-  "#addObjectForm select:nth-child(9)"
-);
+const transmissionSelect = document.getElementById("transmission");
 
-const priceInput = document.querySelector(
-  '#addObjectForm input[placeholder="Цена"]'
-);
+const priceInput = document.getElementById("price");
+const imageInput = document.getElementById("image");
 
 // Показать ошибку
 function showError(message) {
@@ -297,6 +278,11 @@ function enterEditMode(id) {
     object.price
   }" class="edit-input" placeholder="Цена" min="1">
                     </div>
+
+                    <div class="form-group">
+                        <label for="edit-image-${id}">Фотография</label>
+                        <input type="file" id="edit-image-${id}" class="edit-input" accept="image/png,image/jpeg,image/webp">
+                    </div>
                 </div>
                 
                 <div class="edit-buttons">
@@ -423,6 +409,7 @@ async function saveObject() {
   const enginePowerInput = document.getElementById(`edit-engine-power-${currentEditId}`);
   const transmissionSelect = document.getElementById(`edit-transmission-${currentEditId}`);
   const priceInput = document.getElementById(`edit-price-${currentEditId}`);
+  const imageInput = document.getElementById(`edit-image-${currentEditId}`);
 
   const data = {
     brand_id: parseInt(brandSelect.value),
@@ -449,12 +436,19 @@ async function saveObject() {
   }
 
   try {
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      if (value !== null && value !== undefined && !Number.isNaN(value)) {
+        formData.append(key, value);
+      }
+    });
+    if (imageInput.files.length > 0) {
+      formData.append("image", imageInput.files[0]);
+    }
+
     const response = await fetch(`/api/crud/models/${currentEditId}`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
+      body: formData,
     });
 
     const result = await response.json();
@@ -574,12 +568,22 @@ addForm.addEventListener("submit", async function (e) {
   }
 
   try {
+    if (!imageInput.files.length) {
+      showError("Добавьте фотографию модели");
+      return;
+    }
+
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      if (value !== null && value !== undefined && !Number.isNaN(value)) {
+        formData.append(key, value);
+      }
+    });
+    formData.append("image", imageInput.files[0]);
+
     const response = await fetch("/api/crud/models", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
+      body: formData,
     });
 
     const result = await response.json();
