@@ -496,6 +496,7 @@ class Model:
         transmission,
         brand_id,
         body_type_id,
+        image_path,
     ):
         """Создание записи
         Args:
@@ -527,7 +528,7 @@ class Model:
                 cursor.execute(
                     """
                INSERT INTO model (name, description, price, year, engine_type, engine_power, engine_volume, transmission, brand_id, body_type, image_path)
-               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'temp.jpg') RETURNING id;
+               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id;
             """,
                     (
                         name,
@@ -540,6 +541,7 @@ class Model:
                         transmission,
                         brand_id,
                         body_type_id,
+                        image_path,
                     ),
                 )
 
@@ -563,6 +565,7 @@ class Model:
         transmission,
         brand_id,
         body_type_id,
+        image_path=None,
     ):
         """Обновление записи
         Args:
@@ -660,6 +663,10 @@ class Model:
                     updates.append("body_type = %s")
                     params.append(body_type_id)
 
+                if image_path:
+                    updates.append("image_path = %s")
+                    params.append(image_path)
+
                 params.append(id)
 
                 cursor.execute(
@@ -670,6 +677,23 @@ class Model:
         except Exception as e:
             return False, f"server error: {str(e)}"
 
+    @staticmethod
+    def get_image_path(id):
+        """Получение пути к изображению модели по ID"""
+        try:
+            with db.get_cursor(as_dict=True) as cursor:
+                cursor.execute(
+                    "SELECT image_path AS image_path FROM model WHERE id = %s;",
+                    (id,),
+                )
+                row = cursor.fetchone()
+
+                if row is None:
+                    return None, "this record does not exist"
+
+                return row["image_path"], ""
+        except Exception as e:
+            return None, f"server error: {str(e)}"
 
     @staticmethod
     def delete(id):
