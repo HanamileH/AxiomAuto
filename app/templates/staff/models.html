@@ -80,38 +80,39 @@
 
 {% block addpanel %}
     <form id="addObjectForm">
-        <select required>
+        <select id="brandSelect" required>
             <option value="" disabled selected>Производитель</option>
             {% for brand in brands %}
                 <option value="{{ brand['id'] }}">{{ brand['name'] }}</option>
             {% endfor %}
         </select>
-        <input type="text" placeholder="Название модели" required>
-        <select required>
+        <input type="text" id="modelName" placeholder="Название модели" required>
+        <select id="bodyTypeSelect" required>
             <option value="" disabled selected>Тип кузова</option>
             {% for body_type in body_types %}
                 <option value="{{ body_type['id'] }}">{{ body_type['name'] }}</option>
             {% endfor %}
         </select>
-        <input type="text" placeholder="Описание" style="grid-column: span 2;" required>
-        <input type="text" placeholder="Год" required>
-        <select required>
+        <input type="text" id="descriptionInput" placeholder="Описание" style="grid-column: span 2;" required>
+        <input type="text" id="yearInput" placeholder="Год" required>
+        <select id="engineTypeSelect" required>
             <option value="" disabled selected>Тип двигателя</option>
             <option value="petrol">Бензин</option>
             <option value="diesel">Дизель</option>
             <option value="hybrid">Гибрид</option>
             <option value="electric">Электро</option>
         </select>
-        <input type="text" placeholder="Объём двигателя (л.)">
-        <input type="text" placeholder="Мощность (л.с.)" required>
-        <select required>
+        <input type="text" id="engineVolumeInput" placeholder="Объём двигателя (л.)">
+        <input type="text" id="enginePowerInput" placeholder="Мощность (л.с.)" required>
+        <select id="transmissionSelect" required>
             <option value="" disabled selected>Трансмиссия</option>
             <option value="manual">Механическая</option>
             <option value="automatic">Автоматическая</option>
             <option value="variator">Вариатор</option>
             <option value="robotic">Роботизированная</option>
         </select>
-        <input type="text" placeholder="Цена (руб.)" required>
+        <input type="text" id="priceInput" placeholder="Цена (руб.)" required>
+        <input type="file" id="modelImageInput" accept=".jpg,.jpeg,.png,.webp" required>
         <button type="submit" class="btn-red">Добавить</button>
     </form>
     <div id="errorMessage" class="error-message" style="display: none;"></div>

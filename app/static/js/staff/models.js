@@ -9,45 +9,17 @@ const addForm = document.getElementById("addObjectForm");
 const errorMessage = document.getElementById("errorMessage");
 
 // Элементы ввода формы добавления
-const brandSelect = document.querySelector(
-  "#addObjectForm select:nth-child(1)"
-);
-
-const modelNameInput = document.querySelector(
-  '#addObjectForm input[placeholder="Название модели"]'
-);
-
-const bodyTypeSelect = document.querySelector(
-  "#addObjectForm select:nth-child(3)"
-);
-
-const descriptionInput = document.querySelector(
-  '#addObjectForm input[placeholder="Описание"]'
-);
-
-const yearInput = document.querySelector(
-  '#addObjectForm input[placeholder="Год"]'
-);
-
-const engineTypeSelect = document.querySelector(
-  "#addObjectForm select:nth-child(6)"
-);
-
-const engineVolumeInput = document.querySelector(
-  '#addObjectForm input[placeholder="Объём двигателя (л.)"]'
-);
-
-const enginePowerInput = document.querySelector(
-  '#addObjectForm input[placeholder="Мощность (л.с.)"]'
-);
-
-const transmissionSelect = document.querySelector(
-  "#addObjectForm select:nth-child(9)"
-);
-
-const priceInput = document.querySelector(
-  '#addObjectForm input[placeholder="Цена"]'
-);
+const brandSelect = document.getElementById("brandSelect");
+const modelNameInput = document.getElementById("modelName");
+const bodyTypeSelect = document.getElementById("bodyTypeSelect");
+const descriptionInput = document.getElementById("descriptionInput");
+const yearInput = document.getElementById("yearInput");
+const engineTypeSelect = document.getElementById("engineTypeSelect");
+const engineVolumeInput = document.getElementById("engineVolumeInput");
+const enginePowerInput = document.getElementById("enginePowerInput");
+const transmissionSelect = document.getElementById("transmissionSelect");
+const priceInput = document.getElementById("priceInput");
+const modelImageInput = document.getElementById("modelImageInput");
 
 // Показать ошибку
 function showError(message) {
@@ -297,6 +269,11 @@ function enterEditMode(id) {
     object.price
   }" class="edit-input" placeholder="Цена" min="1">
                     </div>
+
+                    <div class="form-group span-2">
+                        <label for="edit-image-${id}">Фото модели</label>
+                        <input type="file" id="edit-image-${id}" class="edit-input" accept=".jpg,.jpeg,.png,.webp">
+                    </div>
                 </div>
                 
                 <div class="edit-buttons">
@@ -356,7 +333,7 @@ function enterEditMode(id) {
 }
 
 // Валидация данных модели
-function validateModelData(data) {
+function validateModelData(data, requireImage = false) {
   const errors = [];
 
   if (!data.brand_id) {
@@ -402,6 +379,10 @@ function validateModelData(data) {
     errors.push("Выберите трансмиссию");
   }
 
+
+  if (requireImage && !data.image) {
+    errors.push("Добавьте фотографию модели");
+  }
   if (!data.price || data.price <= 0) {
     errors.push("Укажите корректную цену");
   }
@@ -424,6 +405,8 @@ async function saveObject() {
   const transmissionSelect = document.getElementById(`edit-transmission-${currentEditId}`);
   const priceInput = document.getElementById(`edit-price-${currentEditId}`);
 
+  const imageInput = document.getElementById(`edit-image-${currentEditId}`);
+
   const data = {
     brand_id: parseInt(brandSelect.value),
     name: nameInput.value.trim(),
@@ -438,6 +421,7 @@ async function saveObject() {
     engine_power: parseInt(enginePowerInput.value),
     transmission: transmissionSelect.value,
     price: parseFloat(priceInput.value),
+    image: imageInput.files[0] || null,
   };
 
   // Валидация
@@ -449,12 +433,27 @@ async function saveObject() {
   }
 
   try {
+    const formData = new FormData();
+    formData.append("brand_id", data.brand_id);
+    formData.append("name", data.name);
+    formData.append("body_type_id", data.body_type_id);
+    formData.append("description", data.description);
+    formData.append("year", data.year);
+    formData.append("engine_type", data.engine_type);
+    if (data.engine_volume !== null && !Number.isNaN(data.engine_volume)) {
+      formData.append("engine_volume", data.engine_volume);
+    }
+    formData.append("engine_power", data.engine_power);
+    formData.append("transmission", data.transmission);
+    formData.append("price", data.price);
+
+    if (data.image) {
+      formData.append("image", data.image);
+    }
+
     const response = await fetch(`/api/crud/models/${currentEditId}`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
+      body: formData,
     });
 
     const result = await response.json();
@@ -563,10 +562,11 @@ addForm.addEventListener("submit", async function (e) {
     engine_power: parseInt(enginePowerInput.value),
     transmission: transmissionSelect.value,
     price: parseFloat(priceInput.value),
+    image: modelImageInput.files[0] || null,
   };
 
   // Валидация
-  const errors = validateModelData(data);
+  const errors = validateModelData(data, true);
   if (errors.length > 0) {
     showError(errors.join(", "));
     modelNameInput.focus();
@@ -574,12 +574,24 @@ addForm.addEventListener("submit", async function (e) {
   }
 
   try {
+    const formData = new FormData();
+    formData.append("brand_id", data.brand_id);
+    formData.append("name", data.name);
+    formData.append("body_type_id", data.body_type_id);
+    formData.append("description", data.description);
+    formData.append("year", data.year);
+    formData.append("engine_type", data.engine_type);
+    if (data.engine_volume !== null && !Number.isNaN(data.engine_volume)) {
+      formData.append("engine_volume", data.engine_volume);
+    }
+    formData.append("engine_power", data.engine_power);
+    formData.append("transmission", data.transmission);
+    formData.append("price", data.price);
+    formData.append("image", data.image);
+
     const response = await fetch("/api/crud/models", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
+      body: formData,
     });
 
     const result = await response.json();
@@ -595,6 +607,7 @@ addForm.addEventListener("submit", async function (e) {
         body_type: window.bodyTypes
           ? window.bodyTypes.find((t) => t.id === data.body_type_id)?.name || ""
           : "",
+        image_path: "",
       });
 
       // Перерисовываем таблицу

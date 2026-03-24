@@ -1,14 +1,50 @@
+from pathlib import Path
+from uuid import uuid4
 from flask import Blueprint, request, jsonify
-from app.db import Brand, Body_type, Color, Model, manager_required
+from app.db import Brand, Body_type, Color, Model, Car, manager_required
 
 OBJECTS_MATCH = {
     "brands": Brand,
     "body_types": Body_type,
     "colors": Color,
     "models": Model,
+    "cars": Car,
 }
 
 bp = Blueprint("staff/admin_crud", __name__)
+
+IMAGES_DIR = Path(__file__).resolve().parents[2] / "static" / "img" / "cars"
+ALLOWED_IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp"}
+
+
+def _save_model_image(image_file):
+    filename = image_file.filename or ""
+    extension = Path(filename).suffix.lower()
+
+    if extension not in ALLOWED_IMAGE_EXTENSIONS:
+        return None, "Only .jpg, .jpeg, .png, .webp are allowed"
+
+    IMAGES_DIR.mkdir(parents=True, exist_ok=True)
+    new_filename = f"model_{uuid4().hex}{extension}"
+    full_path = IMAGES_DIR / new_filename
+    image_file.save(full_path)
+    return f"cars/{new_filename}", ""
+
+
+def _delete_uploaded_image(image_path):
+    if not image_path:
+        return
+
+    if not str(image_path).startswith("cars/"):
+        return
+
+    full_path = IMAGES_DIR.parent / image_path
+
+    try:
+        if full_path.exists() and full_path.is_file():
+            full_path.unlink()
+    except Exception:
+        pass
 
 # GET-запрос на получение всех записей объекта
 @bp.route("/api/crud/<object_name>", methods=["GET"])
@@ -92,16 +128,21 @@ def create(object_name):
 
         # Модели
         elif object_name == "models":
-            name = data.get("name")
-            description = data.get("description")
-            price = int(data.get("price"))
-            year = int(data.get("year"))
-            engine_type = data.get("engine_type")
-            engine_power = int(data.get("engine_power"))
-            engine_volume = float(data.get("engine_volume"))
-            transmission = data.get("transmission")
-            brand_id = data.get("brand_id")
-            body_type_id = data.get("body_type_id")
+            is_multipart = request.content_type and "multipart/form-data" in request.content_type
+            payload = request.form if is_multipart else data
+
+            name = payload.get("name")
+            description = payload.get("description")
+            price = int(payload.get("price"))
+            year = int(payload.get("year"))
+            engine_type = payload.get("engine_type")
+            engine_power = int(payload.get("engine_power"))
+            engine_volume_value = payload.get("engine_volume")
+            engine_volume = float(engine_volume_value) if engine_volume_value else None
+            transmission = payload.get("transmission")
+            brand_id = payload.get("brand_id")
+            body_type_id = payload.get("body_type_id")
+            image_file = request.files.get("image") if is_multipart else None
 
             if not name:
                 return jsonify({"success": False, "error": "Name is required"}), 400
@@ -151,6 +192,14 @@ def create(object_name):
                     400,
                 )
 
+            if image_file is None or not image_file.filename:
+                return jsonify({"success": False, "error": "Image is required"}), 400
+
+            image_path, image_error = _save_model_image(image_file)
+
+            if image_error:
+                return jsonify({"success": False, "error": image_error}), 400
+
             id, error = Model.create(
                 name=name,
                 description=description,
@@ -162,6 +211,37 @@ def create(object_name):
                 transmission=transmission,
                 brand_id=brand_id,
                 body_type_id=body_type_id,
+                image_path=image_path,
+            )
+
+            if error:
+                _delete_uploaded_image(image_path)
+
+        # Автомобили
+        elif object_name == "cars":
+            vin = data.get("vin")
+            model_id = data.get("model_id")
+            color_id = data.get("color_id")
+
+            if not vin:
+                return jsonify({"success": False, "error": "VIN is required"}), 400
+
+            if len(vin.strip()) != 17:
+                return (
+                    jsonify({"success": False, "error": "VIN must be 17 characters"}),
+                    400,
+                )
+
+            if not model_id:
+                return jsonify({"success": False, "error": "Model is required"}), 400
+
+            if not color_id:
+                return jsonify({"success": False, "error": "Color is required"}), 400
+
+            id, error = Car.create(
+                model_id=int(model_id),
+                color_id=int(color_id),
+                vin=vin.strip().upper(),
             )
 
         # Неизвестный объект
@@ -238,16 +318,33 @@ def update(object_name, id):
 
         # Модели
         elif object_name == "models":
-            name = data.get("name")
-            description = data.get("description")
-            price = int(data.get("price"))
-            year = int(data.get("year"))
-            engine_type = data.get("engine_type")
-            engine_power = int(data.get("engine_power"))
-            engine_volume = float(data.get("engine_volume"))
-            transmission = data.get("transmission")
-            brand_id = data.get("brand_id")
-            body_type_id = data.get("body_type_id")
+            is_multipart = request.content_type and "multipart/form-data" in request.content_type
+            payload = request.form if is_multipart else data
+
+            name = payload.get("name")
+            description = payload.get("description")
+            price = int(payload.get("price"))
+            year = int(payload.get("year"))
+            engine_type = payload.get("engine_type")
+            engine_power = int(payload.get("engine_power"))
+            engine_volume_value = payload.get("engine_volume")
+            engine_volume = float(engine_volume_value) if engine_volume_value else None
+            transmission = payload.get("transmission")
+            brand_id = payload.get("brand_id")
+            body_type_id = payload.get("body_type_id")
+            image_file = request.files.get("image") if is_multipart else None
+
+            old_model, old_model_error = Model.get_by_id(id)
+
+            if old_model_error or old_model is None:
+                return jsonify({"success": False, "error": "Model not found"}), 404
+
+            image_path = None
+            if image_file and image_file.filename:
+                image_path, image_error = _save_model_image(image_file)
+
+                if image_error:
+                    return jsonify({"success": False, "error": image_error}), 400
 
             _, error = Model.update(
                 id=id,
@@ -261,6 +358,41 @@ def update(object_name, id):
                 transmission=transmission,
                 brand_id=brand_id,
                 body_type_id=body_type_id,
+                image_path=image_path,
+            )
+
+            if error and image_path:
+                _delete_uploaded_image(image_path)
+
+            if not error and image_path:
+                _delete_uploaded_image(old_model.get("image_path"))
+
+        # Автомобили
+        elif object_name == "cars":
+            vin = data.get("vin")
+            model_id = data.get("model_id")
+            color_id = data.get("color_id")
+
+            if not vin:
+                return jsonify({"success": False, "error": "VIN is required"}), 400
+
+            if len(vin.strip()) != 17:
+                return (
+                    jsonify({"success": False, "error": "VIN must be 17 characters"}),
+                    400,
+                )
+
+            if not model_id:
+                return jsonify({"success": False, "error": "Model is required"}), 400
+
+            if not color_id:
+                return jsonify({"success": False, "error": "Color is required"}), 400
+
+            _, error = Car.update(
+                id=id,
+                model_id=int(model_id),
+                color_id=int(color_id),
+                vin=vin.strip().upper(),
             )
 
         # Неизвестный объект
