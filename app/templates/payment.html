@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Оплата {{ model.brand ~ ' ' ~ model.model }}{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/payment.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="payment-page">
+    <section class="car-summary">
+        <h1>Оплата автомобиля</h1>
+        <div class="summary-grid">
+            <p><strong>Производитель:</strong> {{ model.brand }}</p>
+            <p><strong>Модель:</strong> {{ model.model }}</p>
+            <p><strong>Год выпуска:</strong> {{ model.year }}</p>
+            <p><strong>Тип кузова:</strong> {{ model.body_type }}</p>
+            <p><strong>Тип двигателя:</strong> {{ model.engine_type }}</p>
+            <p><strong>Объём двигателя:</strong> {{ model.engine_volume ~ ' л.' }}</p>
+            <p><strong>Мощность:</strong> {{ model.engine_power ~ ' л.с.' }}</p>
+            <p><strong>Коробка передач:</strong> {{ model.transmission }}</p>
+            <p><strong>Цена:</strong> {{ model.price ~ ' руб.' }}</p>
+            <p><strong>Выбранный цвет:</strong> <span id="selectedColorLabel">{{ selected_color }}</span></p>
+        </div>
+    </section>
+
+    <section class="payment-form-section">
+        <h2>Данные банковской карты</h2>
+        <form id="paymentForm" class="payment-form">
+            <div class="field-row">
+                <label for="cardNumber">Номер карты</label>
+                <input id="cardNumber" name="cardNumber" type="text" maxlength="19" placeholder="0000 0000 0000 0000" required>
+            </div>
+
+            <div class="field-row">
+                <label for="cardHolder">Имя держателя</label>
+                <input id="cardHolder" name="cardHolder" type="text" placeholder="IVAN IVANOV" required>
+            </div>
+
+            <div class="split-row">
+                <div class="field-row">
+                    <label for="expiry">Срок действия</label>
+                    <input id="expiry" name="expiry" type="text" maxlength="5" placeholder="MM/YY" required>
+                </div>
+
+                <div class="field-row">
+                    <label for="cvv">CVV</label>
+                    <input id="cvv" name="cvv" type="password" maxlength="3" placeholder="***" required>
+                </div>
+            </div>
+
+            <div class="field-row">
+                <label for="color">Выбранный цвет</label>
+                <input id="color" name="color" type="text" value="{{ selected_color }}" required>
+            </div>
+
+            <button type="submit" class="btn-red submit-btn">Оплаты</button>
+        </form>
+
+        <p id="paymentStatus" class="payment-status"></p>
+    </section>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="{{ url_for('static', filename='js/payment.js') }}"></script>
+{% endblock %}
