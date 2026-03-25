@@ -66,6 +66,23 @@ def car(model_id):
         return abort(404)
 
 
+# Страница оплаты автомобиля (mock)
+@bp.route("/car/<model_id>/payment")
+def car_payment(model_id):
+    model = get_model_data(model_id)
+
+    if model:
+        selected_color = request.args.get("color", "").strip() or "Не выбран"
+
+        return render_template(
+            "payment.html",
+            model=model,
+            selected_color=selected_color,
+        )
+    else:
+        return abort(404)
+
+
 # Страница менеджера
 @bp.route("/staff/<entity_name>")
 @login_required

@@ -38,7 +38,9 @@
         <p class="description">{{ model.description }}</p>
 
         <div class="actions">
-            <button class="btn-red">Перейти к покупке</button>
+            <a href="{{ url_for('main.car_payment', model_id=request.view_args['model_id']) }}">
+                <button class="btn-red">Перейти к покупке</button>
+            </a>
             <a href="/">
                 <button class="btn-outline">Вернуться в каталог</button>
             </a>
