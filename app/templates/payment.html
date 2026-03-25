@@ -25,7 +25,7 @@
     </section>
 
     <section class="payment-form-section">
-        <h2>Данные банковской карты</h2>
+        <h2>Оплатить онлайн</h2>
         <form id="paymentForm" class="payment-form">
             <div class="field-row">
                 <label for="cardNumber">Номер карты</label>
@@ -49,12 +49,9 @@
                 </div>
             </div>
 
-            <div class="field-row">
-                <label for="color">Выбранный цвет</label>
-                <input id="color" name="color" type="text" value="{{ selected_color }}" required>
-            </div>
+            <h2>{{ "К оплате: " ~ model.price ~ " руб."}}</h2>
 
-            <button type="submit" class="btn-red submit-btn">Оплаты</button>
+            <button type="submit" class="btn-red submit-btn">Оплатить</button>
         </form>
 
         <p id="paymentStatus" class="payment-status"></p>
