@@ -53,11 +53,8 @@
     <table class="entity-table">
         <thead>
             <tr>
-                {% for idx in range(stats_data['columns']|length) %}
-                    <th
-                        data-sort-key="{{ stats_data['columns'][idx] }}"
-                        data-sort-type="{% if stats_data['columns'][idx] in ['count', 'sales', 'deliveries'] %}number{% else %}string{% endif %}"
-                    >{{ stats_data['columns_ru'][idx] }}</th>
+                {% for name in stats_data['columns_ru'] %}
+                    <th>{{ name }}</th>
                 {% endfor %}
             </tr>
         </thead>
@@ -66,14 +63,12 @@
             {% for row in stats_data['rows'] %}
             <tr id="object-row">
                 {% for column_name in stats_data['columns'] %}
-                    <td data-sort-key="{{ column_name }}">{{ row[column_name] }}</td>
+                    <td>{{ row[column_name] }}</td>
                 {% endfor %}
             </tr>
             {% endfor %}
         </tbody>
     </table>
 </section>
-
-<script src="{{ url_for('static', filename='js/staff/table-sort.js') }}"></script>
 
 {% endblock %}

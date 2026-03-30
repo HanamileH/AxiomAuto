@@ -47,7 +47,7 @@ function renderObjectTable() {
     const row = document.createElement("tr");
     row.id = `object-row-${brand.id}`;
     row.innerHTML = `
-         <td id="brand-name-${brand.id}" data-sort-key="name">${brand.name}</td>
+         <td id="brand-name-${brand.id}">${brand.name}</td>
          <td>
             <button class="btn-outline edit-btn" data-id="${brand.id}">Изменить</button>
          </td>

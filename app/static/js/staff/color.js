@@ -51,7 +51,7 @@ function renderObjectTable() {
          <td id="color-value-${color.id}">
             <div class="color-preview" id="color-preview-${color.id}" style="background-color: #${color.hex_code};"></div>
          </td>
-         <td id="color-name-${color.id}" data-sort-key="name">${color.name}</td>
+         <td id="color-name-${color.id}">${color.name}</td>
          <td>
             <button class="btn-outline edit-btn" data-id="${color.id}">Изменить</button>
          </td>
