@@ -187,26 +187,26 @@ def get_model_data(model_id):
 
     with db.get_cursor(as_dict=True) as cursor:
         cursor.execute(
-            """
-         SELECT
-            b.name AS brand,
-            m.name AS model,
-            m.description AS description,
-            m.image_path AS image_path,
-            m.price AS price,
-            m.year AS year,
-            bt.name AS body_type,
-            m.engine_type AS engine_type,
-            m.engine_volume AS engine_volume,
-            m.engine_power AS engine_power,
-            
-            m.transmission AS transmission
-         FROM model m
-         JOIN brand b
-         ON m.brand_id = b.id
-         JOIN body_type bt
-         ON m.body_type = bt.id
-         WHERE m.id = %s;
+        """
+            SELECT
+                b.name AS brand,
+                m.name AS model,
+                m.description AS description,
+                m.image_path AS image_path,
+                m.price AS price,
+                m.year AS year,
+                bt.name AS body_type,
+                m.engine_type AS engine_type,
+                m.engine_volume AS engine_volume,
+                m.engine_power AS engine_power,
+                
+                m.transmission AS transmission
+            FROM model m
+            JOIN brand b
+            ON m.brand_id = b.id
+            JOIN body_type bt
+            ON m.body_type = bt.id
+            WHERE m.id = %s;
         """,
             (model_id,),
         )
@@ -221,6 +221,55 @@ def get_model_data(model_id):
         result["engine_type"] = ENGINE_TYPES[result["engine_type"]]
         result["transmission"] = TRANSMISSION_TYPES[result["transmission"]]
         result["price"] = f"{int(result['price']):,}".replace(",", " ")
+
+        # Получаем список доступных цветов
+        cursor.execute(
+        """
+            WITH model_colors AS (
+                -- Get distinct colors that exist for the specified model
+                SELECT DISTINCT
+                    c.id AS color_id,
+                    c.name AS color_name,
+                    c.hex_code
+                FROM color c
+                WHERE EXISTS (
+                    SELECT 1 
+                    FROM car car_instance
+                    WHERE car_instance.model_id = %s
+                    AND car_instance.color_id = c.id
+                )
+            ),
+            color_availability AS (
+                -- For each color, check if there's any unsold car
+                SELECT 
+                    mc.color_id,
+                    mc.color_name,
+                    mc.hex_code,
+                    EXISTS (
+                        SELECT 1
+                        FROM car car_instance
+                        LEFT JOIN sale s ON car_instance.id = s.car_id
+                        WHERE car_instance.model_id = %s
+                        AND car_instance.color_id = mc.color_id
+                        AND s.id IS NULL  -- No sale record means not sold/not reserved
+                    ) AS available_for_sale
+                FROM model_colors mc
+            )
+            SELECT 
+                color_name AS color,
+                hex_code,
+                available_for_sale AS is_available_for_sale
+            FROM color_availability
+            ORDER BY color_name;
+        """,
+            (model_id, model_id)
+        )
+
+        # Добавляем информацию о цветах
+        colors = cursor.fetchall()
+        colors_data = [dict(row) for row in colors]
+
+        result["colors"] = colors_data
 
         return result
 
