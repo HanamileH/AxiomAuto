@@ -66,22 +66,22 @@ function renderObjectTable() {
     const row = document.createElement("tr");
     row.id = `object-row-${model.id}`;
     row.innerHTML = `
-            <td id="brand-${model.id}">${model.brand}</td>
-            <td id="model-name-${model.id}">${model.model}</td>
-            <td id="body-type-${model.id}">${model.body_type}</td>
-            <td id="description-${model.id}">${model.description}</td>
-            <td id="year-${model.id}">${model.year || ""}</td>
-            <td id="engine-type-${model.id}">${getEngineTypeLabel(
+            <td id="brand-${model.id}" data-sort-key="brand">${model.brand}</td>
+            <td id="model-name-${model.id}" data-sort-key="model">${model.model}</td>
+            <td id="body-type-${model.id}" data-sort-key="body_type">${model.body_type}</td>
+            <td id="description-${model.id}" data-sort-key="description">${model.description}</td>
+            <td id="year-${model.id}" data-sort-key="year" data-sort-value="${model.year || ""}">${model.year || ""}</td>
+            <td id="engine-type-${model.id}" data-sort-key="engine_type">${getEngineTypeLabel(
       model.engine_type
     )}</td>
-            <td id="engine-volume-${model.id}">${
+            <td id="engine-volume-${model.id}" data-sort-key="engine_volume" data-sort-value="${model.engine_volume || ""}">${
       model.engine_volume || "-"
     }</td>
-            <td id="engine-power-${model.id}">${model.engine_power}</td>
-            <td id="transmission-${model.id}">${getTransmissionLabel(
+            <td id="engine-power-${model.id}" data-sort-key="engine_power" data-sort-value="${model.engine_power}">${model.engine_power}</td>
+            <td id="transmission-${model.id}" data-sort-key="transmission">${getTransmissionLabel(
       model.transmission
     )}</td>
-            <td id="price-${model.id}">${formatPrice(model.price)}</td>
+            <td id="price-${model.id}" data-sort-key="price" data-sort-value="${model.price}">${formatPrice(model.price)}</td>
             <td>
                 <button class="btn-outline edit-btn" data-id="${
                   model.id

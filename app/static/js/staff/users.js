@@ -51,11 +51,11 @@ function renderObjectTable() {
     const row = document.createElement("tr");
     row.id = `object-row-${user.id}`;
     row.innerHTML = `
-      <td>${user.name || ""}</td>
-      <td>${user.surname || ""}</td>
-      <td>${user.patronymic || ""}</td>
-      <td class="hide-data">${user.email || ""}</td>
-      <td>${ROLE_TITLES[user.role] || user.role}</td>
+      <td data-sort-key="name">${user.name || ""}</td>
+      <td data-sort-key="surname">${user.surname || ""}</td>
+      <td data-sort-key="patronymic">${user.patronymic || ""}</td>
+      <td class="hide-data" data-sort-key="email">${user.email || ""}</td>
+      <td data-sort-key="role">${ROLE_TITLES[user.role] || user.role}</td>
       <td><button class="btn-outline edit-btn" data-id="${user.id}">Изменить</button></td>
     `;
 
