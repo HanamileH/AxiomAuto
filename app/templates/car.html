@@ -37,14 +37,44 @@
         <h2>Описание</h2>
         <p class="description">{{ model.description }}</p>
 
+        <h2>Цвет</h2>
+        {% set has_available_colors = model.colors | selectattr('is_available_for_sale') | list | length > 0 %}
+        <div class="color-picker" id="colorPicker">
+            <div class="color-buttons" role="group" aria-label="Выбор цвета автомобиля">
+                {% for color in model.colors %}
+                <button
+                    type="button"
+                    class="color-btn"
+                    data-color-name="{{ color.color }}"
+                    {% if color.hex_code %}style="--color-value: {{ color.hex_code }};"{% endif %}
+                    {% if not color.is_available_for_sale %}disabled{% endif %}
+                >
+                    <span class="color-dot"></span>
+                </button>
+                {% endfor %}
+            </div>
+            <p class="selected-color-text">
+                Выбранный цвет: <span id="selectedColorName">Не выбран</span>
+            </p>
+        </div>
+
+        {% if not has_available_colors %}
+        <p class="no-colors-message">Нет доступных цветов</p>
+        {% endif %}
+
         <div class="actions">
-            <a href="{{ url_for('main.car_payment', model_id=request.view_args['model_id']) }}">
-                <button class="btn-red">Перейти к покупке</button>
-            </a>
+            <form method="get" action="{{ url_for('main.car_payment', model_id=request.view_args['model_id']) }}" id="purchaseForm">
+                <input type="hidden" id="selectedColorInput" name="color" value="">
+                <button class="btn-red" id="purchaseBtn" {% if not has_available_colors %}disabled{% endif %}>Перейти к покупке</button>
+            </form>
             <a href="/">
                 <button class="btn-outline">Вернуться в каталог</button>
             </a>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block script %}
+<script src="{{ url_for('static', filename='js/car.js') }}"></script>
 {% endblock %}

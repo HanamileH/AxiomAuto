@@ -3,7 +3,6 @@ const paymentStatus = document.getElementById("paymentStatus");
 const cardNumberInput = document.getElementById("cardNumber");
 const expiryInput = document.getElementById("expiry");
 const cvvInput = document.getElementById("cvv");
-const colorInput = document.getElementById("color");
 const selectedColorLabel = document.getElementById("selectedColorLabel");
 
 function formatCardNumber(value) {
@@ -56,10 +55,6 @@ cvvInput.addEventListener("input", (event) => {
   cvvInput.value = event.target.value.replace(/\D/g, "").slice(0, 3);
 });
 
-colorInput.addEventListener("input", () => {
-  selectedColorLabel.textContent = colorInput.value.trim() || "Не выбран";
-});
-
 paymentForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
@@ -68,7 +63,7 @@ paymentForm.addEventListener("submit", async (event) => {
     cardHolder: document.getElementById("cardHolder").value.trim(),
     expiry: expiryInput.value,
     cvv: cvvInput.value,
-    color: colorInput.value.trim(),
+    color: selectedColorLabel ? selectedColorLabel.textContent.trim() : "Не выбран",
   };
 
   if (cardData.cardNumber.replace(/\s/g, "").length !== 16) {
