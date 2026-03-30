@@ -66,7 +66,7 @@
         <div class="actions">
             <form method="get" action="{{ url_for('main.car_payment', model_id=request.view_args['model_id']) }}" id="purchaseForm">
                 <input type="hidden" id="selectedColorInput" name="color" value="">
-                <button class="btn-red" id="purchaseBtn" {% if not has_available_colors %}disabled{% endif %}>Перейти к покупке</button>
+                <button class="btn-red" id="purchaseBtn">Перейти к покупке</button>
             </form>
             <a href="/">
                 <button class="btn-outline">Вернуться в каталог</button>
