@@ -46,7 +46,7 @@
                     type="button"
                     class="color-btn"
                     data-color-name="{{ color.color }}"
-                    {% if color.hex_code %}style="background: {{ '#' + color.hex_code }};"{% endif %}
+                    {% if color.hex_code %}style="--color-value: {{ '#' + color.hex_code }};"{% endif %}
                     {% if not color.is_available_for_sale %}disabled{% endif %}
                 >
                 </button>
