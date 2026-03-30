@@ -46,21 +46,22 @@
                     type="button"
                     class="color-btn"
                     data-color-name="{{ color.color }}"
-                    {% if color.hex_code %}style="--color-value: {{ '#' + color.hex_code }};"{% endif %}
+                    {% if color.hex_code %}style="background: {{ '#' + color.hex_code }};"{% endif %}
                     {% if not color.is_available_for_sale %}disabled{% endif %}
                 >
-                    <span class="color-dot"></span>
                 </button>
                 {% endfor %}
             </div>
-            <p class="selected-color-text">
-                Выбранный цвет: <span id="selectedColorName">Не выбран</span>
-            </p>
+            {% if has_available_colors %}
+                <p class="selected-color-text">
+                    Выбранный цвет: <span id="selectedColorName">Не выбран</span>
+                </p>
+            {% else %}
+                <p class="no-colors-message">
+                    Нет доступных цветов
+                </p>
+            {% endif %}
         </div>
-
-        {% if not has_available_colors %}
-        <p class="no-colors-message">Нет доступных цветов</p>
-        {% endif %}
 
         <div class="actions">
             <form method="get" action="{{ url_for('main.car_payment', model_id=request.view_args['model_id']) }}" id="purchaseForm">

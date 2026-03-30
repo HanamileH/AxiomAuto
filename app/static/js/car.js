@@ -2,6 +2,7 @@ const colorButtons = document.querySelectorAll(".color-btn");
 const selectedColorName = document.getElementById("selectedColorName");
 const selectedColorInput = document.getElementById("selectedColorInput");
 const purchaseBtn = document.getElementById("purchaseBtn");
+purchaseBtn.disabled = true; // Отключена по умолчанию т.к. не выбран цвет
 
 function selectColor(button) {
   const colorName = button.dataset.colorName;
