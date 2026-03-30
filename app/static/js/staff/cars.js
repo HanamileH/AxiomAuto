@@ -66,11 +66,11 @@ function renderObjectTable() {
     const row = document.createElement("tr");
     row.id = `object-row-${car.id}`;
     row.innerHTML = `
-      <td>${car.brand}</td>
-      <td>${car.model}</td>
-      <td>${car.vin}</td>
-      <td>${car.color}</td>
-      <td><span class="status ${car.is_sold ? "sold" : "available"}">${car.is_sold ? "Куплен" : "В продаже"}</span></td>
+      <td data-sort-key="brand">${car.brand}</td>
+      <td data-sort-key="model">${car.model}</td>
+      <td data-sort-key="vin">${car.vin}</td>
+      <td data-sort-key="color">${car.color}</td>
+      <td data-sort-key="status"><span class="status ${car.is_sold ? "sold" : "available"}">${car.is_sold ? "Куплен" : "В продаже"}</span></td>
       <td><button class="btn-outline edit-btn" data-id="${car.id}">Изменить</button></td>
     `;
     objectTableBody.appendChild(row);

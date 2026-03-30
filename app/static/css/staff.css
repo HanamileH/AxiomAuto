@@ -104,6 +104,37 @@
   font-weight: bold;
 }
 
+.entity-table th.sortable-header {
+  cursor: pointer;
+  user-select: none;
+}
+
+.entity-table .sort-indicator {
+  margin-left: 8px;
+  color: #9aa0a6;
+}
+
+.entity-table th.sort-asc .sort-indicator {
+  color: #222;
+}
+
+.entity-table th.sort-asc .sort-indicator::before {
+  content: "↓";
+}
+
+.entity-table th.sort-desc .sort-indicator {
+  color: #222;
+}
+
+.entity-table th.sort-desc .sort-indicator::before {
+  content: "↑";
+}
+
+.entity-table th.sort-asc .sort-indicator,
+.entity-table th.sort-desc .sort-indicator {
+  font-size: 0;
+}
+
 .entity-table tr:hover {
   background: #fafafa;
 }
