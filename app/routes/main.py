@@ -1,6 +1,6 @@
 import string
 import random
-from flask import Blueprint, render_template, abort, request, jsonify
+from flask import Blueprint, render_template, abort, request, jsonify, redirect
 from flask_login import login_required, current_user
 from app.db import get_catalog, get_model_data, Brand, Body_type, Color, Model, ENTITIES_TYPES, STATS_TYPES, get_statistics
 
@@ -72,12 +72,20 @@ def car_payment(model_id):
     model = get_model_data(model_id)
 
     if model:
-        selected_color = request.args.get("color", "").strip() or "Не выбран"
+        selected_color = request.args.get("color", "")
+
+        if not selected_color:
+            return redirect(f"/car/{model_id}")
+        
+        color = Color.get_by_id(selected_color)[0]
+
+        if not color:
+            return abort(404)
 
         return render_template(
             "payment.html",
             model=model,
-            selected_color=selected_color,
+            selected_color=color['name'],
         )
     else:
         return abort(404)

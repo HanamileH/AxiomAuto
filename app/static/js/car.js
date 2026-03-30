@@ -6,6 +6,7 @@ purchaseBtn.disabled = true; // Отключена по умолчанию т.к
 
 function selectColor(button) {
   const colorName = button.dataset.colorName;
+  const colorId = button.dataset.colorId;
 
   colorButtons.forEach((item) => {
     item.classList.remove("selected");
@@ -16,7 +17,7 @@ function selectColor(button) {
   button.setAttribute("aria-pressed", "true");
 
   selectedColorName.textContent = colorName;
-  selectedColorInput.value = colorName;
+  selectedColorInput.value = colorId;
   purchaseBtn.disabled = false;
 }
 

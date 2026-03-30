@@ -263,6 +263,7 @@ def get_model_data(model_id):
                 FROM model_colors mc
             )
             SELECT 
+                color_id AS id,
                 color_name AS color,
                 hex_code,
                 available_for_sale AS is_available_for_sale
