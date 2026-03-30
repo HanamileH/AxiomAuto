@@ -105,20 +105,19 @@ def get_catalog(filters=None):
     filters = filters or {}
 
     query = """
-        SELECT
-           m.id AS id,
-           b.name AS brand,
-           m.name AS model,
-           m.image_path AS image_path,
-           m.price AS price,
-           m.year AS year,
-           m.engine_type AS engine_type,
-           m.engine_volume AS engine_volume,
-           m.engine_power AS engine_power,
-           m.transmission AS transmission
-        FROM model m
-        JOIN brand b
-        ON m.brand_id = b.id
+    SELECT
+        m.id AS id,
+        b.name AS brand,
+        m.name AS model,
+        m.image_path AS image_path,
+        m.price AS price,
+        m.year AS year,
+        m.engine_type AS engine_type,
+        m.engine_volume AS engine_volume,
+        m.engine_power AS engine_power,
+        m.transmission AS transmission
+    FROM model m
+    JOIN brand b ON m.brand_id = b.id
     """
 
     conditions = []
@@ -164,10 +163,18 @@ def get_catalog(filters=None):
         conditions.append("m.engine_power >= %s")
         params.append(filters["engine_power_min"])
 
-    if conditions:
-        query += " WHERE " + " AND ".join(conditions)
+    conditions.append("""
+        EXISTS (
+            SELECT 1
+            FROM car c
+            LEFT JOIN sale s ON c.id = s.car_id
+            WHERE c.model_id = m.id
+            AND s.id IS NULL  -- Car has no sale record (not sold/not reserved)
+        )                
+    """)
 
-    query += " ORDER BY m.id DESC;"
+    query += " WHERE " + " AND ".join(conditions)
+    query += " ORDER BY brand, model;"
 
     with db.get_cursor(as_dict=True) as cursor:
         cursor.execute(query, tuple(params))
