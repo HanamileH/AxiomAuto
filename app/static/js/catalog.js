@@ -51,7 +51,7 @@ function debounce(callback, delay) {
   };
 }
 
-const debouncedUpdate = debounce(updateCatalog, 500);
+const debouncedUpdate = debounce(updateCatalog, 250);
 
 Object.values(filters).forEach((filter) => {
   const eventName = filter.tagName.toLowerCase() === "select" ? "change" : "input";
