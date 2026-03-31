@@ -10,23 +10,14 @@ const errorMessage = document.getElementById("errorMessage");
 
 // Элементы ввода формы добавления
 const brandSelect = document.getElementById("brand_id");
-
 const modelNameInput = document.getElementById("model_name");
-
 const bodyTypeSelect = document.getElementById("body_type_id");
-
 const descriptionInput = document.getElementById("description");
-
 const yearInput = document.getElementById("year");
-
 const engineTypeSelect = document.getElementById("engine_type");
-
 const engineVolumeInput = document.getElementById("engine_volume");
-
 const enginePowerInput = document.getElementById("engine_power");
-
 const transmissionSelect = document.getElementById("transmission");
-
 const priceInput = document.getElementById("price");
 const imageInput = document.getElementById("image");
 
@@ -82,6 +73,8 @@ function renderObjectTable() {
       model.transmission
     )}</td>
             <td id="price-${model.id}">${formatPrice(model.price)}</td>
+            <td id="avaiable-${model.id}">${model.available_cars}</td>
+            <td id="sold-${model.id}">${model.sold_cars}</td>
             <td>
                 <button class="btn-outline edit-btn" data-id="${
                   model.id

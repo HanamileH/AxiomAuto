@@ -135,6 +135,8 @@
                 <th>Мощность (л.с.)</th>
                 <th>Трансмиссия</th>
                 <th>Цена (руб.)</th>
+                <th>Доступно</th>
+                <th>Продано</th>
                 <th>Действие</th>
             </tr>
         </thead>
@@ -151,6 +153,8 @@
                     <td style="filter: blur(5px)">{{ row[0:2] }}</td>
                     <td style="filter: blur(5px)">{{ row }}</td>
                     <td style="filter: blur(5px)">{{ row }}</td>
+                    <td style="filter: blur(5px)">{{ row[0:2] }}</td>
+                    <td style="filter: blur(5px)">{{ row[0:2] }}</td>
                     <td><button class="btn-outline">Изменить</button></td>
                 </tr>
             {% endfor %}

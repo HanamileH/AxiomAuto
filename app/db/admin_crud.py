@@ -420,25 +420,37 @@ class Model:
             with db.get_cursor(as_dict=True) as cursor:
                 cursor.execute(
                     """
-              SELECT
-               m.id AS id,
-               m.name AS model,
-               m.description AS description,
-               m.year AS year,
-               m.price AS price,
-               m.engine_type AS engine_type,
-               m.engine_power AS engine_power,
-               m.engine_volume AS engine_volume,
-               m.transmission AS transmission,
-               m.brand_id AS brand_id,
-               m.body_type AS body_type_id,
-               b.name AS brand,
-               bt.name AS body_type
-            FROM model m
-            JOIN brand b ON b.id = m.brand_id
-            JOIN body_type bt ON bt.id = m.body_type
-            ORDER by brand, model;        
-            """
+                    WITH car_stats AS (
+                        SELECT 
+                            c.model_id,
+                            COUNT(c.id) AS total_cars,
+                            COUNT(s.id) AS sold_cars
+                        FROM car c
+                        LEFT JOIN sale s ON s.car_id = c.id
+                        GROUP BY c.model_id
+                    )
+                    SELECT
+                        m.id AS id,
+                        m.name AS model,
+                        m.description AS description,
+                        m.year AS year,
+                        m.price AS price,
+                        m.engine_type AS engine_type,
+                        m.engine_power AS engine_power,
+                        m.engine_volume AS engine_volume,
+                        m.transmission AS transmission,
+                        m.brand_id AS brand_id,
+                        m.body_type AS body_type_id,
+                        b.name AS brand,
+                        bt.name AS body_type,
+                        COALESCE(cs.sold_cars, 0) AS sold_cars,
+                        COALESCE(cs.total_cars - cs.sold_cars, 0) AS available_cars
+                    FROM model m
+                    JOIN brand b ON b.id = m.brand_id
+                    JOIN body_type bt ON bt.id = m.body_type
+                    LEFT JOIN car_stats cs ON cs.model_id = m.id
+                    ORDER BY brand, model;      
+                    """
                 )
                 rows = cursor.fetchall()
                 return rows, ""
