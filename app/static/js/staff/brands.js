@@ -48,6 +48,8 @@ function renderObjectTable() {
     row.id = `object-row-${brand.id}`;
     row.innerHTML = `
          <td id="brand-name-${brand.id}">${brand.name}</td>
+         <td id="available-${brand.id}">${brand.available_cars}</td>
+         <td id="sold-${brand.id}">${brand.sold_cars}</td>
          <td>
             <button class="btn-outline edit-btn" data-id="${brand.id}">Изменить</button>
          </td>

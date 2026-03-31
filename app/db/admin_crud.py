@@ -15,7 +15,27 @@ class Brand:
         """
         try:
             with db.get_cursor(as_dict=True) as cursor:
-                cursor.execute("SELECT id AS id, name AS name FROM brand ORDER BY name;")
+                cursor.execute("""
+                    WITH model_stats AS (
+                        SELECT 
+                            m.brand_id,
+                            COUNT(DISTINCT m.id) AS total_models,
+                            COUNT(c.id) AS total_cars,
+                            COUNT(s.id) AS sold_cars
+                        FROM model m
+                        LEFT JOIN car c ON c.model_id = m.id
+                        LEFT JOIN sale s ON s.car_id = c.id
+                        GROUP BY m.brand_id
+                    )
+                    SELECT 
+                        b.id AS id,
+                        b.name AS name,
+                        COALESCE(ms.sold_cars, 0) AS sold_cars,
+                        COALESCE(ms.total_cars - ms.sold_cars, 0) AS available_cars
+                    FROM brand b
+                    LEFT JOIN model_stats ms ON ms.brand_id = b.id
+                    ORDER BY b.name;
+                """)
                 rows = cursor.fetchall()
                 return rows, ""
         except Exception as e:

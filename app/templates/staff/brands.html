@@ -8,7 +8,15 @@
         }
         
         .entity-table th:nth-child(2) {
-            width: 30%;
+            width: 10%;
+        }
+        
+        .entity-table th:nth-child(2) {
+            width: 10%;
+        }
+        
+        .entity-table th:nth-child(4) {
+            width: 10%;
         }
     </style>
 {% endblock %}
@@ -32,6 +40,8 @@
         <thead>
             <tr>
                 <th>Название</th>
+                <th>Доступно</th>
+                <th>Продано</th>
                 <th>Действие</th>
             </tr>
         </thead>
@@ -40,6 +50,8 @@
             {% for row in template_rows: %}
                 <tr id="object-row-unknown">
                     <td id="brand-name-unknown" style="filter: blur(5px)">{{ row }}</td>
+                    <td style="filter: blur(5px)">{{ row[0:2] }}</td>
+                    <td style="filter: blur(5px)">{{ row[0:2] }}</td>
                     <td>
                         <button class="btn-outline">Изменить</button>
                     </td>
