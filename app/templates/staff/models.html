@@ -128,10 +128,9 @@
                 <th>Производитель</th>
                 <th>Название</th>
                 <th>Тип кузова</th>
-                <th>Описание</th>
                 <th>Год</th>
                 <th>Тип двигателя</th>
-                <th>Объём двигателя (л.)</th>
+                <th>Объём (л.)</th>
                 <th>Мощность (л.с.)</th>
                 <th>Трансмиссия</th>
                 <th>Цена (руб.)</th>
@@ -146,7 +145,6 @@
                     <td style="filter: blur(5px)">{{ row }}</td>
                     <td style="filter: blur(5px)">{{ row }}</td>
                     <td style="filter: blur(5px)">{{ row }}</td>
-                    <td style="filter: blur(5px)">...</td>
                     <td style="filter: blur(5px)">{{ row[0:3] }}</td>
                     <td style="filter: blur(5px)">{{ row }}</td>
                     <td style="filter: blur(5px)">{{ row[0:2] }}</td>
@@ -157,7 +155,7 @@
                     <td style="filter: blur(5px)">{{ row[0:2] }}</td>
                     <td>
                         <button class="btn-outline">Изменить</button>
-                        <button class="btn-outline">Просмотреть</button>
+                        <button class="btn-outline">Открыть</button>
                     </td>
                 </tr>
             {% endfor %}

@@ -60,7 +60,6 @@ function renderObjectTable() {
             <td id="brand-${model.id}">${model.brand}</td>
             <td id="model-name-${model.id}">${model.model}</td>
             <td id="body-type-${model.id}">${model.body_type}</td>
-            <td id="description-${model.id}">${model.description}</td>
             <td id="year-${model.id}">${model.year || ""}</td>
             <td id="engine-type-${model.id}">${getEngineTypeLabel(
       model.engine_type
@@ -81,7 +80,7 @@ function renderObjectTable() {
                 }">Изменить</button>
 
                 <a href="/car/${model.id}">
-                  <button class="btn-outline" data-id="${model.id}">Просмотреть</button>
+                  <button class="btn-outline" data-id="${model.id}">Открыть</button>
                 </a>
             </td>
         `;
