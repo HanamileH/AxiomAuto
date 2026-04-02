@@ -79,6 +79,10 @@ function renderObjectTable() {
                 <button class="btn-outline edit-btn" data-id="${
                   model.id
                 }">Изменить</button>
+
+                <a href="/car/${model.id}">
+                  <button class="btn-outline" data-id="${model.id}">Просмотреть</button>
+                </a>
             </td>
         `;
     objectTableBody.appendChild(row);
