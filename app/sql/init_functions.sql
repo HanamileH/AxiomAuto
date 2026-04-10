@@ -27,7 +27,7 @@ BEGIN
 END;
 $$;
 
--- Проверка доступности автомобиля для продажи
+-- Проверка доступности автомобиля для продажи (не продан и не на удержании)
 CREATE OR REPLACE FUNCTION is_car_available_for_sale(p_car_id INTEGER)
 RETURNS BOOLEAN
 LANGUAGE plpgsql
@@ -41,11 +41,34 @@ BEGIN
         RETURN FALSE;
     END IF;
 
-    -- Проверяем, есть ли запись в sale
+    -- Проверяем, есть ли запись в order
     SELECT EXISTS(
-        SELECT 1 FROM sale WHERE car_id = p_car_id
+        SELECT 1 FROM order WHERE car_id = p_car_id AND NOT order.status IN ('cancelled', 'expired')
     ) INTO v_is_sold;
 
     RETURN NOT v_is_sold;
+END;
+$$;
+
+-- Проверка, продан ли автомобиль
+CREATE OR REPLACE FUNCTION is_car_sold(p_car_id INTEGER)
+RETURNS BOOLEAN
+LANGUAGE plpgsql
+STABLE
+AS $$
+DECLARE
+    v_is_sold BOOLEAN;
+BEGIN
+    -- Проверяем, существует ли автомобиль
+    IF NOT EXISTS (SELECT 1 FROM car WHERE id = p_car_id) THEN
+        RETURN FALSE;
+    END IF;
+
+    -- Проверяем, есть ли запись в order
+    SELECT EXISTS(
+        SELECT 1 FROM order WHERE car_id = p_car_id AND order.status = 'sold'
+    ) INTO v_is_sold;
+
+    RETURN v_is_sold;
 END;
 $$;

@@ -43,7 +43,7 @@ BEGIN
     -- Для UPDATE
     IF TG_OP = 'UPDATE' THEN
         -- Проверяем, продан ли автомобиль
-        IF EXISTS (SELECT 1 FROM sale WHERE car_id = OLD.id) THEN
+        IF NOT is_car_available_for_sale(OLD.id) THEN
             -- Запрещаем изменение VIN
             IF NEW.vin IS DISTINCT FROM OLD.vin THEN
                 RAISE EXCEPTION 'Невозможно изменить VIN проданного автомобиля (id: %)', OLD.id;
@@ -64,7 +64,7 @@ BEGIN
     
     -- Для DELETE
     ELSIF TG_OP = 'DELETE' THEN
-        IF EXISTS (SELECT 1 FROM sale WHERE car_id = OLD.id) THEN
+        IF NOT is_car_available_for_sale(OLD.id) THEN
             RAISE EXCEPTION 'Невозможно удалить проданный автомобиль (id: %)', OLD.id;
         END IF;
         

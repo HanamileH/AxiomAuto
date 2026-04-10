@@ -25,6 +25,11 @@ BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'payment_status') THEN
         CREATE TYPE payment_status AS ENUM ('success', 'fail', 'pending');
     END IF;
+
+    -- Статус заказа
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'order_status') THEN
+        CREATE TYPE order_status AS ENUM ('in_progress', 'awaiting_payment', 'completed', 'cancelled', 'expired');
+    END IF;
 END
 $$;
 
@@ -105,18 +110,28 @@ CREATE TABLE IF NOT EXISTS car (
     FOREIGN KEY (color_id) REFERENCES color(id)
 );
 
--- Акт купли-продажи
-CREATE TABLE IF NOT EXISTS sale (
+-- Заказ автомобиля
+CREATE TABLE IF NOT EXISTS order(
     id SERIAL PRIMARY KEY,
-    car_id INTEGER NOT NULL, -- Экземпляр купленного автомобиля
+    car_id INTEGER NOT NULL, -- Экземпляр автомобиля
     client_id INTEGER NOT NULL, -- Клиент, заказавший автомобиль
-    personal_id INTEGER, -- Ответственный менеджер (NULL если заказ онлайн)
     contact_number VARCHAR(20) NOT NULL, -- Номер телефона клиента
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, -- Дата и время создания заказа
-    payment_id INT; -- Транзакция оплаты
+    status order_status NOT NULL DEFAULT 'in_progress', -- Статус заказа
 
     FOREIGN KEY (car_id) REFERENCES car(id),
     FOREIGN KEY (client_id) REFERENCES client(id),
+    FOREIGN KEY (personal_id) REFERENCES users(id)
+)
+
+-- Акт купли-продажи
+CREATE TABLE IF NOT EXISTS sale (
+    id SERIAL PRIMARY KEY,
+    order_id INTEGER NOT NULL UNIQUE,
+    personal_id INTEGER NOT NULL, -- Ответственный менеджер
+    payment_id INTEGER NOT NULL, -- Транзакция оплаты
+
+    FOREIGN KEY (order_id) REFERENCES order(id),
     FOREIGN KEY (personal_id) REFERENCES users(id),
     FOREIGN KEY (payment_id) REFERENCES payment(id)
 );
@@ -135,10 +150,10 @@ CREATE TABLE IF NOT EXISTS payment (
 -- Акт выдачи автомобиля
 CREATE TABLE IF NOT EXISTS delivery (
     id SERIAL PRIMARY KEY,
-    sale_id INTEGER NOT NULL UNIQUE,
+    order_id INTEGER NOT NULL UNIQUE,
     personal_id INTEGER NOT NULL, -- Ответственный менеджер
     date DATE NOT NULL DEFAULT CURRENT_DATE, -- Дата выдачи автомобиля
-    FOREIGN KEY (sale_id) REFERENCES sale(id),
-
+    
+    FOREIGN KEY (order_id) REFERENCES order(id),
     FOREIGN KEY (personal_id) REFERENCES users(id)
 );
