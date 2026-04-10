@@ -208,12 +208,7 @@ def register_user(name, surname, patronymic, email, password, role="user"):
     if not re.match(email_pattern, email):
         return False, "invalid email format"
 
-    print(f"Email: {email}")
-
     email_hash = hashlib.sha256(email.encode("utf-8")).hexdigest()
-
-    print(f"Email hash: {email_hash}")
-
     email = DataEncryption.encrypt(email)
 
     # Пароль
@@ -294,9 +289,6 @@ def login_user(email, password):
     email = email.strip()
     email_hash = hashlib.sha256(email.encode("utf-8")).hexdigest()
 
-    print(f"Email: '{email}'")
-    print(f"Email hash: '{email_hash}'")
-
     if not password:
         return None, "empty password"
 
@@ -324,11 +316,9 @@ def login_user(email, password):
         row = cursor.fetchone()
 
         if not row:
-            print("Email is incorrect")
             return None, "email or password is incorrect"
 
         if not check_password_hash(row["password_hash"], password):
-            print("Password is incorrect")
             return None, "email or password is incorrect"
 
         return (
