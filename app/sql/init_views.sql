@@ -20,6 +20,8 @@ FROM color col
 LEFT JOIN car c ON c.color_id = col.id
 GROUP BY col.name;
 
+SELECT * FROM color_sales_view;
+
 -- Статистика продаж по типам кузовов
 CREATE OR REPLACE VIEW body_type_sales_view AS
 SELECT
@@ -29,6 +31,8 @@ FROM body_type bt
 LEFT JOIN model m ON m.body_type = bt.id
 LEFT JOIN car c ON c.model_id = m.id
 GROUP BY bt.name;
+
+SELECT * FROM body_type_sales_view;
 
 -- Статистика эффективности менеджеров
 CREATE OR REPLACE VIEW manager_perfomance_view AS
@@ -44,3 +48,5 @@ LEFT JOIN sale s ON s.personal_id = u.id
 LEFT JOIN delivery d ON d.personal_id = u.id
 WHERE u.role = 'manager'
 GROUP BY name, surname, patronymic;
+
+SELECT * FROM manager_perfomance_view;

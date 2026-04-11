@@ -43,7 +43,7 @@ BEGIN
 
     -- Проверяем, есть ли запись в order
     SELECT EXISTS(
-        SELECT 1 FROM order WHERE car_id = p_car_id AND NOT order.status IN ('cancelled', 'expired')
+        SELECT 1 FROM car_order WHERE car_id = p_car_id AND NOT car_order.status IN ('cancelled', 'expired')
     ) INTO v_is_sold;
 
     RETURN NOT v_is_sold;
@@ -66,7 +66,7 @@ BEGIN
 
     -- Проверяем, есть ли запись в order
     SELECT EXISTS(
-        SELECT 1 FROM order WHERE car_id = p_car_id AND order.status = 'sold'
+        SELECT 1 FROM car_order WHERE car_id = p_car_id AND car_order.status = 'completed'
     ) INTO v_is_sold;
 
     RETURN v_is_sold;

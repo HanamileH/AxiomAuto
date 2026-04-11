@@ -111,7 +111,7 @@ CREATE TABLE IF NOT EXISTS car (
 );
 
 -- Заказ автомобиля
-CREATE TABLE IF NOT EXISTS order(
+CREATE TABLE IF NOT EXISTS car_order(
     id SERIAL PRIMARY KEY,
     car_id INTEGER NOT NULL, -- Экземпляр автомобиля
     client_id INTEGER NOT NULL, -- Клиент, заказавший автомобиль
@@ -120,9 +120,8 @@ CREATE TABLE IF NOT EXISTS order(
     status order_status NOT NULL DEFAULT 'in_progress', -- Статус заказа
 
     FOREIGN KEY (car_id) REFERENCES car(id),
-    FOREIGN KEY (client_id) REFERENCES client(id),
-    FOREIGN KEY (personal_id) REFERENCES users(id)
-)
+    FOREIGN KEY (client_id) REFERENCES client(id)
+);
 
 -- Акт купли-продажи
 CREATE TABLE IF NOT EXISTS sale (
@@ -131,7 +130,7 @@ CREATE TABLE IF NOT EXISTS sale (
     personal_id INTEGER NOT NULL, -- Ответственный менеджер
     payment_id INTEGER NOT NULL, -- Транзакция оплаты
 
-    FOREIGN KEY (order_id) REFERENCES order(id),
+    FOREIGN KEY (order_id) REFERENCES car_order(id),
     FOREIGN KEY (personal_id) REFERENCES users(id),
     FOREIGN KEY (payment_id) REFERENCES payment(id)
 );
@@ -154,6 +153,6 @@ CREATE TABLE IF NOT EXISTS delivery (
     personal_id INTEGER NOT NULL, -- Ответственный менеджер
     date DATE NOT NULL DEFAULT CURRENT_DATE, -- Дата выдачи автомобиля
     
-    FOREIGN KEY (order_id) REFERENCES order(id),
+    FOREIGN KEY (order_id) REFERENCES car_order(id),
     FOREIGN KEY (personal_id) REFERENCES users(id)
 );
