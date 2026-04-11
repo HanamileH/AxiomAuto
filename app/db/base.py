@@ -167,10 +167,9 @@ def get_catalog(filters=None):
         EXISTS (
             SELECT 1
             FROM car c
-            LEFT JOIN sale s ON c.id = s.car_id
             WHERE c.model_id = m.id
-            AND s.id IS NULL  -- Car has no sale record (not sold/not reserved)
-        )                
+            AND is_car_available_for_sale(c.id)
+        )
     """)
 
     query += " WHERE " + " AND ".join(conditions)
@@ -255,10 +254,9 @@ def get_model_data(model_id):
                     EXISTS (
                         SELECT 1
                         FROM car car_instance
-                        LEFT JOIN sale s ON car_instance.id = s.car_id
                         WHERE car_instance.model_id = %s
                         AND car_instance.color_id = mc.color_id
-                        AND s.id IS NULL  -- No sale record means not sold/not reserved
+                        AND is_car_available_for_sale(car_instance.id)
                     ) AS available_for_sale
                 FROM model_colors mc
             )

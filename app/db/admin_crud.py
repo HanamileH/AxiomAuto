@@ -444,9 +444,8 @@ class Model:
                         SELECT 
                             c.model_id,
                             COUNT(c.id) AS total_cars,
-                            COUNT(s.id) AS sold_cars
+                            COUNT(is_car_available_for_sale(c.id)) AS sold_cars
                         FROM car c
-                        LEFT JOIN sale s ON s.car_id = c.id
                         GROUP BY c.model_id
                     )
                     SELECT
