@@ -21,10 +21,9 @@ class Brand:
                             m.brand_id,
                             COUNT(DISTINCT m.id) AS total_models,
                             COUNT(c.id) AS total_cars,
-                            COUNT(s.id) AS sold_cars
+                            COUNT(is_car_available_for_sale(c.id)) AS sold_cars
                         FROM model m
                         LEFT JOIN car c ON c.model_id = m.id
-                        LEFT JOIN sale s ON s.car_id = c.id
                         GROUP BY m.brand_id
                     )
                     SELECT 
@@ -777,9 +776,7 @@ class Car:
                         b.name AS brand,
                         c.color_id AS color_id,
                         clr.name AS color,
-                        EXISTS(
-                            SELECT 1 FROM sale s WHERE s.car_id = c.id
-                        ) AS is_sold
+                        is_car_sold(c.id) AS is_sold
                     FROM car c
                     JOIN model m ON m.id = c.model_id
                     JOIN brand b ON b.id = m.brand_id
