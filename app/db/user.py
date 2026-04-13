@@ -4,12 +4,20 @@ import base64
 from flask import abort, current_app
 from flask_login import UserMixin, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
-from cryptography.fernet import Fernet
+from cryptography.fernet import Fernet, InvalidToken
 import hashlib
 from .connection import db
 
 
 class DataEncryption:
+    @staticmethod
+    def _normalize_key(value):
+        return (value or "").strip().strip("'\"")
+
+    @staticmethod
+    def _looks_like_fernet_token(value):
+        return isinstance(value, str) and value.startswith("gAAAAA")
+
     @staticmethod
     def get_key():
         """Возвращает ключ для шифрования, указанный
@@ -18,7 +26,7 @@ class DataEncryption:
         Returns:
             bytes: ключ для шифрования
         """
-        key = current_app.config.get('ENCRYPTION_KEY')
+        key = DataEncryption._normalize_key(current_app.config.get('ENCRYPTION_KEY'))
         hashed_key = hashlib.sha256(key.encode()).digest()
         fernet_key = base64.urlsafe_b64encode(hashed_key)
         return fernet_key
@@ -51,9 +59,21 @@ class DataEncryption:
         Returns:
             str: расшифрованные данные
         """
+        if not data:
+            return data
+
+        # Legacy records may still contain plaintext emails from before
+        # encryption was introduced. Keep them readable instead of failing
+        # the whole request.
+        if not DataEncryption._looks_like_fernet_token(data):
+            return data
+
         fernet = Fernet(DataEncryption.get_key())
-        decrypted_email = fernet.decrypt(data.encode('utf-8'))
-        return decrypted_email.decode('utf-8')
+        try:
+            decrypted_email = fernet.decrypt(data.encode('utf-8'))
+            return decrypted_email.decode('utf-8')
+        except InvalidToken as exc:
+            raise ValueError("email decryption failed") from exc
 
 
 class User(UserMixin):
