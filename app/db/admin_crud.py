@@ -1000,6 +1000,80 @@ class StaffUser:
         except Exception as e:
             return False, f"server error: {str(e)}"
 
+
+class StaffPayment:
+    PAYMENT_TYPES = {
+        "cash": "Наличными",
+        "bank_online": "Онлайн",
+        "bank_terminal": "Через терминал",
+    }
+
+    PAYMENT_STATUSES = {
+        "success": {
+            "label": "Оплачено",
+            "css_class": "available",
+        },
+        "fail": {
+            "label": "Отказ",
+            "css_class": "sold",
+        },
+        "pending": {
+            "label": "Ожидание",
+            "css_class": "pending",
+        },
+    }
+
+    @staticmethod
+    def get_all():
+        try:
+            with db.get_cursor(as_dict=True) as cursor:
+                cursor.execute(
+                    """
+                    SELECT
+                        p.id AS id,
+                        p.type AS type,
+                        p.status AS status,
+                        p.amount AS amount,
+                        p.datetime AS datetime,
+                        p.transaction_id AS transaction_id,
+                        p.bank_account AS bank_account
+                    FROM payment p
+                    ORDER BY p.datetime DESC, p.id DESC;
+                    """
+                )
+                rows = cursor.fetchall()
+
+                for row in rows:
+                    payment_type = row["type"]
+                    payment_status = row["status"]
+
+                    row["type_label"] = StaffPayment.PAYMENT_TYPES.get(
+                        payment_type, payment_type
+                    )
+                    row["amount_formatted"] = (
+                        f"{int(row['amount']):,}".replace(",", " ")
+                    )
+                    row["date_formatted"] = row["datetime"].strftime("%Y-%m-%d %H:%M")
+                    row["bank_account_masked"] = (
+                        ""
+                        if not row["bank_account"]
+                        else f"•••• •••• •••• {row['bank_account']}"
+                    )
+
+                    status_meta = StaffPayment.PAYMENT_STATUSES.get(
+                        payment_status,
+                        {
+                            "label": payment_status,
+                            "css_class": "",
+                        },
+                    )
+                    row["status_label"] = status_meta["label"]
+                    row["status_class"] = status_meta["css_class"]
+
+                return rows, ""
+        except Exception as e:
+            return None, f"server error: {str(e)}"
+
     @staticmethod
     def delete(id):
         try:

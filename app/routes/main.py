@@ -2,7 +2,7 @@ import string
 import random
 from flask import Blueprint, render_template, abort, request, jsonify, redirect
 from flask_login import login_required, current_user
-from app.db import get_catalog, get_model_data, Brand, Body_type, Color, Model, ENTITIES_TYPES, STATS_TYPES, get_statistics
+from app.db import get_catalog, get_model_data, Brand, Body_type, Color, Model, ENTITIES_TYPES, STATS_TYPES, get_statistics, StaffPayment
 
 bp = Blueprint("main", __name__)
 
@@ -135,6 +135,7 @@ def staff(entity_name):
         body_types = None
         models = None
         colors = None
+        payments = None
 
         if current_entity["tab_name"] == "models":
             brands, _ = Brand.get_all()
@@ -145,6 +146,11 @@ def staff(entity_name):
             models, _ = Model.get_all()
             colors, _ = Color.get_all()
 
+        if current_entity["tab_name"] == "payments":
+            payments, error = StaffPayment.get_all()
+            if error:
+                return abort(500)
+
         return render_template(
             f"staff/{current_entity['tab_name']}.html",
             entities=entities,
@@ -154,6 +160,7 @@ def staff(entity_name):
             body_types=body_types,
             models=models,
             colors=colors,
+            payments=payments,
         )
 
     else:

@@ -125,6 +125,11 @@
   color: #721c24;
 }
 
+.status.pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
 .btn-status {
   background: #0066cc;
   color: #fff;
