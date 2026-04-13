@@ -1,10 +1,13 @@
 let objects = [];
 let editMode = false;
 let currentEditId = null;
+let emailsHidden = true;
 
 const objectTableBody = document.getElementById("objectsTableBody");
 const addForm = document.getElementById("addObjectForm");
 const errorMessage = document.getElementById("errorMessage");
+const emailVisibilityToggle = document.getElementById("emailVisibilityToggle");
+const emailVisibilityIcon = document.getElementById("emailVisibilityIcon");
 
 const nameInput = document.getElementById("userName");
 const surnameInput = document.getElementById("userSurname");
@@ -19,6 +22,8 @@ const ROLE_TITLES = {
   admin: "Администратор",
 };
 
+const MASK_CHARACTERS = "abcdefghijklmnopqrstuvwxyz0123456789";
+
 function showError(message) {
   errorMessage.textContent = message;
   errorMessage.style.display = "block";
@@ -26,6 +31,82 @@ function showError(message) {
 
 function hideError() {
   errorMessage.style.display = "none";
+}
+
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (symbol) => {
+    const entities = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;",
+    };
+
+    return entities[symbol];
+  });
+}
+
+function getRandomMask(length) {
+  let result = "";
+
+  for (let index = 0; index < length; index += 1) {
+    result += MASK_CHARACTERS[Math.floor(Math.random() * MASK_CHARACTERS.length)];
+  }
+
+  return result;
+}
+
+function createMaskedEmail(realEmail) {
+  const normalizedEmail = (realEmail || "").trim();
+  const minimumLength = Math.max(normalizedEmail.length, 12);
+  const localPartLength = Math.max(6, Math.ceil(minimumLength * 0.45));
+  const domainPartLength = Math.max(4, Math.ceil(minimumLength * 0.3));
+  const zonePartLength = Math.max(2, Math.ceil(minimumLength * 0.15));
+
+  return `${getRandomMask(localPartLength)}@${getRandomMask(domainPartLength)}.${getRandomMask(zonePartLength)}`;
+}
+
+function setEmailCellState(cell) {
+  const realEmail = cell.dataset.realEmail || "";
+
+  if (emailsHidden) {
+    if (!cell.dataset.maskedEmail) {
+      cell.dataset.maskedEmail = createMaskedEmail(realEmail);
+    }
+
+    cell.textContent = cell.dataset.maskedEmail;
+    cell.classList.add("hide-data", "is-hidden");
+    return;
+  }
+
+  cell.textContent = realEmail;
+  cell.classList.remove("hide-data", "is-hidden");
+}
+
+function syncEmailVisibility() {
+  document.querySelectorAll(".email-value").forEach(setEmailCellState);
+
+  if (!emailVisibilityToggle || !emailVisibilityIcon) {
+    return;
+  }
+
+  const nextLabel = emailsHidden
+    ? "Показать электронные почты"
+    : "Скрыть электронные почты";
+  const nextIcon = emailsHidden
+    ? emailVisibilityToggle.dataset.closedIcon
+    : emailVisibilityToggle.dataset.openIcon;
+
+  emailVisibilityToggle.setAttribute("aria-label", nextLabel);
+  emailVisibilityToggle.setAttribute("aria-pressed", String(!emailsHidden));
+  emailVisibilityIcon.src = nextIcon;
+  emailVisibilityIcon.alt = nextLabel;
+}
+
+function toggleEmailVisibility() {
+  emailsHidden = !emailsHidden;
+  syncEmailVisibility();
 }
 
 async function loadObjects() {
@@ -51,16 +132,18 @@ function renderObjectTable() {
     const row = document.createElement("tr");
     row.id = `object-row-${user.id}`;
     row.innerHTML = `
-      <td>${user.name || ""}</td>
-      <td>${user.surname || ""}</td>
-      <td>${user.patronymic || ""}</td>
-      <td class="hide-data">${user.email || ""}</td>
-      <td>${ROLE_TITLES[user.role] || user.role}</td>
+      <td>${escapeHtml(user.name || "")}</td>
+      <td>${escapeHtml(user.surname || "")}</td>
+      <td>${escapeHtml(user.patronymic || "")}</td>
+      <td class="email-value" data-real-email="${escapeHtml(user.email || "")}"></td>
+      <td>${escapeHtml(ROLE_TITLES[user.role] || user.role || "")}</td>
       <td><button class="btn-outline edit-btn" data-id="${user.id}">Изменить</button></td>
     `;
 
     objectTableBody.appendChild(row);
   });
+
+  syncEmailVisibility();
 
   document.querySelectorAll(".edit-btn").forEach((button) => {
     button.addEventListener("click", function () {
@@ -85,10 +168,10 @@ function enterEditMode(id) {
   editRow.innerHTML = `
     <td colspan="6">
       <div class="edit-form-grid" style="display:grid;grid-template-columns:repeat(3,minmax(180px,1fr));gap:12px;">
-        <input type="text" id="edit-name-${id}" class="edit-input" value="${user.name || ""}">
-        <input type="text" id="edit-surname-${id}" class="edit-input" value="${user.surname || ""}">
-        <input type="text" id="edit-patronymic-${id}" class="edit-input" value="${user.patronymic || ""}">
-        <input type="email" id="edit-email-${id}" class="edit-input" value="${user.email || ""}">
+        <input type="text" id="edit-name-${id}" class="edit-input" value="${escapeHtml(user.name || "")}">
+        <input type="text" id="edit-surname-${id}" class="edit-input" value="${escapeHtml(user.surname || "")}">
+        <input type="text" id="edit-patronymic-${id}" class="edit-input" value="${escapeHtml(user.patronymic || "")}">
+        <input type="email" id="edit-email-${id}" class="edit-input" value="${escapeHtml(user.email || "")}">
         <select id="edit-role-${id}" class="edit-input">
           <option value="user" ${user.role === "user" ? "selected" : ""}>Пользователь</option>
           <option value="manager" ${user.role === "manager" ? "selected" : ""}>Менеджер</option>
@@ -249,5 +332,9 @@ addForm.addEventListener("submit", async (e) => {
     showError("Ошибка сети: " + error.message);
   }
 });
+
+if (emailVisibilityToggle) {
+  emailVisibilityToggle.addEventListener("click", toggleEmailVisibility);
+}
 
 loadObjects();
