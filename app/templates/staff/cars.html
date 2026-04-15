@@ -40,13 +40,13 @@
             </tr>
         </thead>
         <tbody id="objectsTableBody">
-            {% for row in template_rows: %}
+            {% for _ in range(10): %}
                 <tr id="object-row-unknown">
-                    <td style="filter: blur(5px)">{{ row }}</td>
-                    <td style="filter: blur(5px)">{{ row }}</td>
-                    <td style="filter: blur(5px)">{{ row }}</td>
-                    <td style="filter: blur(5px)">{{ row }}</td>
-                    <td><span class="status available">...</span></td>
+                    <td><div class="skeleton"style="width: min(100%, 8rem);"></div></td>
+                    <td><div class="skeleton"style="width: min(100%, 8rem);"></div></td>
+                    <td><div class="skeleton"style="width: min(100%, 10rem);"></div></td>
+                    <td><div class="skeleton"style="width: min(100%, 8rem);"></div></td>
+                    <td><div class="skeleton"style="width: min(100%, 5rem);"></div></td>
                     <td><button class="btn-outline">Изменить</button></td>
                 </tr>
             {% endfor %}

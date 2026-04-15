@@ -140,19 +140,19 @@
             </tr>
         </thead>
         <tbody id="objectsTableBody">
-            {% for row in template_rows: %}
+            {% for _ in range(10) %}
                 <tr id="object-row-unknown">
-                    <td style="filter: blur(5px)">{{ row }}</td>
-                    <td style="filter: blur(5px)">{{ row }}</td>
-                    <td style="filter: blur(5px)">{{ row }}</td>
-                    <td style="filter: blur(5px)">{{ row[0:3] }}</td>
-                    <td style="filter: blur(5px)">{{ row }}</td>
-                    <td style="filter: blur(5px)">{{ row[0:2] }}</td>
-                    <td style="filter: blur(5px)">{{ row[0:2] }}</td>
-                    <td style="filter: blur(5px)">{{ row }}</td>
-                    <td style="filter: blur(5px)">{{ row }}</td>
-                    <td style="filter: blur(5px)">{{ row[0:2] }}</td>
-                    <td style="filter: blur(5px)">{{ row[0:2] }}</td>
+                    <td><div class="skeleton"></div></td>
+                    <td><div class="skeleton"></div></td>
+                    <td><div class="skeleton"></div></td>
+                    <td><div class="skeleton"></div></td>
+                    <td><div class="skeleton"></div></td>
+                    <td><div class="skeleton"></div></td>
+                    <td><div class="skeleton"></div></td>
+                    <td><div class="skeleton"></div></td>
+                    <td><div class="skeleton"></div></td>
+                    <td><div class="skeleton"style="width: min(100%, 3rem);"></div></td>
+                    <td><div class="skeleton"style="width: min(100%, 3rem);"></div></td>
                     <td>
                         <button class="btn-outline">Изменить</button>
                         <button class="btn-outline">Открыть</button>

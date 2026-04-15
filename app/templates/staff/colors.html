@@ -44,20 +44,18 @@
     <table class="entity-table">
         <thead>
             <tr>
-                <th></th>
+                <th>Цвет</th>
                 <th>Название</th>
                 <th>Действие</th>
             </tr>
         </thead>
-
-        <!-- Заполняем таблицу случайными данными перед тем, как заполнить фактическими данными через API -->
         <tbody id="objectsTableBody">
-            {% for row in template_rows: %}
+            {% for _ in range(10): %}
                 <tr id="object-row-unknown">
                     <td id="color-value-unknown">
                         <div class="color-preview" style="background-color: white;">
                     </td>
-                    <td id="color-name-unknown" style="filter: blur(5px)">{{ row }}</td>
+                    <td><div class="skeleton" style="width: min(100%, 8rem);"></div></td>
                     <td>
                         <button class="btn-outline">Изменить</button>
                     </td>
