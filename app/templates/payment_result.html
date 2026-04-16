@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/payment_result.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="payment-result-card payment-result-{{ status }}">
+    <h1>{{ title }}</h1>
+    <p class="payment-result-message">{{ message }}</p>
+
+    {% if order_id %}
+    <p><strong>Номер заказа:</strong> {{ order_id }}</p>
+    {% endif %}
+
+    {% if transaction_id %}
+    <p><strong>Транзакция:</strong> {{ transaction_id }}</p>
+    {% endif %}
+
+    <div class="payment-result-actions">
+        <a href="/" class="btn-black">В каталог</a>
+        <a href="/profile" class="btn-outline">В профиль</a>
+    </div>
+</section>
+{% endblock %}

@@ -1,8 +1,10 @@
 import string
 import random
-from flask import Blueprint, render_template, abort, request, jsonify, redirect
+from urllib.parse import urlencode
+from flask import Blueprint, render_template, abort, request, jsonify, redirect, url_for
 from flask_login import login_required, current_user
 from app.db import get_catalog, get_model_data, Brand, Body_type, Color, Model, ENTITIES_TYPES, STATS_TYPES, get_statistics, StaffPayment
+from app.services import PaymentProcessingError, PaymentService
 
 bp = Blueprint("main", __name__)
 
@@ -86,10 +88,98 @@ def car_payment(model_id):
         return render_template(
             "payment.html",
             model=model,
+            model_id=model_id,
+            selected_color_id=color["id"],
             selected_color=color['name'],
         )
     else:
         return abort(404)
+
+
+@bp.route("/api/car/<model_id>/payment", methods=["POST"])
+@login_required
+def process_car_payment(model_id):
+    model = get_model_data(model_id)
+
+    if not model:
+        return jsonify(
+            {
+                "status": "error",
+                "error_text": "Модель автомобиля не найдена.",
+            }
+        ), 404
+
+    try:
+        payload = request.get_json() or {}
+        color_id = int(payload.get("colorId"))
+        payment_type = payload.get("paymentType", "bank_online")
+        phone_number = payload.get("phoneNumber", "")
+
+        result = PaymentService.process_order(
+            user_id=current_user.id,
+            model_id=int(model_id),
+            color_id=color_id,
+            phone_number=phone_number,
+            payment_type=payment_type,
+            payment_payload=payload,
+        )
+    except (TypeError, ValueError):
+        return jsonify(
+            {
+                "status": "error",
+                "error_text": "Некорректные параметры оплаты.",
+            }
+        ), 400
+    except PaymentProcessingError as exc:
+        return jsonify(
+            {
+                "status": "error",
+                "error_text": exc.public_message,
+            }
+        ), exc.status_code
+    except Exception:
+        return jsonify(
+            {
+                "status": "error",
+                "error_text": "На сервере произошла ошибка при обработке оплаты.",
+            }
+        ), 500
+
+    query = urlencode(
+        {
+            "status": result["status"],
+            "title": result["title"],
+            "message": result["message"],
+            "order_id": result["order_id"],
+            "transaction_id": result["transaction_id"],
+        }
+    )
+
+    return jsonify(
+        {
+            "status": "success",
+            "redirect_url": f"{url_for('main.payment_result')}?{query}",
+        }
+    )
+
+
+@bp.route("/payment/result")
+@login_required
+def payment_result():
+    status = request.args.get("status", "error")
+    title = request.args.get("title", "Результат оплаты")
+    message = request.args.get("message", "Не удалось определить результат оплаты.")
+    order_id = request.args.get("order_id")
+    transaction_id = request.args.get("transaction_id")
+
+    return render_template(
+        "payment_result.html",
+        status=status,
+        title=title,
+        message=message,
+        order_id=order_id,
+        transaction_id=transaction_id,
+    )
 
 
 # Страница менеджера

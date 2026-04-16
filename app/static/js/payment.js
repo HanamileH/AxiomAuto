@@ -3,7 +3,7 @@ const paymentStatus = document.getElementById("paymentStatus");
 const cardNumberInput = document.getElementById("cardNumber");
 const expiryInput = document.getElementById("expiry");
 const cvvInput = document.getElementById("cvv");
-const selectedColorLabel = document.getElementById("selectedColorLabel");
+const submitPaymentBtn = document.getElementById("submitPaymentBtn");
 
 function formatCardNumber(value) {
   return value
@@ -28,19 +28,13 @@ function showStatus(message, type) {
   paymentStatus.classList.add(type);
 }
 
-function mockPaymentService(cardData) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const digits = cardData.cardNumber.replace(/\s/g, "");
-      const lastDigit = Number(digits.at(-1));
+function setSubmitting(isSubmitting) {
+  if (!submitPaymentBtn) {
+    return;
+  }
 
-      if (!Number.isNaN(lastDigit) && lastDigit % 2 === 0) {
-        resolve();
-      } else {
-        reject(new Error("Оплата отклонена"));
-      }
-    }, 900);
-  });
+  submitPaymentBtn.disabled = isSubmitting;
+  submitPaymentBtn.textContent = isSubmitting ? "Обрабатываем..." : "Оплатить";
 }
 
 cardNumberInput.addEventListener("input", (event) => {
@@ -58,35 +52,52 @@ cvvInput.addEventListener("input", (event) => {
 paymentForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  const cardData = {
+  const paymentPayload = {
     cardNumber: cardNumberInput.value,
     cardHolder: document.getElementById("cardHolder").value.trim(),
     expiry: expiryInput.value,
     cvv: cvvInput.value,
-    color: selectedColorLabel ? selectedColorLabel.textContent.trim() : "Не выбран",
+    phoneNumber: document.getElementById("phoneNumber").value.trim(),
+    colorId: paymentForm.dataset.colorId,
+    paymentType: paymentForm.dataset.paymentType || "bank_online",
   };
 
-  if (cardData.cardNumber.replace(/\s/g, "").length !== 16) {
+  if (paymentPayload.cardNumber.replace(/\s/g, "").length !== 16) {
     showStatus("Ошибка: введите корректный номер карты.", "error");
     return;
   }
 
-  if (cardData.expiry.length !== 5 || !cardData.expiry.includes("/")) {
+  if (paymentPayload.expiry.length !== 5 || !paymentPayload.expiry.includes("/")) {
     showStatus("Ошибка: укажите срок действия в формате MM/YY.", "error");
     return;
   }
 
-  if (cardData.cvv.length !== 3) {
+  if (paymentPayload.cvv.length !== 3) {
     showStatus("Ошибка: CVV должен содержать 3 цифры.", "error");
     return;
   }
 
-  showStatus("Проверяем оплату...", "success");
+  showStatus("Сервер обрабатывает заказ и ожидает ответ банка...", "success");
+  setSubmitting(true);
 
   try {
-    await mockPaymentService(cardData);
-    showStatus("Успешно! Оплата автомобиля подтверждена.", "success");
+    const response = await fetch(paymentForm.dataset.paymentUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(paymentPayload),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || data.status !== "success") {
+      throw new Error(data.error_text || "Не удалось обработать оплату.");
+    }
+
+    window.location.href = data.redirect_url;
   } catch (error) {
-    showStatus("Ошибка оплаты. Проверьте данные карты и попробуйте снова.", "error");
+    showStatus(error.message || "Произошла ошибка при оплате.", "error");
+    setSubmitting(false);
   }
 });

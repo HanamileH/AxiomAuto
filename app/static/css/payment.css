@@ -67,6 +67,11 @@
   width: fit-content;
 }
 
+.submit-btn:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
 .payment-status {
   margin-top: 1rem;
   font-weight: 700;

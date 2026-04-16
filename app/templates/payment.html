@@ -26,7 +26,13 @@
 
     <section class="payment-form-section">
         <h2>Оплатить онлайн</h2>
-        <form id="paymentForm" class="payment-form">
+        <form
+            id="paymentForm"
+            class="payment-form"
+            data-payment-url="{{ url_for('main.process_car_payment', model_id=model_id) }}"
+            data-color-id="{{ selected_color_id }}"
+            data-payment-type="bank_online"
+        >
             <div class="field-row">
                 <label for="cardNumber">Номер карты</label>
                 <input id="cardNumber" name="cardNumber" type="text" maxlength="19" placeholder="0000 0000 0000 0000" required>
@@ -57,7 +63,7 @@
             </div>
 
 
-            <button type="submit" class="btn-red submit-btn">Оплатить</button>
+            <button type="submit" class="btn-red submit-btn" id="submitPaymentBtn">Оплатить</button>
         </form>
 
         <p id="paymentStatus" class="payment-status"></p>

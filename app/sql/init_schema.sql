@@ -127,7 +127,7 @@ CREATE TABLE IF NOT EXISTS car_order(
 CREATE TABLE IF NOT EXISTS sale (
     id SERIAL PRIMARY KEY,
     order_id INTEGER NOT NULL UNIQUE,
-    personal_id INTEGER NOT NULL, -- Ответственный менеджер
+    personal_id INTEGER, -- Ответственный менеджер (NULL для онлайн-заказов)
 
     FOREIGN KEY (order_id) REFERENCES car_order(id),
     FOREIGN KEY (personal_id) REFERENCES users(id)
