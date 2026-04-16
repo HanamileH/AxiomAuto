@@ -128,22 +128,23 @@ CREATE TABLE IF NOT EXISTS sale (
     id SERIAL PRIMARY KEY,
     order_id INTEGER NOT NULL UNIQUE,
     personal_id INTEGER NOT NULL, -- Ответственный менеджер
-    payment_id INTEGER NOT NULL, -- Транзакция оплаты
 
     FOREIGN KEY (order_id) REFERENCES car_order(id),
-    FOREIGN KEY (personal_id) REFERENCES users(id),
-    FOREIGN KEY (payment_id) REFERENCES payment(id)
+    FOREIGN KEY (personal_id) REFERENCES users(id)
 );
 
 -- Транзакция оплаты
 CREATE TABLE IF NOT EXISTS payment (
     id SERIAL PRIMARY KEY,
+    order_id INTEGER NOT NULL, -- Заказ, за который была произведена оплата
     type payment_type NOT NULL, -- Тип оплаты (наличные, онлайн, терминал)
     status payment_status NOT NULL, -- Статус оплаты (успешно, ошибка, ожидание)
     amount INTEGER NOT NULL CHECK (amount > 0), -- Сумма в рублях на момент оплаты
     datetime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     transaction_id VARCHAR(64) UNIQUE, -- ID банковской транзакции (NULL если оплата наличными)
-    bank_account CHAR(4) -- Последние 4 цифры банковского счёта (NULL если оплата наличными)
+    bank_account CHAR(4), -- Последние 4 цифры банковского счёта (NULL если оплата наличными)
+
+    FOREIGN KEY (order_id) REFERENCES car_order(id)
 );
 
 -- Акт выдачи автомобиля
