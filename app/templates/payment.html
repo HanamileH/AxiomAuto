@@ -50,6 +50,12 @@
             </div>
 
             <h2>{{ "К оплате: " ~ model.price ~ " руб."}}</h2>
+            
+            <div class="field-row">
+                <label for="phoneNumber">Номер телефона для обратной связи</label>
+                <input id="phoneNumber" name="phoneNumber" type="tel" placeholder="+7 (___) ___-__-__" required>
+            </div>
+
 
             <button type="submit" class="btn-red submit-btn">Оплатить</button>
         </form>
