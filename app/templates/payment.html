@@ -9,7 +9,7 @@
 {% block content %}
 <div class="payment-page">
     <section class="car-summary">
-        <h1>Оплата автомобиля</h1>
+        <h1>Оплата автомобиля {{ model.brand ~ ' ' ~ model.model }}</h1>
         <div class="summary-grid">
             <p><strong>Производитель:</strong> {{ model.brand }}</p>
             <p><strong>Модель:</strong> {{ model.model }}</p>
@@ -45,7 +45,7 @@
 
                 <div class="field-row">
                     <label for="cvv">CVV</label>
-                    <input id="cvv" name="cvv" type="password" maxlength="3" placeholder="***" required>
+                    <input id="cvv" name="cvv" type="password" maxlength="3" placeholder="•••" required>
                 </div>
             </div>
 

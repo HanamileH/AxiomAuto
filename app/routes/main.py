@@ -68,6 +68,7 @@ def car(model_id):
 
 # Страница оплаты автомобиля (mock)
 @bp.route("/car/<model_id>/payment")
+@login_required
 def car_payment(model_id):
     model = get_model_data(model_id)
 
