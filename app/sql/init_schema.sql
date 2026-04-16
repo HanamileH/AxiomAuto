@@ -115,21 +115,13 @@ CREATE TABLE IF NOT EXISTS car_order(
     id SERIAL PRIMARY KEY,
     car_id INTEGER NOT NULL, -- Экземпляр автомобиля
     client_id INTEGER NOT NULL, -- Клиент, заказавший автомобиль
+    personal_id INTEGER, -- Ответственный менеджер (NULL для онлайн-заказов)
     contact_number VARCHAR(20) NOT NULL, -- Номер телефона клиента
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, -- Дата и время создания заказа
     status order_status NOT NULL DEFAULT 'in_progress', -- Статус заказа
 
     FOREIGN KEY (car_id) REFERENCES car(id),
-    FOREIGN KEY (client_id) REFERENCES client(id)
-);
-
--- Акт купли-продажи
-CREATE TABLE IF NOT EXISTS sale (
-    id SERIAL PRIMARY KEY,
-    order_id INTEGER NOT NULL UNIQUE,
-    personal_id INTEGER, -- Ответственный менеджер (NULL для онлайн-заказов)
-
-    FOREIGN KEY (order_id) REFERENCES car_order(id),
+    FOREIGN KEY (client_id) REFERENCES client(id),
     FOREIGN KEY (personal_id) REFERENCES users(id)
 );
 

@@ -866,7 +866,16 @@ class Car:
                 if cursor.fetchone() is None:
                     return False, "this record does not exist"
 
-                cursor.execute("SELECT id FROM sale WHERE car_id = %s;", (id,))
+                cursor.execute(
+                    """
+                    SELECT id
+                    FROM car_order
+                    WHERE car_id = %s
+                    AND status NOT IN ('cancelled', 'expired')
+                    LIMIT 1;
+                    """,
+                    (id,),
+                )
                 if cursor.fetchone() is not None:
                     return False, "this record has dependent records"
 
@@ -1082,7 +1091,16 @@ class StaffPayment:
                 if cursor.fetchone() is None:
                     return False, "this record does not exist"
 
-                cursor.execute("SELECT id FROM sale WHERE personal_id = %s LIMIT 1;", (id,))
+                cursor.execute(
+                    """
+                    SELECT id
+                    FROM car_order
+                    WHERE personal_id = %s
+                    AND status = 'completed'
+                    LIMIT 1;
+                    """,
+                    (id,),
+                )
                 if cursor.fetchone() is not None:
                     return False, "this record has dependent sales"
 
@@ -1094,3 +1112,83 @@ class StaffPayment:
                 return True, ""
         except Exception as e:
             return False, f"server error: {str(e)}"
+
+
+class StaffSale:
+    ORDER_STATUSES = {
+        "in_progress": {
+            "label": "В обработке",
+            "css_class": "pending",
+        },
+        "awaiting_payment": {
+            "label": "Ожидает оплаты",
+            "css_class": "pending",
+        },
+        "completed": {
+            "label": "Продажа завершена",
+            "css_class": "available",
+        },
+        "cancelled": {
+            "label": "Отменено",
+            "css_class": "sold",
+        },
+        "expired": {
+            "label": "Истекло",
+            "css_class": "sold",
+        },
+    }
+
+    @staticmethod
+    def get_all():
+        try:
+            with db.get_cursor(as_dict=True) as cursor:
+                cursor.execute(
+                    """
+                    SELECT
+                        o.id AS id,
+                        o.created_at AS created_at,
+                        o.status AS status,
+                        c.vin AS vin,
+                        b.name AS brand,
+                        m.name AS model,
+                        cl.name AS client_name,
+                        cl.surname AS client_surname,
+                        cl.patronymic AS client_patronymic,
+                        p.amount AS amount
+                    FROM car_order o
+                    JOIN car c ON c.id = o.car_id
+                    JOIN model m ON m.id = c.model_id
+                    JOIN brand b ON b.id = m.brand_id
+                    JOIN client cl ON cl.id = o.client_id
+                    LEFT JOIN payment p ON p.order_id = o.id
+                    ORDER BY o.created_at DESC, o.id DESC;
+                    """
+                )
+                rows = cursor.fetchall()
+
+                for row in rows:
+                    patronymic = f" {row['client_patronymic']}" if row["client_patronymic"] else ""
+                    row["car_name"] = f"{row['brand']} {row['model']}"
+                    row["client_full_name"] = (
+                        f"{row['client_surname']} {row['client_name']}{patronymic}"
+                    )
+                    row["date_formatted"] = row["created_at"].strftime("%Y-%m-%d %H:%M")
+                    row["amount_formatted"] = (
+                        f"{int(row['amount']):,}".replace(",", " ")
+                        if row["amount"] is not None
+                        else "—"
+                    )
+
+                    status_meta = StaffSale.ORDER_STATUSES.get(
+                        row["status"],
+                        {
+                            "label": row["status"],
+                            "css_class": "",
+                        },
+                    )
+                    row["status_label"] = status_meta["label"]
+                    row["status_class"] = status_meta["css_class"]
+
+                return rows, ""
+        except Exception as e:
+            return None, f"server error: {str(e)}"

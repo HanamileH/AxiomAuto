@@ -1,6 +1,5 @@
 {% extends "staff/base.html" %}
 
-<!-- Панель добавления продаж (отключена) -->
 {% block addpanel %}
 <style>
    .add-form {
@@ -12,103 +11,39 @@
 </style>
 {% endblock %}
 
-<!-- Таблица всех продаж -->
-{% block tablename %}Список продаж{% endblock %}
+{% block tablename %}Список заказов{% endblock %}
 
 {% block table %}
-    <table class="entity-table">
-        <thead>
+   <table class="entity-table">
+      <thead>
+         <tr>
+            <th>Автомобиль</th>
+            <th>VIN номер</th>
+            <th>Клиент</th>
+            <th>Дата заказа</th>
+            <th>Сумма</th>
+            <th>Статус</th>
+         </tr>
+      </thead>
+      <tbody>
+         {% if sales %}
+            {% for sale in sales %}
+               <tr>
+                  <td>{{ sale.car_name }}</td>
+                  <td>{{ sale.vin }}</td>
+                  <td>{{ sale.client_full_name }}</td>
+                  <td>{{ sale.date_formatted }}</td>
+                  <td>{{ sale.amount_formatted }}</td>
+                  <td>
+                     <span class="status {{ sale.status_class }}">{{ sale.status_label }}</span>
+                  </td>
+               </tr>
+            {% endfor %}
+         {% else %}
             <tr>
-                <th>Автомобиль</th>
-                <th>VIN номер</th>
-                <th>Клиент</th>
-                <th>Дата продажи</th>
-                <th>Сумма</th>
-                <th>Статус</th>
-                <th>Действия</th>
+               <td colspan="6">В базе пока нет данных о заказах.</td>
             </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Toyota Camry</td>
-                <td>1HGCM82633A123456</td>
-                <td>Иванов Иван Иванович</td>
-                <td>2022-01-01</td>
-                <td>1 500 000 руб.</td>
-                <td><span class="status available">Доставлено</span></td>
-                <td><button class="btn-outline">Просмотр</button></td>
-            </tr>
-
-            <tr>
-                <td>Mazda CX-5</td>
-                <td>1HGCM82633A123456</td>
-                <td>Петров Петр Петрович</td>
-                <td>2022-02-01</td>
-                <td>1 200 000 руб.</td>
-                <td><span class="status sold">Ожидает доставки</span></td>
-                <td><button class="btn-outline">Просмотр</button></td>
-            </tr>
-
-            <tr>
-                <td>Nissan Altima</td>
-                <td>1HGCM82633A123456</td>
-                <td>Сидоров Сидр Сидорович</td>
-                <td>2022-03-01</td>
-                <td>1 800 000 руб.</td>
-                <td><span class="status available">Доставлено</span></td>
-                <td><button class="btn-outline">Просмотр</button></td>
-            </tr>
-
-            <tr>
-                <td>Honda Accord</td>
-                <td>1HGCM82633A123456</td>
-                <td>Козлов Козьма Козлович</td>
-                <td>2022-04-01</td>
-                <td>1 700 000 руб.</td>
-                <td><span class="status available">Доставлено</span></td>
-                <td><button class="btn-outline">Просмотр</button></td>
-            </tr>
-
-            <tr>
-                <td>Hyundai Sonata</td>
-                <td>1HGCM82633A123456</td>
-                <td>Васильев Василий Васильевич</td>
-                <td>2022-05-01</td>
-                <td>1 400 000 руб.</td>
-                <td><span class="status available">Доставлено</span></td>
-                <td><button class="btn-outline">Просмотр</button></td>
-            </tr>
-
-            <tr>
-                <td>Mercedes-Benz C-Class</td>
-                <td>1HGCM82633A123456</td>
-                <td>Гришин Григорий Григорьевич</td>
-                <td>2022-06-01</td>
-                <td>2 000 000 руб.</td>
-                <td><span class="status available">Доставлено</span></td>
-                <td><button class="btn-outline">Просмотр</button></td>
-            </tr>
-
-            <tr>
-                <td>Audi A4</td>
-                <td>1HGCM82633A123456</td>
-                <td>Попов Поплав Попович</td>
-                <td>2022-07-01</td>
-                <td>1 800 000 руб.</td>
-                <td><span class="status sold">Ожидает доставки</span></td>
-                <td><button class="btn-outline">Просмотр</button></td>
-            </tr>
-
-            <tr>
-                <td>BMW 3 Series</td>
-                <td>1HGCM82633A123456</td>
-                <td>Сергеев Сергей Сергеевич</td>
-                <td>2022-08-01</td>
-                <td>1 900 000 руб.</td>
-                <td><span class="status available">Доставлено</span></td>
-                <td><button class="btn-outline">Просмотр</button></td>
-            </tr>
-
-        </tbody>
-    </table>
+         {% endif %}
+      </tbody>
+   </table>
 {% endblock %}

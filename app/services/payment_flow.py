@@ -267,11 +267,11 @@ class PaymentService:
                 if bank_result.success:
                     cursor.execute(
                         """
-                        INSERT INTO sale (order_id, personal_id)
-                        VALUES (%s, %s)
-                        ON CONFLICT (order_id) DO NOTHING;
+                        UPDATE car_order
+                        SET personal_id = %s
+                        WHERE id = %s;
                         """,
-                        (reservation["order_id"], None),
+                        (None, reservation["order_id"]),
                     )
 
                 connection.commit()

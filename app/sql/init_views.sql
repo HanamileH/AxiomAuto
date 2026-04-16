@@ -37,14 +37,14 @@ SELECT * FROM body_type_sales_view;
 -- Статистика эффективности менеджеров
 CREATE OR REPLACE VIEW manager_perfomance_view AS
 SELECT
-	c.name AS name,
-	c.surname AS surname,
-	c.patronymic AS patronymic,
-	COUNT(DISTINCT s.id) AS sales,
-	COUNT(DISTINCT d.id) AS deliveries
+    c.name AS name,
+    c.surname AS surname,
+    c.patronymic AS patronymic,
+    COUNT(DISTINCT CASE WHEN o.status = 'completed' THEN o.id END) AS sales,
+    COUNT(DISTINCT d.id) AS deliveries
 FROM users u
 JOIN client c ON u.id = c.id
-LEFT JOIN sale s ON s.personal_id = u.id
+LEFT JOIN car_order o ON o.personal_id = u.id
 LEFT JOIN delivery d ON d.personal_id = u.id
 WHERE u.role = 'manager'
 GROUP BY name, surname, patronymic;
