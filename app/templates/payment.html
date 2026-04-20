@@ -33,36 +33,38 @@
             data-color-id="{{ selected_color_id }}"
             data-payment-type="bank_online"
         >
-            <div class="field-row">
-                <label for="cardNumber">Номер карты</label>
-                <input id="cardNumber" name="cardNumber" type="text" maxlength="19" placeholder="0000 0000 0000 0000" required>
-            </div>
 
-            <div class="field-row">
-                <label for="cardHolder">Имя держателя</label>
-                <input id="cardHolder" name="cardHolder" type="text" placeholder="IVAN IVANOV" required>
-            </div>
-
-            <div class="split-row">
-                <div class="field-row">
-                    <label for="expiry">Срок действия</label>
-                    <input id="expiry" name="expiry" type="text" maxlength="5" placeholder="MM/YY" required>
-                </div>
-
-                <div class="field-row">
-                    <label for="cvv">CVV</label>
-                    <input id="cvv" name="cvv" type="password" maxlength="3" placeholder="•••" required>
-                </div>
-            </div>
-
-            <h2>{{ "К оплате: " ~ model.price ~ " руб."}}</h2>
-            
             <div class="field-row">
                 <label for="phoneNumber">Номер телефона для обратной связи</label>
                 <input id="phoneNumber" name="phoneNumber" type="tel" placeholder="+7 (___) ___-__-__" required>
             </div>
 
+            <div class="bank-payment">
+                <div class="field-row">
+                    <label for="cardNumber">Номер карты</label>
+                    <input id="cardNumber" name="cardNumber" type="text" maxlength="19" placeholder="0000 0000 0000 0000" required>
+                </div>
 
+                <div class="field-row">
+                    <label for="cardHolder">Имя держателя</label>
+                    <input id="cardHolder" name="cardHolder" type="text" placeholder="IVAN IVANOV" required>
+                </div>
+
+                <div class="split-row">
+                    <div class="field-row">
+                        <label for="expiry">Срок действия</label>
+                        <input id="expiry" name="expiry" type="text" maxlength="5" placeholder="MM/YY" required>
+                    </div>
+
+                    <div class="field-row">
+                        <label for="cvv">CVV</label>
+                        <input id="cvv" name="cvv" type="password" maxlength="3" placeholder="•••" required>
+                    </div>
+                </div>
+
+                <h2>{{ "К оплате: " ~ model.price ~ " руб."}}</h2>
+            </div>
+            
             <button type="submit" class="btn-red submit-btn" id="submitPaymentBtn">Оплатить</button>
         </form>
 

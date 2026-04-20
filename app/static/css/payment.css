@@ -86,6 +86,16 @@
   color: #721c24;
 }
 
+.bank-payment {
+  border: 1px solid #dddddd;
+  border-radius: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  padding: 1rem 1.5rem;
+  box-shadow: 0rem 0.1rem 0.5rem rgba(0, 0, 0, 0.15);
+  background: #ecf3f7;
+}
+
 @media (max-width: 768px) {
   .summary-grid,
   .split-row {
