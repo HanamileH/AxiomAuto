@@ -67,7 +67,11 @@
         <div class="actions">
             <form method="get" action="{{ url_for('main.car_payment', model_id=request.view_args['model_id']) }}" id="purchaseForm">
                 <input type="hidden" id="selectedColorInput" name="color" value="">
-                <button class="btn-red" id="purchaseBtn">Перейти к покупке</button>
+                {% if current_user.is_authenticated and current_user.role in ['manager', 'admin'] %}
+                    <button class="btn-red" id="purchaseBtn">Оформить заказ</button>
+                {% else %}
+                    <button class="btn-red" id="purchaseBtn">Перейти к покупке</button>
+                {% endif %}
             </form>
             <a href="/">
                 <button class="btn-outline">Вернуться в каталог</button>
