@@ -96,6 +96,39 @@ def car_payment(model_id):
         return abort(404)
 
 
+@bp.route("/car/<model_id>/payment/terminal")
+@login_required
+def car_terminal_payment(model_id):
+    if current_user.role not in ["admin", "manager"]:
+        return abort(403)
+
+    model = get_model_data(model_id)
+
+    if not model:
+        return abort(404)
+
+    selected_color = request.args.get("color", "")
+    if not selected_color:
+        return redirect(url_for("main.car_payment", model_id=model_id))
+
+    try:
+        color_id = int(selected_color)
+    except (TypeError, ValueError):
+        return abort(400)
+
+    color = Color.get_by_id(color_id)[0]
+    if not color:
+        return abort(404)
+
+    return render_template(
+        "terminal_payment.html",
+        model=model,
+        model_id=model_id,
+        selected_color_id=color["id"],
+        selected_color=color["name"],
+    )
+
+
 @bp.route("/api/car/<model_id>/payment", methods=["POST"])
 @login_required
 def process_car_payment(model_id):
@@ -112,11 +145,54 @@ def process_car_payment(model_id):
     try:
         payload = request.get_json() or {}
         color_id = int(payload.get("colorId"))
-        payment_type = payload.get("paymentType", "bank_online")
+        order_for = (payload.get("orderFor") or "self").strip()
+        payment_type = (payload.get("paymentType") or "").strip()
         phone_number = payload.get("phoneNumber", "")
 
+        responsible_personal_id = (
+            current_user.id if current_user.role in ["admin", "manager"] else None
+        )
+
+        if order_for == "client":
+            if current_user.role not in ["admin", "manager"]:
+                return jsonify(
+                    {
+                        "status": "error",
+                        "error_text": "Недостаточно прав для оформления заказа на клиента.",
+                    }
+                ), 403
+
+            if payment_type not in ["cash", "bank_terminal"]:
+                return jsonify(
+                    {
+                        "status": "error",
+                        "error_text": "Выбранный способ оплаты недоступен для заказа на клиента.",
+                    }
+                ), 400
+
+            client_id = PaymentService.create_client(
+                name=payload.get("clientName", ""),
+                surname=payload.get("clientSurname", ""),
+                patronymic=payload.get("clientPatronymic", ""),
+            )
+        else:
+            order_for = "self"
+            if not payment_type:
+                payment_type = "bank_online"
+
+            if payment_type != "bank_online":
+                return jsonify(
+                    {
+                        "status": "error",
+                        "error_text": "Заказ на себя можно оплатить только онлайн.",
+                    }
+                ), 400
+
+            client_id = current_user.id
+
         result = PaymentService.process_order(
-            user_id=current_user.id,
+            client_id=client_id,
+            responsible_personal_id=responsible_personal_id,
             model_id=int(model_id),
             color_id=color_id,
             phone_number=phone_number,

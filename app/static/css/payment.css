@@ -36,6 +36,60 @@
   gap: 1rem;
 }
 
+.hidden {
+  display: none !important;
+}
+
+.section-label {
+  font-weight: 700;
+  margin: 0;
+}
+
+.radio-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.radio-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #dddddd;
+  border-radius: 0.75rem;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+.radio-option input {
+  cursor: pointer;
+}
+
+.buyer-block,
+.payment-type-block {
+  border: 1px solid #dddddd;
+  border-radius: 1rem;
+  padding: 1rem 1.25rem;
+  background: #ffffff;
+}
+
+.buyer-title {
+  margin: 0 0 0.5rem 0;
+  font-weight: 700;
+}
+
+.buyer-fio {
+  margin: 0;
+}
+
+.hint {
+  margin: 0.75rem 0 0 0;
+  color: #333333;
+  font-size: 0.95rem;
+}
+
 .field-row {
   display: flex;
   flex-direction: column;

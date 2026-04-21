@@ -1,6 +1,7 @@
 import re
 import time
 from dataclasses import dataclass
+from typing import Optional
 from psycopg2.extras import RealDictCursor
 from app.db.connection import db
 
@@ -24,9 +25,9 @@ class BankCardData:
 @dataclass
 class BankPaymentResult:
     success: bool
-    transaction_id: str
+    transaction_id: Optional[str]
     message: str
-    bank_account_last4: str
+    bank_account_last4: Optional[str]
 
 
 class MockBankGateway:
@@ -77,9 +78,23 @@ class OnlineBankCardPaymentMethod(PaymentMethod):
         return self.bank_gateway.process(payment_context["card_data"])
 
 
+class CashPaymentMethod(PaymentMethod):
+    payment_type = "cash"
+
+    def process(self, order_context, payment_context):
+        return BankPaymentResult(
+            success=True,
+            transaction_id=None,
+            message="Оплата наличными принята.",
+            bank_account_last4=None,
+        )
+
+
 class PaymentMethodFactory:
     _methods = {
         "bank_online": OnlineBankCardPaymentMethod,
+        "bank_terminal": OnlineBankCardPaymentMethod,
+        "cash": CashPaymentMethod,
     }
 
     @classmethod
@@ -98,6 +113,7 @@ class PaymentMethodFactory:
 class PaymentService:
     PHONE_PATTERN = re.compile(r"^\+?\d{10,15}$")
     EXPIRY_PATTERN = re.compile(r"^(0[1-9]|1[0-2])\/\d{2}$")
+    CLIENT_NAME_PATTERN = re.compile(r"^[a-zA-Zа-яА-ЯёЁ\\-\\s]+$")
 
     @staticmethod
     def normalize_card_number(card_number):
@@ -157,8 +173,76 @@ class PaymentService:
 
         return normalized_phone
 
+    @classmethod
+    def validate_client_name(cls, value, field_label):
+        value = (value or "").strip()
+        if not value:
+            raise PaymentProcessingError(
+                f"empty {field_label}",
+                public_message=f"Укажите {field_label.lower()}.",
+            )
+
+        if len(value) < 2 or len(value) > 255:
+            raise PaymentProcessingError(
+                f"invalid {field_label} length",
+                public_message=f"{field_label} должно быть длиной от 2 до 255 символов.",
+            )
+
+        if not cls.CLIENT_NAME_PATTERN.match(value):
+            raise PaymentProcessingError(
+                f"invalid {field_label} format",
+                public_message=f"{field_label} содержит недопустимые символы.",
+            )
+
+        return value
+
+    @classmethod
+    def create_client(cls, name, surname, patronymic):
+        validated_name = cls.validate_client_name(name, "Имя")
+        validated_surname = cls.validate_client_name(surname, "Фамилия")
+        validated_patronymic = (patronymic or "").strip() or None
+
+        if validated_patronymic:
+            if len(validated_patronymic) < 2 or len(validated_patronymic) > 255:
+                raise PaymentProcessingError(
+                    "invalid patronymic length",
+                    public_message="Отчество должно быть длиной от 2 до 255 символов.",
+                )
+            if not cls.CLIENT_NAME_PATTERN.match(validated_patronymic):
+                raise PaymentProcessingError(
+                    "invalid patronymic format",
+                    public_message="Отчество содержит недопустимые символы.",
+                )
+
+        with db.get_connection() as connection:
+            cursor = connection.cursor(cursor_factory=RealDictCursor)
+            try:
+                cursor.execute(
+                    """
+                    INSERT INTO client (name, surname, patronymic)
+                    VALUES (%s, %s, %s)
+                    RETURNING id;
+                    """,
+                    (validated_name, validated_surname, validated_patronymic),
+                )
+                client_id = cursor.fetchone()["id"]
+                connection.commit()
+                return client_id
+            except Exception:
+                connection.rollback()
+                raise
+            finally:
+                cursor.close()
+
     @staticmethod
-    def _reserve_order(user_id, model_id, color_id, phone_number, payment_type):
+    def _reserve_order(
+        client_id,
+        responsible_personal_id,
+        model_id,
+        color_id,
+        phone_number,
+        payment_type,
+    ):
         with db.get_connection() as connection:
             cursor = connection.cursor(cursor_factory=RealDictCursor)
             try:
@@ -194,11 +278,11 @@ class PaymentService:
 
                 cursor.execute(
                     """
-                    INSERT INTO car_order (car_id, client_id, contact_number, status)
-                    VALUES (%s, %s, %s, 'awaiting_payment')
+                    INSERT INTO car_order (car_id, client_id, personal_id, contact_number, status)
+                    VALUES (%s, %s, %s, %s, 'awaiting_payment')
                     RETURNING id;
                     """,
-                    (car_row["car_id"], user_id, phone_number),
+                    (car_row["car_id"], client_id, responsible_personal_id, phone_number),
                 )
                 order_id = cursor.fetchone()["id"]
 
@@ -264,16 +348,6 @@ class PaymentService:
                     (order_status, reservation["order_id"]),
                 )
 
-                if bank_result.success:
-                    cursor.execute(
-                        """
-                        UPDATE car_order
-                        SET personal_id = %s
-                        WHERE id = %s;
-                        """,
-                        (None, reservation["order_id"]),
-                    )
-
                 connection.commit()
             except Exception:
                 connection.rollback()
@@ -284,7 +358,8 @@ class PaymentService:
     @classmethod
     def process_order(
         cls,
-        user_id,
+        client_id,
+        responsible_personal_id,
         model_id,
         color_id,
         phone_number,
@@ -295,11 +370,12 @@ class PaymentService:
         payment_method = PaymentMethodFactory.create(payment_type)
 
         payment_context = {}
-        if payment_type == "bank_online":
+        if payment_type in ["bank_online", "bank_terminal"]:
             payment_context["card_data"] = cls.validate_card_data(payment_payload)
 
         reservation = cls._reserve_order(
-            user_id=user_id,
+            client_id=client_id,
+            responsible_personal_id=responsible_personal_id,
             model_id=model_id,
             color_id=color_id,
             phone_number=normalized_phone,
@@ -313,14 +389,14 @@ class PaymentService:
                 success=False,
                 transaction_id=f"MOCK-FAIL-{reservation['payment_id']}",
                 message=exc.public_message,
-                bank_account_last4="",
+                bank_account_last4=None,
             )
         except Exception:
             bank_result = BankPaymentResult(
                 success=False,
                 transaction_id=f"MOCK-FAIL-{reservation['payment_id']}",
                 message="Не удалось получить ответ от платежного сервиса.",
-                bank_account_last4="",
+                bank_account_last4=None,
             )
 
         cls._finalize_payment(reservation, bank_result)
@@ -341,5 +417,5 @@ class PaymentService:
             "status": "success" if is_success else "error",
             "title": result_title,
             "message": result_message,
-            "transaction_id": bank_result.transaction_id,
+            "transaction_id": bank_result.transaction_id or "",
         }

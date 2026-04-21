@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Оплата через терминал{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/payment.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="payment-page">
+    <section class="car-summary">
+        <h1>Оплата через терминал</h1>
+        <div class="summary-grid">
+            <p><strong>Производитель:</strong> {{ model.brand }}</p>
+            <p><strong>Модель:</strong> {{ model.model }}</p>
+            <p><strong>Выбранный цвет:</strong> {{ selected_color }}</p>
+            <p><strong>К оплате:</strong> {{ model.price ~ ' руб.' }}</p>
+        </div>
+    </section>
+
+    <section class="payment-form-section">
+        <h2>Введите данные карты</h2>
+
+        <form
+            id="terminalPaymentForm"
+            class="payment-form"
+            data-payment-url="{{ url_for('main.process_car_payment', model_id=model_id) }}"
+            data-color-id="{{ selected_color_id }}"
+        >
+            <div class="bank-payment">
+                <div class="field-row">
+                    <label for="cardNumber">Номер карты</label>
+                    <input id="cardNumber" name="cardNumber" type="text" maxlength="19" placeholder="0000 0000 0000 0000" required>
+                </div>
+
+                <div class="field-row">
+                    <label for="cardHolder">Имя держателя</label>
+                    <input id="cardHolder" name="cardHolder" type="text" placeholder="IVAN IVANOV" required>
+                </div>
+
+                <div class="split-row">
+                    <div class="field-row">
+                        <label for="expiry">Срок действия</label>
+                        <input id="expiry" name="expiry" type="text" maxlength="5" placeholder="MM/YY" required>
+                    </div>
+
+                    <div class="field-row">
+                        <label for="cvv">CVV</label>
+                        <input id="cvv" name="cvv" type="password" maxlength="3" placeholder="•••" required>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-red submit-btn" id="submitTerminalPaymentBtn" disabled>Оплатить</button>
+        </form>
+
+        <p id="terminalPaymentStatus" class="payment-status">Ожидаем данные заказа из основного окна...</p>
+    </section>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="{{ url_for('static', filename='js/terminal_payment.js') }}"></script>
+{% endblock %}
+

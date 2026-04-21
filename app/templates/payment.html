@@ -25,21 +25,85 @@
     </section>
 
     <section class="payment-form-section">
-        <h2>Оплатить онлайн</h2>
+        <h2>Оформление заказа</h2>
         <form
             id="paymentForm"
             class="payment-form"
             data-payment-url="{{ url_for('main.process_car_payment', model_id=model_id) }}"
+            data-terminal-url="{{ url_for('main.car_terminal_payment', model_id=model_id) }}"
             data-color-id="{{ selected_color_id }}"
-            data-payment-type="bank_online"
         >
+
+            {% if current_user.role in ["admin", "manager"] %}
+            <div class="order-for">
+                <p class="section-label">Оформить заказ</p>
+                <div class="radio-row">
+                    <label class="radio-option">
+                        <input type="radio" name="orderFor" value="self" checked>
+                        <span>На себя</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="orderFor" value="client">
+                        <span>На клиента</span>
+                    </label>
+                </div>
+            </div>
+            {% else %}
+            <input type="hidden" name="orderFor" value="self">
+            {% endif %}
+
+            <div id="selfBuyerBlock" class="buyer-block">
+                <p class="buyer-title">Данные получателя</p>
+                <p class="buyer-fio">
+                    <strong>ФИО:</strong>
+                    {{ current_user.surname }} {{ current_user.name }}{% if current_user.patronymic %} {{ current_user.patronymic }}{% endif %}
+                </p>
+            </div>
+
+            <div id="clientBuyerBlock" class="buyer-block hidden">
+                <p class="buyer-title">Данные клиента</p>
+
+                <div class="split-row">
+                    <div class="field-row">
+                        <label for="clientSurname">Фамилия</label>
+                        <input id="clientSurname" name="clientSurname" type="text" autocomplete="family-name">
+                    </div>
+
+                    <div class="field-row">
+                        <label for="clientName">Имя</label>
+                        <input id="clientName" name="clientName" type="text" autocomplete="given-name">
+                    </div>
+                </div>
+
+                <div class="field-row">
+                    <label for="clientPatronymic">Отчество</label>
+                    <input id="clientPatronymic" name="clientPatronymic" type="text" autocomplete="additional-name">
+                </div>
+            </div>
 
             <div class="field-row">
                 <label for="phoneNumber">Номер телефона для обратной связи</label>
                 <input id="phoneNumber" name="phoneNumber" type="tel" placeholder="+7 (___) ___-__-__" required>
             </div>
 
-            <div class="bank-payment">
+            <div id="clientPaymentBlock" class="payment-type-block hidden">
+                <p class="section-label">Способ оплаты</p>
+                <div class="radio-row">
+                    <label class="radio-option">
+                        <input type="radio" name="clientPaymentType" value="cash" checked>
+                        <span>Наличными</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="clientPaymentType" value="bank_terminal">
+                        <span>Банковский терминал</span>
+                    </label>
+                </div>
+                <p id="terminalHint" class="hint hidden">
+                    Для оплаты через терминал откроется новое окно браузера.
+                </p>
+            </div>
+
+            <div id="selfPaymentBlock" class="bank-payment">
                 <div class="field-row">
                     <label for="cardNumber">Номер карты</label>
                     <input id="cardNumber" name="cardNumber" type="text" maxlength="19" placeholder="0000 0000 0000 0000" required>
