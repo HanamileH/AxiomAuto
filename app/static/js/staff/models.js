@@ -3,6 +3,21 @@ let objects = [];
 let editMode = false;
 let currentEditId = null;
 
+// Column filters (client-side only)
+const activeFilters = {
+  brand: new Set(),
+  body_type: new Set(),
+  year: new Set(),
+  engine_type: new Set(),
+  transmission: new Set(),
+};
+
+let tableColumnCount = 12;
+let filterDropdownEl = null;
+let filterDropdownKey = null;
+let filterDropdownAnchorEl = null;
+let availableFilterOptions = null;
+
 // DOM элементы
 const objectTableBody = document.getElementById("objectsTableBody");
 const addForm = document.getElementById("addObjectForm");
@@ -20,6 +35,213 @@ const enginePowerInput = document.getElementById("engine_power");
 const transmissionSelect = document.getElementById("transmission");
 const priceInput = document.getElementById("price");
 const imageInput = document.getElementById("image");
+
+function getBrandNameById(id) {
+  const brand = window.brands?.find((b) => b.id === id);
+  return brand ? brand.name : "";
+}
+
+function getBodyTypeNameById(id) {
+  const bodyType = window.bodyTypes?.find((t) => t.id === id);
+  return bodyType ? bodyType.name : "";
+}
+
+function hasActiveFilter(key) {
+  return activeFilters[key] && activeFilters[key].size > 0;
+}
+
+function clearFilter(key) {
+  if (!activeFilters[key]) return;
+  activeFilters[key].clear();
+}
+
+function computeAvailableFilterOptions(models) {
+  const sets = {
+    brand: new Map(),
+    body_type: new Map(),
+    year: new Map(),
+    engine_type: new Map(),
+    transmission: new Map(),
+  };
+
+  models.forEach((model) => {
+    if (model.brand) sets.brand.set(model.brand, model.brand);
+    if (model.body_type) sets.body_type.set(model.body_type, model.body_type);
+    if (model.year !== null && model.year !== undefined && model.year !== "") {
+      sets.year.set(model.year, String(model.year));
+    }
+    if (model.engine_type) {
+      sets.engine_type.set(model.engine_type, getEngineTypeLabel(model.engine_type));
+    }
+    if (model.transmission) {
+      sets.transmission.set(
+        model.transmission,
+        getTransmissionLabel(model.transmission)
+      );
+    }
+  });
+
+  const toSortedOptions = (map, { numeric = false } = {}) => {
+    const options = Array.from(map.entries()).map(([value, label]) => ({
+      value,
+      label,
+    }));
+
+    options.sort((a, b) => {
+      if (numeric) return Number(a.value) - Number(b.value);
+      return String(a.label).localeCompare(String(b.label), "ru");
+    });
+
+    return options;
+  };
+
+  return {
+    brand: toSortedOptions(sets.brand),
+    body_type: toSortedOptions(sets.body_type),
+    year: toSortedOptions(sets.year, { numeric: true }),
+    engine_type: toSortedOptions(sets.engine_type),
+    transmission: toSortedOptions(sets.transmission),
+  };
+}
+
+function reconcileActiveFilters(optionsByKey) {
+  Object.keys(activeFilters).forEach((key) => {
+    const allowed = new Set((optionsByKey[key] || []).map((o) => o.value));
+    const next = new Set();
+
+    activeFilters[key].forEach((value) => {
+      if (allowed.has(value)) next.add(value);
+    });
+
+    activeFilters[key].clear();
+    next.forEach((v) => activeFilters[key].add(v));
+  });
+}
+
+function modelMatchesActiveFilters(model) {
+  if (hasActiveFilter("brand") && !activeFilters.brand.has(model.brand)) return false;
+  if (hasActiveFilter("body_type") && !activeFilters.body_type.has(model.body_type))
+    return false;
+  if (hasActiveFilter("year") && !activeFilters.year.has(model.year)) return false;
+  if (
+    hasActiveFilter("engine_type") &&
+    !activeFilters.engine_type.has(model.engine_type)
+  )
+    return false;
+  if (
+    hasActiveFilter("transmission") &&
+    !activeFilters.transmission.has(model.transmission)
+  )
+    return false;
+
+  return true;
+}
+
+function getFilteredObjects() {
+  return objects.filter(modelMatchesActiveFilters);
+}
+
+function updateFilterHeaderStates() {
+  document.querySelectorAll("th.filterable[data-filter-key]").forEach((th) => {
+    const key = th.getAttribute("data-filter-key");
+    th.classList.toggle("filter-active", hasActiveFilter(key));
+  });
+}
+
+function positionFilterDropdown() {
+  if (!filterDropdownEl || !filterDropdownAnchorEl) return;
+
+  const rect = filterDropdownAnchorEl.getBoundingClientRect();
+  const left = rect.left + window.scrollX;
+  const top = rect.bottom + window.scrollY + 6;
+
+  filterDropdownEl.style.left = `${Math.max(8, left)}px`;
+  filterDropdownEl.style.top = `${Math.max(8, top)}px`;
+}
+
+function closeFilterDropdown() {
+  if (filterDropdownEl) filterDropdownEl.remove();
+  filterDropdownEl = null;
+  filterDropdownKey = null;
+  filterDropdownAnchorEl = null;
+}
+
+function renderFilterDropdown(key) {
+  if (!availableFilterOptions) return;
+
+  const options = availableFilterOptions[key] || [];
+  const clearLabel = "\u041F\u043E\u043A\u0430\u0437\u0430\u0442\u044C \u0432\u0441\u0435";
+
+  filterDropdownEl.innerHTML = `
+    <div class="table-filter-actions">
+      <button type="button" class="table-filter-clear">${clearLabel}</button>
+    </div>
+    <div class="table-filter-options"></div>
+  `;
+
+  const optionsContainer = filterDropdownEl.querySelector(".table-filter-options");
+
+  if (options.length === 0) {
+    const emptyEl = document.createElement("div");
+    emptyEl.style.opacity = "0.7";
+    emptyEl.style.fontSize = "13px";
+    emptyEl.textContent = "\u041D\u0435\u0442 \u0434\u0430\u043D\u043D\u044B\u0445";
+    optionsContainer.appendChild(emptyEl);
+  } else {
+    options.forEach((opt, idx) => {
+      const optionId = `filter-${key}-${idx}`;
+      const label = document.createElement("label");
+      label.className = "table-filter-option";
+      label.setAttribute("for", optionId);
+      label.innerHTML = `
+        <input id="${optionId}" type="checkbox" />
+        <span></span>
+      `;
+
+      const input = label.querySelector("input");
+      const span = label.querySelector("span");
+      input.checked = activeFilters[key].has(opt.value);
+      input.addEventListener("change", () => {
+        if (input.checked) activeFilters[key].add(opt.value);
+        else activeFilters[key].delete(opt.value);
+        renderObjectTable();
+      });
+      span.textContent = opt.label;
+      optionsContainer.appendChild(label);
+    });
+  }
+
+  filterDropdownEl
+    .querySelector(".table-filter-clear")
+    .addEventListener("click", () => {
+      clearFilter(key);
+      renderObjectTable();
+    });
+}
+
+function openFilterDropdown(key, anchorEl) {
+  if (filterDropdownKey === key && filterDropdownEl) {
+    closeFilterDropdown();
+    return;
+  }
+
+  closeFilterDropdown();
+
+  filterDropdownKey = key;
+  filterDropdownAnchorEl = anchorEl;
+  filterDropdownEl = document.createElement("div");
+  filterDropdownEl.className = "table-filter-dropdown";
+  filterDropdownEl.addEventListener("click", (e) => e.stopPropagation());
+
+  document.body.appendChild(filterDropdownEl);
+  if (!availableFilterOptions) {
+    availableFilterOptions = computeAvailableFilterOptions(objects);
+    reconcileActiveFilters(availableFilterOptions);
+    updateFilterHeaderStates();
+  }
+  renderFilterDropdown(key);
+  positionFilterDropdown();
+}
 
 // Показать ошибку
 function showError(message) {
@@ -53,7 +275,23 @@ async function loadObjects() {
 function renderObjectTable() {
   objectTableBody.innerHTML = "";
 
-  objects.forEach((model) => {
+  availableFilterOptions = computeAvailableFilterOptions(objects);
+  reconcileActiveFilters(availableFilterOptions);
+  updateFilterHeaderStates();
+
+  const modelsToRender = getFilteredObjects();
+
+  if (modelsToRender.length === 0) {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td colspan="${tableColumnCount}" style="padding: 18px; opacity: 0.75;">
+        \u041D\u0435\u0442 \u0434\u0430\u043D\u043D\u044B\u0445 \u0434\u043B\u044F \u043E\u0442\u043E\u0431\u0440\u0430\u0436\u0435\u043D\u0438\u044F
+      </td>
+    `;
+    objectTableBody.appendChild(row);
+  }
+
+  modelsToRender.forEach((model) => {
     const row = document.createElement("tr");
     row.id = `object-row-${model.id}`;
     row.innerHTML = `
@@ -94,6 +332,11 @@ function renderObjectTable() {
       enterEditMode(id);
     });
   });
+
+  if (filterDropdownKey && filterDropdownEl) {
+    renderFilterDropdown(filterDropdownKey);
+    positionFilterDropdown();
+  }
 }
 
 // Получить читаемое название типа двигателя
@@ -454,9 +697,21 @@ async function saveObject() {
       const modelIndex = objects.findIndex((m) => m.id === currentEditId);
       if (modelIndex !== -1) {
         // Обновляем объект
+        const existing = objects[modelIndex];
         objects[modelIndex] = {
-          ...objects[modelIndex],
-          ...data,
+          ...existing,
+          brand_id: data.brand_id,
+          body_type_id: data.body_type_id,
+          brand: getBrandNameById(data.brand_id) || existing.brand,
+          body_type: getBodyTypeNameById(data.body_type_id) || existing.body_type,
+          model: data.name,
+          description: data.description,
+          year: data.year,
+          engine_type: data.engine_type,
+          engine_volume: data.engine_volume,
+          engine_power: data.engine_power,
+          transmission: data.transmission,
+          price: data.price,
         };
       }
 
@@ -588,13 +843,20 @@ addForm.addEventListener("submit", async function (e) {
       // Добавляем новый объект в локальные данные
       objects.push({
         id: result.id,
-        ...data,
-        brand: window.brands
-          ? window.brands.find((b) => b.id === data.brand_id)?.name || ""
-          : "",
-        body_type: window.bodyTypes
-          ? window.bodyTypes.find((t) => t.id === data.body_type_id)?.name || ""
-          : "",
+        brand_id: data.brand_id,
+        body_type_id: data.body_type_id,
+        brand: getBrandNameById(data.brand_id),
+        body_type: getBodyTypeNameById(data.body_type_id),
+        model: data.name,
+        description: data.description,
+        year: data.year,
+        price: data.price,
+        engine_type: data.engine_type,
+        engine_power: data.engine_power,
+        engine_volume: data.engine_volume,
+        transmission: data.transmission,
+        available_cars: 0,
+        sold_cars: 0,
       });
 
       // Перерисовываем таблицу
@@ -614,6 +876,25 @@ addForm.addEventListener("submit", async function (e) {
 // Инициализация при загрузке страницы
 document.addEventListener("DOMContentLoaded", function () {
   loadObjects();
+
+  tableColumnCount =
+    document.querySelectorAll(".entity-table thead th").length || tableColumnCount;
+
+  // Column filter UI
+  document.querySelectorAll("th.filterable[data-filter-key]").forEach((th) => {
+    th.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const key = th.getAttribute("data-filter-key");
+      openFilterDropdown(key, th);
+    });
+  });
+
+  document.addEventListener("click", () => closeFilterDropdown());
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeFilterDropdown();
+  });
+  window.addEventListener("resize", positionFilterDropdown);
+  window.addEventListener("scroll", positionFilterDropdown, true);
 
   // Добавляем обработчик изменения типа двигателя в форме добавления
   engineTypeSelect.addEventListener("change", function () {
