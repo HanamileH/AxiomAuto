@@ -53,22 +53,33 @@
         </div>
     </section>
 
-    <!-- Правая колонка: автомобили -->
+    <!-- Правая колонка: заказы -->
     <section class="cars-section">
         <div class="cars-block">
-            <h2>Купленные автомобили</h2>
-            <div class="car-list">
-                <div class="car-card">
-                    <h3>BMW 5 Series</h3>
-                    <p>Комплектация: Luxury</p>
-                    <p>Цвет: Серебристый</p>
-                    <p>Серийный номер: XYZ7891234</p>
-                    <p>Дата покупки: 14.07.2025</p>
-                    <p>Статус: <span class="status sold">Куплен</span></p>
-                    <button class="btn-black">Подробнее</button>
+            <h2>Мои заказы</h2>
+
+            {% if orders and orders|length > 0 %}
+                <div class="car-list">
+                    {% for order in orders %}
+                        <div class="car-card">
+                            <h3>Заказ №{{ order.id }}</h3>
+                            <p><strong>Автомобиль:</strong> {{ order.car_name }}</p>
+                            <p><strong>VIN:</strong> {{ order.vin }}</p>
+                            <p><strong>Цвет:</strong> {{ order.color }}</p>
+                            <p><strong>Дата заказа:</strong> {{ order.date_formatted }}</p>
+                            <p><strong>Сумма:</strong> {{ order.amount_formatted }} ₽</p>
+                            <p><strong>Статус:</strong> <span class="status {{ order.delivery_status_class }}">{{ order.delivery_status_label }}</span></p>
+                            {% if order.delivery_date_formatted %}
+                                <p><strong>Дата доставки:</strong> {{ order.delivery_date_formatted }}</p>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
                 </div>
-            </div>
+            {% else %}
+                <p class="empty-orders">У вас пока нет оплаченных заказов.</p>
+            {% endif %}
         </div>
     </section>
 </div>
 {% endblock %}
+

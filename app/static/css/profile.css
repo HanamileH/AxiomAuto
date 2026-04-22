@@ -108,3 +108,19 @@
   background: #d7f7d7;
   color: #087f23;
 }
+
+.status.pending-delivery {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status.delivered {
+  background: #d7f7d7;
+  color: #087f23;
+}
+
+.empty-orders {
+  color: #444444;
+  font-size: 1rem;
+  padding: 0.75rem 0;
+}

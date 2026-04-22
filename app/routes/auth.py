@@ -1,7 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, jsonify
-from flask_login import login_user, logout_user, login_required
+from flask_login import login_user, logout_user, login_required, current_user
 from app.db.user import register_user as db_register_user
 from app.db.user import login_user as db_login_user
+from app.db.orders import get_paid_orders_for_client
 
 
 # Инициализация капчи
@@ -98,7 +99,8 @@ def login():
 @bp.route("/profile")
 @login_required
 def profile():
-    return render_template("profile.html")
+    orders, _ = get_paid_orders_for_client(current_user.id)
+    return render_template("profile.html", orders=orders or [])
 
 
 # Выход из системы
