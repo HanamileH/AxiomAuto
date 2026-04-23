@@ -47,6 +47,10 @@ ENTITIES_TYPES = [
         "tab_name": "payments",
         "ru_name": "Оплаты",
     },
+    {
+        "tab_name": "db_logs",
+        "ru_name": "Логи БД",
+    },
 ]
 
 STATS_TYPES = [

@@ -1,9 +1,12 @@
 import os
 import uuid
-from flask import Blueprint, request, jsonify
+import json
+import re
+from datetime import datetime
+from flask import Blueprint, request, jsonify, current_app
 from flask_login import current_user
 from werkzeug.utils import secure_filename
-from app.db import Brand, Body_type, Color, Model, Car, StaffUser, manager_required
+from app.db import Brand, Body_type, Color, Model, Car, StaffUser, manager_required, admin_required
 
 OBJECTS_MATCH = {
     "brands": Brand,
@@ -18,6 +21,166 @@ bp = Blueprint("staff/admin_crud", __name__)
 MODEL_IMAGE_DIR = "./app/static/img/cars"
 MODEL_IMAGE_PREFIX = "cars"
 ALLOWED_IMAGE_EXTENSIONS = {"jpg", "jpeg", "png", "webp"}
+
+
+_LOG_FILE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}\.jsonl$")
+
+
+def _db_log_dir():
+    configured = current_app.config.get("DB_QUERY_LOG_DIR")
+    if configured:
+        return os.path.abspath(configured)
+
+    project_root = os.path.abspath(os.path.join(current_app.root_path, ".."))
+    return os.path.join(project_root, "logs", "db")
+
+
+def _list_db_log_dates():
+    log_dir = _db_log_dir()
+    if not os.path.isdir(log_dir):
+        return []
+
+    dates = []
+    for name in os.listdir(log_dir):
+        if not _LOG_FILE_RE.match(name):
+            continue
+        dates.append(name.replace(".jsonl", ""))
+
+    dates.sort(reverse=True)
+    return dates
+
+
+def _duration_matches_bucket(duration_ms, bucket):
+    if bucket in (None, "", "all"):
+        return True
+
+    try:
+        duration_ms = int(duration_ms)
+    except (TypeError, ValueError):
+        return False
+
+    if bucket == "fast":
+        return duration_ms <= 100
+    if bucket == "medium":
+        return duration_ms > 100 and duration_ms <= 500
+    if bucket == "slow":
+        return duration_ms > 500
+
+    return True
+
+
+def _safe_int(value, default):
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def _read_db_logs(date_str, kind=None, role=None, duration_bucket=None, start=0, limit=200):
+    log_dir = _db_log_dir()
+    path = os.path.join(log_dir, f"{date_str}.jsonl")
+
+    if not os.path.exists(path):
+        return [], False, start
+
+    items = []
+    has_more = False
+
+    line_index = -1
+    start = max(0, start)
+    limit = max(1, min(500, limit))
+
+    with open(path, "r", encoding="utf-8") as f:
+        for raw_line in f:
+            line_index += 1
+            if line_index < start:
+                continue
+
+            raw_line = raw_line.strip()
+            if not raw_line:
+                continue
+
+            try:
+                entry = json.loads(raw_line)
+            except Exception:
+                continue
+
+            if kind and entry.get("kind") != kind:
+                continue
+
+            if role:
+                if role == "__empty__":
+                    if (entry.get("role") or "") != "":
+                        continue
+                else:
+                    if entry.get("role") != role:
+                        continue
+
+            if not _duration_matches_bucket(entry.get("duration_ms"), duration_bucket):
+                continue
+
+            items.append(entry)
+            if len(items) >= limit:
+                has_more = True
+                break
+
+    next_start = line_index + 1
+    return items, has_more, next_start
+
+
+@bp.route("/api/db_logs/dates", methods=["GET"])
+@admin_required
+def db_logs_dates():
+    try:
+        return jsonify({"success": True, "dates": _list_db_log_dates()})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@bp.route("/api/db_logs", methods=["GET"])
+@admin_required
+def db_logs_list():
+    try:
+        dates = _list_db_log_dates()
+
+        date_str = (request.args.get("date") or "").strip()
+        if not date_str:
+            date_str = dates[0] if dates else ""
+
+        if not date_str:
+            return jsonify({"success": True, "items": [], "has_more": False, "next_start": 0})
+
+        try:
+            datetime.strptime(date_str, "%Y-%m-%d")
+        except ValueError:
+            return jsonify({"success": False, "error": "invalid date format"}), 400
+
+        kind = (request.args.get("kind") or "").strip() or None
+        role = (request.args.get("role") or "").strip() or None
+        duration_bucket = (request.args.get("duration") or "").strip() or None
+
+        start = _safe_int(request.args.get("start"), 0)
+        limit = _safe_int(request.args.get("limit"), 200)
+
+        items, has_more, next_start = _read_db_logs(
+            date_str=date_str,
+            kind=kind,
+            role=role,
+            duration_bucket=duration_bucket,
+            start=start,
+            limit=limit,
+        )
+
+        return jsonify(
+            {
+                "success": True,
+                "items": items,
+                "has_more": has_more,
+                "next_start": next_start,
+            }
+        )
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
 
 
 def check_users_admin_access(object_name):

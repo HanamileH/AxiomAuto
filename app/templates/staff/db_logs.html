@@ -1,0 +1,208 @@
+{% extends "staff/base.html" %}
+
+{% block additional_styles %}
+<style>
+  .log-filters {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    align-items: end;
+  }
+
+  .log-filters .filter-field label {
+    display: block;
+    font-size: 13px;
+    opacity: 0.8;
+    margin-bottom: 6px;
+  }
+
+  .log-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .log-meta {
+    margin-top: 12px;
+    font-size: 13px;
+    opacity: 0.8;
+  }
+
+  .entity-table th:nth-child(1) { width: 12%; }
+  .entity-table th:nth-child(2) { width: 10%; }
+  .entity-table th:nth-child(3) { width: 8%; }
+  .entity-table th:nth-child(4) { width: 8%; }
+  .entity-table th:nth-child(5) { width: 8%; }
+  .entity-table th:nth-child(6) { width: 26%; }
+  .entity-table th:nth-child(7) { width: 16%; }
+  .entity-table th:nth-child(8) { width: 12%; }
+
+  .log-code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 12px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    background: #fbfbfb;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    padding: 10px;
+    max-height: 140px;
+    overflow: auto;
+  }
+
+  details.log-details > summary {
+    cursor: pointer;
+    font-size: 13px;
+    opacity: 0.9;
+    user-select: none;
+    margin-bottom: 6px;
+  }
+
+  .log-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .log-pill {
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    border: 1px solid transparent;
+  }
+
+  .log-pill.ok {
+    background: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+  }
+
+  .log-pill.err {
+    background: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+  }
+
+  .log-error-text {
+    font-size: 12px;
+    color: #721c24;
+    opacity: 0.95;
+    max-width: 420px;
+    word-break: break-word;
+  }
+
+  .log-controls-row {
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .load-more-btn[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+</style>
+{% endblock %}
+
+{% block addtext %}Логи базы данных{% endblock %}
+
+{% block addpanel %}
+<form id="logFilterForm">
+  <div class="log-filters">
+    <div class="filter-field">
+      <label for="logDate">Дата</label>
+      <select id="logDate" required></select>
+    </div>
+
+    <div class="filter-field">
+      <label for="logKind">Тип операции</label>
+      <select id="logKind">
+        <option value="">Все</option>
+        <option value="insert">Вставка (INSERT)</option>
+        <option value="update">Изменение (UPDATE)</option>
+        <option value="delete">Удаление (DELETE)</option>
+        <option value="truncate">Очистка (TRUNCATE)</option>
+        <option value="ddl">DDL (CREATE/ALTER/DROP)</option>
+        <option value="acl">Права (GRANT/REVOKE)</option>
+        <option value="other">Другое</option>
+      </select>
+    </div>
+
+    <div class="filter-field">
+      <label for="logRole">Роль</label>
+      <select id="logRole">
+        <option value="">Все</option>
+        <option value="admin">Администратор</option>
+        <option value="manager">Менеджер</option>
+        <option value="user">Пользователь</option>
+        <option value="__empty__">Не авторизован</option>
+      </select>
+    </div>
+
+    <div class="filter-field">
+      <label for="logDuration">Длительность</label>
+      <select id="logDuration">
+        <option value="">Все</option>
+        <option value="fast">Быстрые (≤ 100 мс)</option>
+        <option value="medium">Средние (101–500 мс)</option>
+        <option value="slow">Медленные (> 500 мс)</option>
+      </select>
+    </div>
+
+    <div class="log-actions">
+      <button type="submit" class="btn-red">Показать</button>
+      <button type="button" id="resetFilters" class="btn-outline">Сбросить</button>
+    </div>
+  </div>
+
+  <div id="logMeta" class="log-meta" style="display:none;"></div>
+</form>
+{% endblock %}
+
+{% block tablename %}Список операций{% endblock %}
+
+{% block table %}
+<table class="entity-table">
+  <thead>
+    <tr>
+      <th>Дата/время</th>
+      <th>IP</th>
+      <th>ID</th>
+      <th>Роль</th>
+      <th>Длит.</th>
+      <th>Запрос</th>
+      <th>Параметры</th>
+      <th>Статус</th>
+    </tr>
+  </thead>
+  <tbody id="logsTableBody">
+    {% for _ in range(8): %}
+      <tr>
+        <td><div class="skeleton" style="width: min(100%, 10rem);"></div></td>
+        <td><div class="skeleton" style="width: min(100%, 7rem);"></div></td>
+        <td><div class="skeleton" style="width: min(100%, 5rem);"></div></td>
+        <td><div class="skeleton" style="width: min(100%, 6rem);"></div></td>
+        <td><div class="skeleton" style="width: min(100%, 5rem);"></div></td>
+        <td><div class="skeleton" style="width: min(100%, 22rem);"></div></td>
+        <td><div class="skeleton" style="width: min(100%, 16rem);"></div></td>
+        <td><div class="skeleton" style="width: min(100%, 10rem);"></div></td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<div class="log-controls-row">
+  <div id="logCount" class="log-meta" style="display:none;"></div>
+  <button type="button" id="loadMore" class="btn-outline load-more-btn" style="display:none;">Загрузить ещё</button>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="{{ url_for('static', filename='js/staff/db_logs.js') }}"></script>
+{% endblock %}
+

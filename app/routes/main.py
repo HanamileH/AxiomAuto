@@ -268,9 +268,13 @@ def staff(entity_name):
     entities = ENTITIES_TYPES
     current_entity = None
 
-    # Скрываем вкладку users для менеджеров
+    # Скрываем вкладки users/db_logs для менеджеров
     if current_user.role != "admin":
-        entities = [entity for entity in entities if entity["tab_name"] != "users"]
+        entities = [
+            entity
+            for entity in entities
+            if entity["tab_name"] not in ["users", "db_logs"]
+        ]
 
 
     for entity in entities:
@@ -278,8 +282,8 @@ def staff(entity_name):
             current_entity = entity
             break
         
-    # Запрещаем доступ ко вкладке users для менеджера
-    if entity_name == "users" and current_user.role != "admin":
+    # Запрещаем доступ ко вкладкам users/db_logs для менеджера
+    if entity_name in ["users", "db_logs"] and current_user.role != "admin":
         return abort(403)
 
 
@@ -350,9 +354,13 @@ def statistics(stats_id):
 
     entities = ENTITIES_TYPES
     
-    # Скрываем вкладку users для менеджеров
+    # Скрываем вкладки users/db_logs для менеджеров
     if current_user.role != "admin":
-        entities = [entity for entity in entities if entity["tab_name"] != "users"]
+        entities = [
+            entity
+            for entity in entities
+            if entity["tab_name"] not in ["users", "db_logs"]
+        ]
     
     # Список всех типов статистик
     stats_types = [t["name"] for t in STATS_TYPES]
