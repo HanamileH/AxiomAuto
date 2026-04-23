@@ -861,7 +861,7 @@ class Car:
     @staticmethod
     def delete(id):
         try:
-            with db.get_cursor(commit=True) as cursor:
+            with db.get_cursor(commit=True, hide_params=True) as cursor:
                 cursor.execute("SELECT id FROM car WHERE id = %s;", (id,))
                 if cursor.fetchone() is None:
                     return False, "this record does not exist"
@@ -1086,7 +1086,7 @@ class StaffPayment:
     @staticmethod
     def delete(id):
         try:
-            with db.get_cursor(commit=True) as cursor:
+            with db.get_cursor(commit=True, hide_params=True) as cursor:
                 cursor.execute("SELECT id FROM users WHERE id = %s;", (id,))
                 if cursor.fetchone() is None:
                     return False, "this record does not exist"

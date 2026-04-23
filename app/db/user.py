@@ -262,7 +262,7 @@ def register_user(name, surname, patronymic, email, password, role="user"):
     password_hash = generate_password_hash(password)
 
     try:
-        with db.get_cursor(commit=True) as cursor:
+        with db.get_cursor(commit=True, hide_params=True) as cursor:
             cursor.execute(
                 """
          INSERT INTO client (name, surname, patronymic)

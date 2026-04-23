@@ -208,3 +208,6 @@ __marimo__/
 
 # Изображения автомобилей
 app/static/img/cars/
+
+# Runtime logs
+logs/
