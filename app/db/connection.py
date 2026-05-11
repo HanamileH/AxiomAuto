@@ -149,7 +149,7 @@ def _sql_operation(sql_text):
             "DO",
             "SELECT",
         ):
-            if _re.search(rf"\\b{op}\\b", sql_text, _re.I):
+            if _re.search(rf"\b{op}\b", sql_text, _re.I):
                 return op
         return "WITH"
 
